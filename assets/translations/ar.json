@@ -1,0 +1,78 @@
+{
+  "customer": {
+    "auth": {
+      "welcome": "مرحبًا بك في رينفا",
+      "login": "تسجيل الدخول",
+      "signup": "إنشاء حساب",
+      "login_info": "سجّل الدخول إلى حسابك.",
+      "login_sub_info": "أدخل المعلومات التالية للوصول إلى حسابك",
+      "phone": "رقم الهاتف",
+      "password": "كلمة المرور",
+      "forgot_pass": "هل نسيت كلمة المرور؟",
+      "guest": "انضم إلينا كزائر",
+      "signup_info": "إنشاء حساب جديد",
+      "signup_sub_info": "أدخل معلوماتك لإنشاء حساب جديد",
+      "confirm_pass": "تأكيد كلمة المرور"
+    },
+    "verification": {
+      "title": "تأكيد رقم الهاتف",
+      "info": "أدخل الرمز المُرسل إلى"
+    },
+    "complete_info": {
+      "title": "إكمال المعلومات",
+      "subtitle": "أدخل معلوماتك لإنشاء حساب جديد",
+      "add_pic": "أضف صورة الملف الشخصي"
+    },
+    "home": {
+      "your_location": "موقعك الحالي",
+      "location_name": "اسم الموقع",
+      "services": {
+        "household": "خدمات منزلية",
+        "professional": "خدمات مهنية",
+        "personal": "خدمات شخصية",
+        "logistical": "خدمات لوجستية",
+        "household_info": "تنظيف، كيّ، غسيل...",
+        "professional_info": "كهرباء، سباكة، دهان...",
+        "personal_info": "تدريب شخصي، دروس خصوصية...",
+        "logistical_info": "نقل، توصيل، تغليف..."
+      },
+      "curated_stories": "قصص مميزة",
+      "curated_stories_info": "اكتشف آفاقًا جديدة",
+      "join_as_provider": "انضم كمقدّم خدمة",
+      "join_as_provider_info": "أفضل مقدمي الخدمات تقييماً"
+    }
+  },
+  "common": {
+    "id_pic": "صورة الهوية",
+    "full_name": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "national_number": "الرقم الوطني",
+    "gender": "الجنس",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "go_back": "رجوع",
+    "cancel": "إلغاء",
+    "go_back_question": "هل تريد العودة؟"
+  },
+  "validators": {
+    "required_field": "حقل {field} مطلوب.",
+    "confirmation_invalid": "حقل {field} غير متطابق.",
+    "name_required": "الاسم مطلوب.",
+    "name_min": "يجب ألا يقل الاسم عن {min} أحرف.",
+    "name_max": "يجب ألا يزيد الاسم عن {max} أحرف.",
+    "name_invalid": "تنسيق الاسم غير صالح.",
+    "url_required": "الرابط مطلوب.",
+    "url_invalid": "الرابط غير صالح.",
+    "email_required": "البريد الإلكتروني مطلوب.",
+    "email_invalid": "البريد الإلكتروني غير صالح."
+  },
+  "add_photo": "إضافة صورة",
+  "enter_full_name": "أدخل الاسم الكامل",
+  "add_national_number": "أضف الرقم الوطني",
+  "female": "أنثى",
+  "male": "ذكر",
+  "profile_not_saved": "لن يتم حفظ معلومات ملفك الشخصي. هل تريد العودة؟",
+  "select_image_source": "تحميل الصورة",
+  "camera": "الكاميرا",
+  "gallery": "الاستوديو"
+}

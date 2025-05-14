@@ -1,0 +1,80 @@
+{
+  "customer": {
+    "auth": {
+      "welcome": "Welcome to Renva",
+      "login": "Login",
+      "signup": "Signup",
+      "login_info": "Login to your account.",
+      "login_sub_info": "Enter the following info to reach your account",
+      "phone": "Phone Number",
+      "password": "Password",
+      "forgot_pass": "Forgot Password?",
+      "guest": "Join us as a guest",
+      "signup_info": "Create New Account",
+      "signup_sub_info": "Add your information to create a new account",
+      "confirm_pass": "Confirm Password"
+    },
+    "verification": {
+      "title": "Verify Phone Number",
+      "info": "Enter the code sent to"
+    },
+    "complete_info": {
+      "title": "Complete Your Information",
+      "subtitle": "Add your information to create a new account",
+      "add_pic": "Add Your Profile Photo"
+    },
+    "home": {
+      "your_location": "Your Location",
+      "location_name": "Location Name",
+      "services": {
+        "household": "Household Services",
+        "professional": "Professional Services",
+        "personal": "Personal Services",
+        "logistical": "Logistical Services",
+        "household_info": "Cleaning, Ironing & Washing...",
+        "professional_info": "Electric, Plumbing, Painting...",
+        "personal_info": "Personal Training, Tutoring...",
+        "logistical_info": "Transport, Deliveries, Packing..."
+      },
+      "curated_stories": "Curated Stories",
+      "curated_stories_info": "Discover new horizons",
+      "join_as_provider": "Join as a Service Provider",
+      "join_as_provider_info": "Top-rated Service Providers"
+    }
+  },
+  "common": {
+    "id_pic": "ID Photo",
+    "full_name": "Full Name",
+    "email": "Email",
+    "national_number": "National Number",
+    "gender": "Gender",
+    "confirm": "Confirm",
+    "back": "Back",
+    "go_back": "Go Back",
+    "cancel": "Cancel",
+    "go_back_question": "Go Back?"
+
+
+  },
+  "validators": {
+    "required_field": "{field} is required.",
+    "confirmation_invalid": "{field} does not match.",
+    "name_required": "Name is required.",
+    "name_min": "Name must be at least {min} characters.",
+    "name_max": "Name must be less than {max} characters.",
+    "name_invalid": "Name format is invalid.",
+    "url_required": "URL is required.",
+    "url_invalid": "URL is not valid.",
+    "email_required": "Email is required.",
+    "email_invalid": "Invalid email address."
+  },
+  "add_photo": "Add Photo",
+  "enter_full_name": "ENTER FULL NAME",
+  "add_national_number": "Add national number",
+  "female": "Female",
+  "male":"Male",
+  "profile_not_saved": "Your profile information will not be saved. Do you want to go back?",
+  "select_image_source": "Select Image Source",
+  "camera": "Camera",
+  "gallery": "Gallery"
+}
