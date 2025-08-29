@@ -60,13 +60,10 @@ class Request<T> {
     this.onSendProgress,
   }) {
     if (header != null && copyHeader != null) {
-      throw Exception(
-          "Can't pass both header and copyHeader when creating Request instance");
+      throw Exception("Can't pass both header and copyHeader when creating Request instance");
     }
-    if (method == RequestMethod.Get &&
-        (body != null || onSendProgress != null)) {
-      throw Exception(
-          "Get request must not have body or onSendProgress parameters");
+    if (method == RequestMethod.Get && (body != null || onSendProgress != null)) {
+      throw Exception("Get request must not have body or onSendProgress parameters");
     }
     if (cancelToken == null) {
       this.cancelToken = CancelToken();

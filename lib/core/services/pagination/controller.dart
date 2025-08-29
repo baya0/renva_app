@@ -11,7 +11,7 @@ import '../state_management/constants/variable_status.dart';
 import '../state_management/obs.dart';
 
 class PaginationController<T> extends GetxController {
-  final Future<ResponseModel> Function(int page, CancelToken cancel) fetchApi;
+  final Future<ResponseModel> Function(int, CancelToken cancel) fetchApi;
   final T Function(Map<String, dynamic> json) fromJson;
   double closeToListEnd;
 
@@ -30,10 +30,7 @@ class PaginationController<T> extends GetxController {
     }
   }
 
-  updateValues({
-    ScrollController? scrollController,
-    double? closeToListEnd,
-  }) {
+  updateValues({ScrollController? scrollController, double? closeToListEnd}) {
     if (scrollController != null) {
       this.scrollController = scrollController;
     }
@@ -52,7 +49,6 @@ class PaginationController<T> extends GetxController {
   final RxBool _loading = false.obs;
   get loading => this._loading.value;
   set loading(value) => this._loading.value = value;
-
   ObsList<T> data = ObsList<T>([]);
 
   CancelToken? cancel;
@@ -62,9 +58,9 @@ class PaginationController<T> extends GetxController {
   Future<ResponseModel> loadData() async {
     loading = true;
     if (currentPage != 1 && !data.hasData) {
-      data.status = VariableStatus.hasData;
+      data.status = VariableStatus.HasData;
     } else if (currentPage == 1) {
-      data.status = VariableStatus.loading;
+      data.status = VariableStatus.Loading;
     }
     cancel = CancelToken();
     completer = Completer();
@@ -79,22 +75,25 @@ class PaginationController<T> extends GetxController {
           return response;
         }
       } else {
-        data.valueAppend = (response.data as List)
-            .map((element) => fromJson(element))
-            .toList();
+        data.valueAppend =
+            (response.data as List)
+                .map((element) => fromJson(element))
+                .toList();
         currentPage++;
-
         while (!scrollController.hasClients) {
           await 100.milliseconds.delay();
         }
         if (scrollController.position.maxScrollExtent > 1) {
           scrollController.jumpTo(scrollController.offset + 0.1);
         }
-
-        log('scrollController.offset: ${scrollController.offset}',
-            name: "Pager");
-        log('scrollController.position.maxScrollExtent: ${scrollController.position.maxScrollExtent}',
-            name: "Pager");
+        log(
+          'scrollController.offset: ${scrollController.offset}',
+          name: "Pager",
+        );
+        log(
+          'scrollController.position.maxScrollExtent: ${scrollController.position.maxScrollExtent}',
+          name: "Pager",
+        );
         if (scrollController.offset >
                 scrollController.position.maxScrollExtent - closeToListEnd &&
             !isFinished) {

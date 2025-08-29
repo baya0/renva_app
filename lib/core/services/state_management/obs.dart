@@ -13,7 +13,7 @@ abstract class Obs<T> {
   set error(value) {
     _error = value;
     if (value != null) {
-      status = VariableStatus.hasError;
+      status = VariableStatus.Error;
     }
   }
 
@@ -24,9 +24,9 @@ abstract class Obs<T> {
     error = error;
   }
 
-  bool get hasData => status.isHasData;
-  bool get hasError => status.isHasError;
-  bool get loading => status.isLoading;
+  bool get hasData => status == VariableStatus.HasData;
+  bool get hasError => status == VariableStatus.Error;
+  bool get loading => status == VariableStatus.Loading;
 
   refresh() => _status.refresh();
 }
@@ -42,9 +42,9 @@ class ObsVar<T> extends Obs<T> {
     }
     _value = val;
     if (_value == null) {
-      _status = (VariableStatus.loading).obs;
+      _status = (VariableStatus.Loading).obs;
     } else {
-      _status = (VariableStatus.hasData).obs;
+      _status = (VariableStatus.HasData).obs;
     }
   }
 
@@ -55,9 +55,9 @@ class ObsVar<T> extends Obs<T> {
     bool needRefresh = value != val;
     _value = val;
     if (_value == null) {
-      status = VariableStatus.loading;
+      status = VariableStatus.Loading;
     } else {
-      status = VariableStatus.hasData;
+      status = VariableStatus.HasData;
     }
     if (needRefresh) refresh();
   }
@@ -67,7 +67,7 @@ class ObsVar<T> extends Obs<T> {
   void reset() {
     this._value = null;
     error = null;
-    status = VariableStatus.loading;
+    status = VariableStatus.Loading;
   }
 
   loger() {
@@ -83,15 +83,12 @@ class ObsList<T> extends Obs<T> {
 
   set value(List<T>? value) {
     if (value == null) {
-      status = VariableStatus.loading;
-    } else if (value.isEmpty) {
-      this._value = [];
-      valueLength = 0;
-      status = VariableStatus.loading;
+      status = VariableStatus.Loading;
     } else {
-      status = VariableStatus.hasData;
+      status = VariableStatus.HasData;
       this._value = value;
       this.valueLength = value.length;
+      refresh();
     }
   }
 
@@ -102,10 +99,10 @@ class ObsList<T> extends Obs<T> {
   ObsList(List<T>? value) {
     this._value = value;
     if (_value == null || _value!.isEmpty) {
-      _status = (VariableStatus.loading).obs;
+      _status = (VariableStatus.Loading).obs;
       _valueLength = 0.obs;
     } else {
-      _status = (VariableStatus.hasData).obs;
+      _status = (VariableStatus.HasData).obs;
       _valueLength = (value!.length).obs;
     }
   }
@@ -118,24 +115,24 @@ class ObsList<T> extends Obs<T> {
   bool? get isNotEmpty => valueLength != 0;
 
   set valueAppend(List<T> value) {
-    if (status != VariableStatus.hasData) {
-      status = VariableStatus.hasData;
+    if (status != VariableStatus.HasData) {
+      status = VariableStatus.HasData;
     }
     this._value = this._value! + value;
     if (this._value!.isEmpty && value.isNotEmpty) {
-      _status = (VariableStatus.hasData).obs;
+      _status = (VariableStatus.HasData).obs;
     }
     this.valueLength += value.length;
   }
 
   ObsList<T> operator +(List<T> value) {
-    if (status != VariableStatus.hasData && this.isNotEmpty!) {
-      status = VariableStatus.hasData;
+    if (status != VariableStatus.HasData && this.isNotEmpty!) {
+      status = VariableStatus.HasData;
       refresh();
     }
     this._value = this._value! + value;
     if (this._value!.isEmpty && value.isNotEmpty) {
-      _status = (VariableStatus.hasData).obs;
+      _status = (VariableStatus.HasData).obs;
     }
     this.valueLength += value.length;
     return this;
@@ -156,6 +153,7 @@ class ObsList<T> extends Obs<T> {
 
   remove(T value) {
     _value!.remove(value);
+    valueLength--;
   }
 
   removeAt(int index) {
@@ -195,7 +193,7 @@ class ObsList<T> extends Obs<T> {
     this._value = [];
     error = null;
     this.valueLength = 0;
-    status = VariableStatus.loading;
+    status = VariableStatus.Loading;
   }
 
   @override

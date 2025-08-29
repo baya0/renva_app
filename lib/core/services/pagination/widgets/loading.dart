@@ -5,13 +5,12 @@ class PageLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        //TODO - pagination
-        Text("loading"),
-        const SizedBox(width: 12.0),
-        const CircularProgressIndicator(),
+        Text('loading'),
+        SizedBox(width: 12.0),
+        CircularProgressIndicator(),
       ],
     );
   }

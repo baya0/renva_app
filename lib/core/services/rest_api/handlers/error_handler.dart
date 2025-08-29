@@ -6,6 +6,14 @@ import '../models/response_model.dart';
 
 ///General error handler for all requests
 ResponseModel mainErrorHandler(DioException error) {
+  print('🔍 ERROR DEBUG:');
+  print('   Status Code: ${error.response?.statusCode}');
+  print('   Headers: ${error.response?.headers}');
+  print('   Data: ${error.response?.data}');
+  if (error.response?.statusCode == 302) {
+    final location = error.response?.headers['location'];
+    print('🔄 302 REDIRECT TO: $location');
+  }
   switch (error.type) {
     case DioExceptionType.badResponse:
       switch (error.response!.statusCode) {

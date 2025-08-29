@@ -17,8 +17,7 @@ class PageError extends StatelessWidget {
           Text(error),
           ElevatedButton(
             onPressed: retry,
-            //TODO - pagination
-            child: Text("retry"),
+            child: const Text('retry'),
           ),
         ],
       ),

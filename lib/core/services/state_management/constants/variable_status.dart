@@ -1,10 +1,23 @@
-enum VariableStatus {
-  loading,
-  hasData,
-  hasError,
-  ;
+// ignore_for_file: constant_identifier_names
 
-  bool get isLoading => this == loading;
-  bool get isHasData => this == hasData;
-  bool get isHasError => this == hasError;
+enum VariableStatus {
+  Loading,
+  HasData,
+  Error,
 }
+
+// abstract class VariableStatus {}
+
+// class Pending extends VariableStatus {}
+
+// class Initializing extends Pending {}
+
+// class Fetching extends Pending {}
+
+// class Fetched extends VariableStatus {}
+
+// class HasData extends Fetched {}
+
+// class NoData extends Fetched {}
+
+// class HasError extends VariableStatus {}

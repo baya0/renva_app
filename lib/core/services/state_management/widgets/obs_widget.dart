@@ -29,8 +29,8 @@ class ObsVariableBuilder<T> extends StatelessWidget {
       if (obs.loading) {
         return loader?.call(context) ?? const LoadingWidget();
       } else if (obs.hasError) {
-        final errorWidget = errorBuilder?.call(context, obs.error!) ??
-            AppErrorWidget(error: obs.error!);
+        final errorWidget =
+            errorBuilder?.call(context, obs.error!) ?? AppErrorWidget(error: obs.error!);
         if (onRefresh != null) {
           return RefreshIndicator(onRefresh: onRefresh!, child: errorWidget);
         }
@@ -64,8 +64,8 @@ class ObsListBuilder<T> extends StatelessWidget {
       if (obs.loading) {
         return loader?.call(context) ?? const LoadingWidget();
       } else if (obs.hasError) {
-        final errorWidget = errorBuilder?.call(context, obs.error!) ??
-            AppErrorWidget(error: obs.error!);
+        final errorWidget =
+            errorBuilder?.call(context, obs.error!) ?? AppErrorWidget(error: obs.error!);
         if (onRefresh != null) {
           return RefreshIndicator(onRefresh: onRefresh!, child: errorWidget);
         }

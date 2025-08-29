@@ -13,15 +13,13 @@ import '../widgets/loading.dart';
 
 class Pager<T> extends StatelessWidget {
   /// Create the pager scroll view.
-  final Widget Function(
-      BuildContext context, PaginationController<T> controller) builder;
+  final Widget Function(BuildContext context, PaginationController<T> controller) builder;
+
+  /// return the controller
+  final void Function(PaginationController<T> paginationController)? onControllerInit;
 
   /// A tag added for [PaginationController] when inject it.
   final String tag;
-
-  /// return the controller
-  final void Function(PaginationController<T> paginationController)?
-      onControllerInit;
 
   /// Function that get data.
   /// - page to control pagination.
@@ -78,9 +76,9 @@ class Pager<T> extends StatelessWidget {
   }) {
     assert(!isSliver || (isSliver && scrollController != null));
     log("$initialLoading");
-    this.initialLoading = initialLoading ??
-        (isSliver ? const InitialSliverLoading() : const InitialLoading());
-    this.empty = isSliver ? const SliverEmptyWidget() : const EmptyWidget();
+    this.initialLoading =
+        initialLoading ?? (isSliver ? const InitialSliverLoading() : const InitialLoading());
+    this.empty = emptyWidget ?? (isSliver ? const SliverEmptyWidget() : const EmptyWidget());
   }
 
   @override
@@ -88,8 +86,7 @@ class Pager<T> extends StatelessWidget {
     PaginationController<T> controller;
     if (Get.isRegistered<PaginationController<T>>(tag: tag)) {
       controller = Get.find<PaginationController<T>>(tag: tag);
-      controller.updateValues(
-          scrollController: scrollController, closeToListEnd: closeToListEnd);
+      controller.updateValues(scrollController: scrollController, closeToListEnd: closeToListEnd);
     } else {
       controller = Get.put(
         PaginationController<T>(
@@ -103,31 +100,24 @@ class Pager<T> extends StatelessWidget {
     }
     onControllerInit?.call(controller);
 
-    return Obx(
-      () {
-        if (controller.data.loading) {
-          log("$initialLoading");
-          return initialLoading;
-        } else if (controller.data.hasError &&
-            controller.data.valueLength == 0) {
-          return errorWidget?.call(controller.data.error!) ??
-              (isSliver
-                  ? InitialSliverError(
-                      error: controller.data.error!,
-                    )
-                  : InitialError(
-                      error: controller.data.error!,
-                      refresh: hasRefresh
-                          ? () async => await controller.refreshData()
-                          : null,
-                    ));
-        } else {
-          if (controller.data.valueLength == 0) {
-            return empty;
-          }
-          return builder(context, controller);
+    return Obx(() {
+      if (controller.data.loading) {
+        log("$initialLoading");
+        return initialLoading;
+      } else if (controller.data.hasError && controller.data.valueLength == 0) {
+        return errorWidget?.call(controller.data.error!) ??
+            (isSliver
+                ? InitialSliverError(error: controller.data.error!)
+                : InitialError(
+                  error: controller.data.error!,
+                  refresh: hasRefresh ? () async => await controller.refreshData() : null,
+                ));
+      } else {
+        if (controller.data.valueLength == 0) {
+          return empty;
         }
-      },
-    );
+        return builder(context, controller);
+      }
+    });
   }
 }

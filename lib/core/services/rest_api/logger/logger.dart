@@ -9,8 +9,10 @@ import '../models/response_model.dart';
 requestingLogger(Request request) {
   if (!Get.find<APIService>().withLog) return;
   log('############# API Service ###############\n', name: "API SERVICE");
-  log('Requesting ${request.method.name} ${request.endPoint}',
-      name: "API SERVICE");
+  log(
+    'Requesting ${request.method.name} ${request.endPoint}',
+    name: "API SERVICE",
+  );
   log('Params     ${request.params}', name: "API SERVICE");
   if (request.body != null) {
     if (request.body is FormData) {
@@ -26,8 +28,10 @@ requestingLogger(Request request) {
 resultLogger(Request request, ResponseModel response) {
   if (!Get.find<APIService>().withLog) return;
   log('############# API Service ###############\n', name: "API SERVICE");
-  log('Response of ${request.method.name} ${request.endPoint}',
-      name: "API SERVICE");
+  log(
+    'Response of ${request.method.name} ${request.endPoint}',
+    name: "API SERVICE",
+  );
   log('${response.toJson()}', name: "API SERVICE");
   log('#########################################', name: "API SERVICE");
 }

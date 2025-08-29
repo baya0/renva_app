@@ -1,14 +1,21 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
 
 enum AppLocalization {
-  en,
-  ar;
+  en(Locale('en'), 'English'),
+  ar(Locale('ar'), 'العربية');
 
-  Locale get locale => switch (this) {
-    ar => Locale("ar"),
-    en => Locale("en"),
-  };
+  const AppLocalization(this.locale, this.displayName);
 
-  bool get isArabic => this == ar;
-  bool get isEnglish => this == en;
+  final Locale locale;
+  final String displayName;
+
+  // Get current language
+  static AppLocalization fromLocale(Locale locale) {
+    for (AppLocalization lang in AppLocalization.values) {
+      if (lang.locale.languageCode == locale.languageCode) {
+        return lang;
+      }
+    }
+    return AppLocalization.en; // Default fallback
+  }
 }

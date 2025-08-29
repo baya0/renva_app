@@ -5,8 +5,7 @@ class EmptyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO - pagination
-    return Center(child: Text("No data"));
+    return const Center(child: Icon(Icons.warning_amber));
   }
 }
 

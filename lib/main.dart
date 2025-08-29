@@ -1,19 +1,17 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:renva0/core/localization/localization.dart';
 
 import 'core/config/app_builder.dart';
 import 'core/routes/routes.dart';
-import 'core/services/rest_api/api_service.dart';
 import 'core/style/style.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
   await EasyLocalization.ensureInitialized();
-  final appBuilder = Get.put(AppBuilder()); // Register and retrieve instance
-  await appBuilder.loadData();
-  Get.put(APIService(token: appBuilder.token));
 
   runApp(
     EasyLocalization(
@@ -30,15 +28,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(AppBuilder());
+
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'Renva',
       theme: AppStyle.theme,
       localizationsDelegates: context.localizationDelegates,
       locale: context.locale,
       supportedLocales: context.supportedLocales,
+      // Routing
       initialRoute: '/',
       unknownRoute: AppRouting.unknownRoute,
       getPages: AppRouting.routes,
+
+      defaultTransition: Transition.cupertino,
+      transitionDuration: Duration(milliseconds: 300),
     );
   }
 }

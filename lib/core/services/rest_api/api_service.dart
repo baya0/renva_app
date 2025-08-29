@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response, FormData, MultipartFile;
 
-import 'constants/end_points.dart';
 import 'constants/api_error.dart';
+import 'constants/end_points.dart';
 import 'handlers/error_handler.dart';
 import 'handlers/success_handler.dart';
 import 'logger/logger.dart';
@@ -14,7 +14,7 @@ import 'models/response_model.dart';
 
 class APIService extends GetxService {
   static APIService get instance => Get.find<APIService>();
-  //=========== CONFIGURATION ===========
+
   late bool withLog;
   late Map<String, dynamic> _headers;
   late Dio _dio;
@@ -33,10 +33,7 @@ class APIService extends GetxService {
       _headers["Accept-Language"] = language;
     }
     _dio = Dio();
-    _dio.options = BaseOptions(
-      headers: _headers,
-      responseType: ResponseType.json,
-    );
+    _dio.options = BaseOptions(headers: _headers, responseType: ResponseType.json);
     if (withLog) headerLogger(_headers);
   }
 
@@ -56,14 +53,11 @@ class APIService extends GetxService {
     headerLogger(_headers);
   }
 
-  //============== API Request ================
   Future<ResponseModel> request<T>(Request<T> request) async {
-    String fullEndPoint = request.isFullURL
-        ? request.endPoint
-        : EndPoints.baseUrl + request.endPoint;
+    String fullEndPoint =
+        request.isFullURL ? request.endPoint : EndPoints.baseUrl + request.endPoint;
 
     ResponseModel responseModel;
-
     Map<String, dynamic> requestHeader = getRequestHeader(request);
 
     if (withLog) {
@@ -79,27 +73,26 @@ class APIService extends GetxService {
         cancelToken: request.cancelToken,
         onReceiveProgress: request.onReceiveProgress,
       );
-      responseModel =
-          await responseModelling<T>(response, fromJson: request.fromJson);
+
+      responseModel = await responseModelling<T>(response, fromJson: request.fromJson);
     } on ModellingException catch (error) {
       responseModel = ResponseModel(
-          success: false, errorType: ModellingError(), message: error.message);
+        success: false,
+        errorType: ModellingError(),
+        message: error.message,
+      );
     } on DioException catch (error) {
       responseModel = mainErrorHandler(error);
     } catch (e) {
-      responseModel =
-          ResponseModel(success: false, data: e, message: 'some error')
-            ..statusCode = 0;
+      responseModel = ResponseModel(success: false, data: e, message: 'some error')..statusCode = 0;
     }
 
     resultLogger(request, responseModel);
-
     return responseModel;
   }
 
   Map<String, dynamic> getRequestHeader(Request request) {
-    Map<String, dynamic> header =
-        Map<String, dynamic>.from(request.header ?? _headers);
+    Map<String, dynamic> header = Map<String, dynamic>.from(request.header ?? _headers);
     if (request.copyHeader != null) {
       for (var key in request.copyHeader!.keys) {
         header[key] = request.copyHeader![key];
