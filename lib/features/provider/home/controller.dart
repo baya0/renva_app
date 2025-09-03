@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:get/get.dart';
 
 import '../../../core/config/app_builder.dart';
+import '../../../core/localization/strings.dart';
 import '../../../core/routes/routes.dart';
 import '../../../core/services/rest_api/rest_api.dart';
 import '../../../core/widgets/modern_toast.dart';
@@ -16,20 +18,18 @@ class ProviderHomePageController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     loadProviderInfo();
   }
 
   Future<void> loadProviderInfo() async {
     try {
       isLoadingProviderInfo.value = true;
-
       await _fetchProviderDataFromAPI();
     } catch (e) {
-      // Set fallback data
+      // Set fallback data with translations
       providerInfo.value = {
-        'name': 'Provider Name',
-        'category': 'Service Provider',
+        'name': tr(LocaleKeys.provider_home_provider_name_fallback),
+        'category': tr(LocaleKeys.provider_home_service_provider_fallback),
         'rating': 0.0,
         'avatar': null,
         'status': 'Active',
@@ -57,7 +57,10 @@ class ProviderHomePageController extends GetxController {
           final providerData = userData['provider'] as Map<String, dynamic>;
 
           providerInfo.value = {
-            'name': providerData['name'] ?? userData['first_name'] ?? 'Provider',
+            'name':
+                providerData['name'] ??
+                userData['first_name'] ??
+                tr(LocaleKeys.provider_home_provider_name_fallback),
             'category': _extractCategoryFromProvider(providerData),
             'rating': (providerData['rate'] ?? 0.0).toDouble(),
             'avatar': _extractAvatarFromProvider(providerData),
@@ -66,8 +69,8 @@ class ProviderHomePageController extends GetxController {
         } else {
           // Use user data as fallback
           providerInfo.value = {
-            'name': userData['first_name'] ?? 'Provider',
-            'category': 'Service Provider',
+            'name': userData['first_name'] ?? tr(LocaleKeys.provider_home_provider_name_fallback),
+            'category': tr(LocaleKeys.provider_home_service_provider_fallback),
             'rating': 0.0,
             'avatar': userData['avatar']?['original_url'],
             'status': 'Pending',
@@ -77,7 +80,7 @@ class ProviderHomePageController extends GetxController {
         throw Exception('API call failed: ${response.message}');
       }
     } catch (e) {
-      print(' Error fetching from API: $e');
+      print('Error fetching from API: $e');
       rethrow;
     }
   }
@@ -91,10 +94,10 @@ class ProviderHomePageController extends GetxController {
           return firstCategory['title'];
         }
       }
-      return 'Service Provider';
+      return tr(LocaleKeys.provider_home_service_provider_fallback);
     } catch (e) {
       print('Error extracting category: $e');
-      return 'Service Provider';
+      return tr(LocaleKeys.provider_home_service_provider_fallback);
     }
   }
 
@@ -112,7 +115,6 @@ class ProviderHomePageController extends GetxController {
   }
 
   Future<void> refreshProviderInfo() async {
-    // Set loading state
     providerInfo.value = {...providerInfo.value ?? {}, 'status': 'Refreshing...'};
     await loadProviderInfo();
   }
@@ -135,14 +137,10 @@ class ProviderHomePageController extends GetxController {
           final ordersData = data['data'];
 
           if (success && ordersData is List) {
-            // remember Return the response EXACTLY as ListViewPagination expects it
-            // The PaginationController expects response.data to be a List, not a Map
             return ResponseModel(
               statusCode: 200,
               success: true,
               data: ordersData,
-
-              /// here we Return the orders list directly :D
               message: response.message,
             );
           }
@@ -170,7 +168,10 @@ class ProviderHomePageController extends GetxController {
         'hasCloseButton': true,
         'categoryTitle': _extractCategoryTitle(apiOrderData),
         'subcategoryTitle': _extractCategoryTitle(apiOrderData),
-        'description': _safeToString(apiOrderData['description'], 'Service request'),
+        'description': _safeToString(
+          apiOrderData['description'],
+          tr(LocaleKeys.provider_home_service_request_fallback),
+        ),
         'minPrice': _parsePrice(apiOrderData['min_price']),
         'maxPrice': _parsePrice(apiOrderData['max_price']),
         'orderType': _safeToString(apiOrderData['type'], 'immediately'),
@@ -178,8 +179,7 @@ class ProviderHomePageController extends GetxController {
 
       return formattedOrder;
     } catch (e) {
-      print(' Error formatting order: $e');
-
+      print('Error formatting order: $e');
       rethrow;
     }
   }
@@ -189,7 +189,7 @@ class ProviderHomePageController extends GetxController {
       final createdAtString = _safeToString(apiOrderData['created_at']);
 
       if (createdAtString.isEmpty) {
-        return 'Just now';
+        return tr(LocaleKeys.provider_home_just_now);
       }
 
       final createdAt = DateTime.parse(createdAtString);
@@ -198,19 +198,25 @@ class ProviderHomePageController extends GetxController {
 
       if (difference.inDays > 0) {
         final days = difference.inDays;
-        return days == 1 ? '1 day ago' : '$days days ago';
+        return days == 1
+            ? '1 ${tr(LocaleKeys.provider_home_day_ago)}'
+            : '$days ${tr(LocaleKeys.provider_home_days_ago)}';
       } else if (difference.inHours > 0) {
         final hours = difference.inHours;
-        return hours == 1 ? '1 hour ago' : '$hours hours ago';
+        return hours == 1
+            ? '1 ${tr(LocaleKeys.provider_home_hour_ago)}'
+            : '$hours ${tr(LocaleKeys.provider_home_hours_ago)}';
       } else if (difference.inMinutes > 0) {
         final minutes = difference.inMinutes;
-        return minutes == 1 ? '1 min ago' : '$minutes mins ago';
+        return minutes == 1
+            ? '1 ${tr(LocaleKeys.provider_home_min_ago)}'
+            : '$minutes ${tr(LocaleKeys.provider_home_mins_ago)}';
       } else {
-        return 'Just now';
+        return tr(LocaleKeys.provider_home_just_now);
       }
     } catch (e) {
-      print(' Error calculating time since created: $e');
-      return 'Recently';
+      print('Error calculating time since created: $e');
+      return tr(LocaleKeys.provider_home_recently);
     }
   }
 
@@ -223,7 +229,7 @@ class ProviderHomePageController extends GetxController {
     try {
       final customer = apiOrderData['customer'];
       if (customer == null || customer is! Map<String, dynamic>) {
-        return 'Name of the services requester';
+        return tr(LocaleKeys.provider_home_name_of_services_requester);
       }
 
       final firstName = _safeToString(customer['first_name']);
@@ -238,13 +244,13 @@ class ProviderHomePageController extends GetxController {
       } else {
         final phone = _safeToString(customer['phone']);
         if (phone.length >= 4) {
-          return 'Customer ${phone.substring(phone.length - 4)}';
+          return '${tr(LocaleKeys.provider_home_customer_prefix)} ${phone.substring(phone.length - 4)}';
         }
-        return 'Name of the services requester';
+        return tr(LocaleKeys.provider_home_name_of_services_requester);
       }
     } catch (e) {
-      print(' Error building customer name: $e');
-      return 'Name of the services requester';
+      print('Error building customer name: $e');
+      return tr(LocaleKeys.provider_home_name_of_services_requester);
     }
   }
 
@@ -252,7 +258,7 @@ class ProviderHomePageController extends GetxController {
     try {
       final address = apiOrderData['address'];
       if (address == null || address is! Map<String, dynamic>) {
-        return 'Location not specified';
+        return tr(LocaleKeys.provider_home_location_not_specified);
       }
 
       final title = _safeToString(address['title']);
@@ -263,11 +269,11 @@ class ProviderHomePageController extends GetxController {
       } else if (addressStr.isNotEmpty) {
         return addressStr;
       } else {
-        return 'Location not specified';
+        return tr(LocaleKeys.provider_home_location_not_specified);
       }
     } catch (e) {
-      print(' Error extracting location: $e');
-      return 'Location not specified';
+      print('Error extracting location: $e');
+      return tr(LocaleKeys.provider_home_location_not_specified);
     }
   }
 
@@ -275,25 +281,28 @@ class ProviderHomePageController extends GetxController {
     try {
       final category = apiOrderData['category'];
       if (category == null || category is! Map<String, dynamic>) {
-        return 'Service Request';
+        return tr(LocaleKeys.provider_home_service_request_fallback);
       }
-      return _safeToString(category['title'], 'Service Request');
+      return _safeToString(
+        category['title'],
+        tr(LocaleKeys.provider_home_service_request_fallback),
+      );
     } catch (e) {
       print('Error extracting category: $e');
-      return 'Service Request';
+      return tr(LocaleKeys.provider_home_service_request_fallback);
     }
   }
 
   String _formatOrderDate(Map<String, dynamic> apiOrderData) {
     try {
       final createdAt = _safeToString(apiOrderData['created_at']);
-      if (createdAt.isEmpty) return 'Today';
+      if (createdAt.isEmpty) return tr(LocaleKeys.provider_home_today);
 
       final date = DateTime.parse(createdAt);
-      return '${date.day} - ${_getWeekdayAbbr(date.weekday)} - ${date.year}';
+      return '${date.day} - ${_getLocalizedWeekdayAbbr(date.weekday)} - ${date.year}';
     } catch (e) {
-      print(' Error formatting date: $e');
-      return 'Today';
+      print('Error formatting date: $e');
+      return tr(LocaleKeys.provider_home_today);
     }
   }
 
@@ -309,21 +318,30 @@ class ProviderHomePageController extends GetxController {
       final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
       return '${displayHour.toString().padLeft(2, '0')}:$minute $period';
     } catch (e) {
-      print(' Error formatting time: $e');
+      print('Error formatting time: $e');
       return '12:00 PM';
     }
   }
 
-  String _getWeekdayAbbr(int weekday) {
+  String _getLocalizedWeekdayAbbr(int weekday) {
     try {
-      const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const weekdayKeys = [
+        LocaleKeys.provider_home_monday, // 1
+        LocaleKeys.provider_home_tuesday, // 2
+        LocaleKeys.provider_home_wednesday, // 3
+        LocaleKeys.provider_home_thursday, // 4
+        LocaleKeys.provider_home_friday, // 5
+        LocaleKeys.provider_home_saturday, // 6
+        LocaleKeys.provider_home_sunday, // 7
+      ];
+
       if (weekday >= 1 && weekday <= 7) {
-        return weekdays[weekday - 1];
+        return tr(weekdayKeys[weekday - 1]);
       }
-      return 'Today';
+      return tr(LocaleKeys.provider_home_today);
     } catch (e) {
-      print(' Error getting weekday abbreviation: $e');
-      return 'Today';
+      print('Error getting weekday abbreviation: $e');
+      return tr(LocaleKeys.provider_home_today);
     }
   }
 
@@ -339,19 +357,18 @@ class ProviderHomePageController extends GetxController {
 
   void viewOrderDetails(String orderId) {
     try {
-      // Pass just the order ID to the details page
       Get.toNamed(Pages.view_order_detail.value, arguments: {'orderId': orderId});
     } catch (e) {
-      print(' Error viewing order details: $e');
-      PopUpToast.show('Unable to view order details');
+      print('Error viewing order details: $e');
+      PopUpToast.show(tr(LocaleKeys.provider_home_unable_to_view_order_details));
     }
   }
 
   void onNotificationTap() {
-    PopUpToast.show('Notifications tapped');
+    PopUpToast.show(tr(LocaleKeys.provider_home_notifications_tapped));
   }
 
   void onFilterOrdersTap() {
-    PopUpToast.show('Filter orders tapped');
+    PopUpToast.show(tr(LocaleKeys.provider_home_filter_orders_tapped));
   }
 }

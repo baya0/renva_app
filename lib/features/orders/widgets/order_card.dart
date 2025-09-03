@@ -1,9 +1,10 @@
-// order_card.dart
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:renva0/features/add_orders/models/order.dart';
 
+import '../../../core/localization/strings.dart';
 import '../../../core/style/repo.dart';
 import '../../../gen/assets.gen.dart';
 import '../controller.dart';
@@ -51,15 +52,19 @@ class OrderCard extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final isRTL = context.locale.languageCode == 'ar';
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(21, 0, 21, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        textDirection: Directionality.of(context),
         children: [
           Row(
+            textDirection: Directionality.of(context),
             children: [
               Text(
-                "ID ",
+                tr(LocaleKeys.order_card_id_prefix),
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: StyleRepo.grey,
@@ -82,6 +87,7 @@ class OrderCard extends StatelessWidget {
                 fontSize: 10,
                 color: StyleRepo.grey,
               ),
+              textAlign: isRTL ? TextAlign.left : TextAlign.right,
             ),
           ),
           _buildOptionsMenu(context),
@@ -246,7 +252,9 @@ class OrderCard extends StatelessWidget {
           child: GestureDetector(
             onTap: () => controller.viewOrderDetails(order),
             child: Text(
-              (order.offerCount ?? 0) > 0 ? "View Offer" : "View Details",
+              (order.offerCount ?? 0) > 0
+                  ? LocaleKeys.order_card_view_offer.tr()
+                  : LocaleKeys.order_card_view_details.tr(),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: StyleRepo.deepBlue,
@@ -296,7 +304,7 @@ class OrderCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'View details',
+                    LocaleKeys.order_card_view_details.tr(),
                     style: TextStyle(
                       color: StyleRepo.black,
                       fontSize: 14,
@@ -329,7 +337,7 @@ class OrderCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      'Cancel service',
+                      LocaleKeys.order_card_cancel_service.tr(),
                       style: TextStyle(
                         color: StyleRepo.red,
                         fontSize: 14,
@@ -362,17 +370,24 @@ class OrderCard extends StatelessWidget {
       return const SizedBox(height: 8);
     }
 
+    final offerCount = order.offerCount ?? 0;
+    final offerText =
+        offerCount == 1
+            ? LocaleKeys.order_card_offers_received_single.tr()
+            : LocaleKeys.order_card_offers_received_plural.tr();
+
     return Column(
       children: [
         const SizedBox(height: 16),
         Container(height: 1, width: double.infinity, color: StyleRepo.softGrey),
         const SizedBox(height: 12),
         Row(
+          textDirection: Directionality.of(context),
           children: [
             Icon(Icons.local_offer, color: StyleRepo.deepBlue, size: 18),
             const SizedBox(width: 8),
             Text(
-              "${order.offerCount} offer${(order.offerCount ?? 0) != 1 ? 's' : ''} received",
+              "$offerCount $offerText",
               style: TextStyle(
                 color: StyleRepo.deepBlue,
                 fontSize: 12,
@@ -386,6 +401,8 @@ class OrderCard extends StatelessWidget {
   }
 
   Widget _buildCancelledContent(BuildContext context) {
+    final isRTL = context.locale.languageCode == 'ar';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -393,18 +410,19 @@ class OrderCard extends StatelessWidget {
         Container(height: 1, width: double.infinity, color: StyleRepo.softGrey),
         const SizedBox(height: 12),
         Row(
+          textDirection: Directionality.of(context),
           children: [
             Icon(Icons.cancel, color: StyleRepo.red, size: 16),
             const SizedBox(width: 8),
             Text(
-              "Reason of cancellation",
+              LocaleKeys.order_card_reason_of_cancellation.tr(),
               style: TextStyle(color: StyleRepo.red, fontSize: 12, fontWeight: FontWeight.w600),
             ),
             const Spacer(),
             _buildProviderAvatar(),
             const SizedBox(width: 4),
             Text(
-              order.provider?.name ?? "Unknown Provider",
+              order.provider?.name ?? LocaleKeys.order_card_unknown_provider.tr(),
               style: TextStyle(color: StyleRepo.grey, fontSize: 12),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -416,12 +434,16 @@ class OrderCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            textDirection: Directionality.of(context),
             children: [
-              Text(
-                order.cancelReason ?? "The service provider cancelled the order",
-                style: TextStyle(color: StyleRepo.black, fontSize: 12),
+              Expanded(
+                child: Text(
+                  order.cancelReason ?? LocaleKeys.order_card_service_provider_cancelled.tr(),
+                  style: TextStyle(color: StyleRepo.black, fontSize: 12),
+                  textAlign: isRTL ? TextAlign.right : TextAlign.left,
+                ),
               ),
-
+              const SizedBox(width: 8),
               Text(
                 controller.formatDateTime(order).toUpperCase(),
                 style: TextStyle(color: StyleRepo.red, fontSize: 10, fontWeight: FontWeight.w600),
@@ -439,11 +461,9 @@ class OrderCard extends StatelessWidget {
         const SizedBox(height: 16),
         Container(height: 1, width: double.infinity, color: StyleRepo.softGrey),
         const SizedBox(height: 12),
-
-        // Provider Info Row
         Row(
+          textDirection: Directionality.of(context),
           children: [
-            // Provider Avatar
             CircleAvatar(
               radius: 16,
               backgroundColor: StyleRepo.deepBlue,
@@ -451,13 +471,12 @@ class OrderCard extends StatelessWidget {
               child: _getProviderAvatarChild(),
             ),
             const SizedBox(width: 12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Service Provider",
+                    LocaleKeys.order_card_service_provider.tr(),
                     style: TextStyle(
                       color: StyleRepo.grey,
                       fontSize: 10,
@@ -465,7 +484,7 @@ class OrderCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    order.provider?.name ?? "Unknown Provider",
+                    order.provider?.name ?? LocaleKeys.order_card_unknown_provider.tr(),
                     style: TextStyle(
                       color: StyleRepo.black,
                       fontSize: 14,
@@ -504,19 +523,18 @@ class OrderCard extends StatelessWidget {
         const SizedBox(height: 16),
         Container(height: 1, width: double.infinity, color: StyleRepo.softGrey),
         const SizedBox(height: 12),
-
-        // Header Row
         Row(
+          textDirection: Directionality.of(context),
           children: [
             Text(
-              "Rating & Review",
+              LocaleKeys.order_card_rating_and_review.tr(),
               style: TextStyle(color: StyleRepo.black, fontSize: 12, fontWeight: FontWeight.w600),
             ),
             const Spacer(),
             _buildProviderAvatar(),
             const SizedBox(width: 4),
             Text(
-              order.provider?.name ?? "Unknown Provider",
+              order.provider?.name ?? LocaleKeys.order_card_unknown_provider.tr(),
               style: TextStyle(color: StyleRepo.grey, fontSize: 12),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -524,10 +542,24 @@ class OrderCard extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-
-        // Dynamic Content :D Show rating interface OR completed rating
         _buildRatingContent(context),
       ],
+    );
+  }
+
+  Widget _buildRatingButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showRatingDialog(context),
+      child: Text(
+        LocaleKeys.order_card_tap_to_rating.tr(),
+        style: TextStyle(
+          color: StyleRepo.forestGreen,
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          decoration: TextDecoration.underline,
+          decorationColor: StyleRepo.forestGreen,
+        ),
+      ),
     );
   }
 
@@ -564,22 +596,6 @@ class OrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRatingButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _showRatingDialog(context),
-      child: Text(
-        "Top to rating please",
-        style: TextStyle(
-          color: StyleRepo.forestGreen,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          decoration: TextDecoration.underline,
-          decorationColor: StyleRepo.forestGreen,
-        ),
-      ),
-    );
-  }
-
   //Checks if the provider has a valid avatar >>prevents showing a broken image T_T
   Widget _buildProviderAvatar() {
     final hasValidAvatar =
@@ -610,7 +626,7 @@ class OrderCard extends StatelessWidget {
   }
 
   String _getCustomerReviewText() {
-    final text = order.customerRating ?? "Great service!";
+    final text = order.customerRating ?? LocaleKeys.order_card_great_service.tr();
     return text;
   }
 

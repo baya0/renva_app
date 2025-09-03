@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:get/get.dart';
 
+import '../../../core/localization/strings.dart';
 import '../../../core/services/rest_api/rest_api.dart';
 import '../../../core/services/state_management/obs.dart';
 import '../../../core/widgets/modern_toast.dart';
@@ -91,7 +93,7 @@ class JoinAsProviderController extends GetxController {
         throw Exception('API returned error: ${response.message}');
       }
     } catch (e) {
-      print(' Error in API fetch: $e');
+      print('🚨 Error in API fetch: $e');
       rethrow;
     }
   }
@@ -172,23 +174,23 @@ class JoinAsProviderController extends GetxController {
         selectedServiceIds.add(serviceId);
       }
     } catch (e) {
-      PopUpToast.show('Failed to select service');
+      PopUpToast.show(tr(LocaleKeys.join_provider_failed_to_select));
     }
   }
 
   void onNext() {
     if (!hasSelection) {
-      PopUpToast.show('Please select at least one service');
+      PopUpToast.show(tr(LocaleKeys.join_provider_select_at_least_one));
       return;
     }
 
     if (availableServices.hasError) {
-      PopUpToast.show('Failed to load services. Please try again.');
+      PopUpToast.show(tr(LocaleKeys.join_provider_failed_to_load_retry));
       return;
     }
 
     if (!availableServices.hasData) {
-      PopUpToast.show('No services available');
+      PopUpToast.show(tr(LocaleKeys.join_provider_no_services_available_error));
       return;
     }
 
@@ -201,14 +203,14 @@ class JoinAsProviderController extends GetxController {
 
             return {
               'id': id,
-              'name': service?.title ?? 'Unknown Service',
+              'name': service?.title ?? tr(LocaleKeys.join_provider_unknown_service),
               'subtitle': service?.subtitle ?? '',
             };
           }).toList();
 
       Get.toNamed('/join_as_provider_form', arguments: {'selectedServices': selectedDetails});
     } catch (e) {
-      PopUpToast.show('Failed to navigate to form');
+      PopUpToast.show(tr(LocaleKeys.join_provider_failed_to_navigate));
     } finally {
       isLoading.value = false;
     }
@@ -251,18 +253,23 @@ class JoinAsProviderController extends GetxController {
   bool get hasError => availableServices.hasError || errorMessage.hasError;
 
   String get statusText {
-    if (isServicesLoading) return 'Loading services...';
+    if (isServicesLoading) return tr(LocaleKeys.join_provider_loading_services);
     if (hasError) {
-      String error = availableServices.error ?? errorMessage.error ?? 'Unknown error';
-      return 'Error: $error';
+      String error =
+          availableServices.error ?? errorMessage.error ?? tr(LocaleKeys.errors_unknown_error);
+      return '${tr(LocaleKeys.join_provider_error_prefix)}$error';
     }
-    if (!hasServices) return 'No services available';
-    return '${availableServices.valueLength} services available';
+    if (!hasServices) return tr(LocaleKeys.join_provider_no_services_available);
+    return tr(
+      LocaleKeys.join_provider_services_available,
+    ).replaceAll('{count}', availableServices.valueLength.toString());
   }
 
   String get selectionStatusText {
-    if (!hasSelection) return 'No services selected';
-    return '${selectedServiceIds.length} services selected';
+    if (!hasSelection) return tr(LocaleKeys.join_provider_no_services_selected);
+    return tr(
+      LocaleKeys.join_provider_services_selected,
+    ).replaceAll('{count}', selectedServiceIds.length.toString());
   }
 
   bool get canProceed =>

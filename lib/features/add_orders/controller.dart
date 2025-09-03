@@ -35,21 +35,20 @@ class AddOrderPageController extends GetxController {
     final allServices = [
       {
         'id': 1,
-        'title': 'Household Services',
+        'title': tr(LocaleKeys.add_orders_household_services), // Use tr() function instead of .tr()
         'svg': '',
         'min_price': 50,
         'max_price': 200,
         'prv_cnt': 5,
-        'description': ['Cleaning', 'Ironing', 'Washing'],
+        'description': [tr(LocaleKeys.add_orders_cleaning), tr(LocaleKeys.add_orders_washing)],
         'keywords': [
-          {'title': 'Cleaning'},
-          {'title': 'Ironing'},
-          {'title': 'Washing'},
+          {'title': tr(LocaleKeys.add_orders_cleaning)},
+          {'title': tr(LocaleKeys.add_orders_washing)},
         ],
         'subCategories': [
           {
             'id': 1,
-            'title': 'House Cleaning',
+            'title': tr(LocaleKeys.add_orders_cleaning),
             'svg': '',
             'min_price': 50,
             'max_price': 150,
@@ -61,21 +60,25 @@ class AddOrderPageController extends GetxController {
       },
       {
         'id': 2,
-        'title': 'Professional Services',
+        'title': tr(LocaleKeys.add_orders_professional_services),
         'svg': '',
         'min_price': 100,
         'max_price': 500,
         'prv_cnt': 4,
-        'description': ['Electrical', 'Plumbing', 'Painting'],
+        'description': [
+          tr(LocaleKeys.add_orders_electrical_work),
+          tr(LocaleKeys.add_orders_plumbing),
+          tr(LocaleKeys.add_orders_painting),
+        ],
         'keywords': [
-          {'title': 'Electrical'},
-          {'title': 'Plumbing'},
-          {'title': 'Painting'},
+          {'title': tr(LocaleKeys.add_orders_electrical_work)},
+          {'title': tr(LocaleKeys.add_orders_plumbing)},
+          {'title': tr(LocaleKeys.add_orders_painting)},
         ],
         'subCategories': [
           {
             'id': 2,
-            'title': 'Electrical Work',
+            'title': tr(LocaleKeys.add_orders_electrical_work),
             'svg': '',
             'min_price': 100,
             'max_price': 300,
@@ -87,20 +90,23 @@ class AddOrderPageController extends GetxController {
       },
       {
         'id': 3,
-        'title': 'Personal Services',
+        'title': tr(LocaleKeys.add_orders_personal_services),
         'svg': '',
         'min_price': 30,
         'max_price': 150,
         'prv_cnt': 2,
-        'description': ['Personal Training', 'Tutoring'],
+        'description': [
+          tr(LocaleKeys.add_orders_personal_training),
+          tr(LocaleKeys.add_orders_tutoring),
+        ],
         'keywords': [
-          {'title': 'Personal Training'},
-          {'title': 'Tutoring'},
+          {'title': tr(LocaleKeys.add_orders_personal_training)},
+          {'title': tr(LocaleKeys.add_orders_tutoring)},
         ],
         'subCategories': [
           {
             'id': 3,
-            'title': 'Personal Training',
+            'title': tr(LocaleKeys.add_orders_personal_training),
             'svg': '',
             'min_price': 30,
             'max_price': 100,
@@ -112,21 +118,25 @@ class AddOrderPageController extends GetxController {
       },
       {
         'id': 4,
-        'title': 'Logistical Services',
+        'title': tr(LocaleKeys.add_orders_logistical_services),
         'svg': '',
         'min_price': 20,
         'max_price': 100,
         'prv_cnt': 3,
-        'description': ['Delivery', 'Moving', 'Transportation'],
+        'description': [
+          tr(LocaleKeys.add_orders_package_delivery),
+          tr(LocaleKeys.add_orders_moving),
+          tr(LocaleKeys.add_orders_transportation),
+        ],
         'keywords': [
-          {'title': 'Delivery'},
-          {'title': 'Moving'},
-          {'title': 'Transportation'},
+          {'title': tr(LocaleKeys.add_orders_package_delivery)},
+          {'title': tr(LocaleKeys.add_orders_moving)},
+          {'title': tr(LocaleKeys.add_orders_transportation)},
         ],
         'subCategories': [
           {
             'id': 4,
-            'title': 'Package Delivery',
+            'title': tr(LocaleKeys.add_orders_package_delivery),
             'svg': '',
             'min_price': 20,
             'max_price': 50,
@@ -153,7 +163,9 @@ class AddOrderPageController extends GetxController {
 
     try {
       if (!service.hasSubcategories) {
-        PopUpToast.show('No subcategories available for ${service.title}');
+        PopUpToast.show(
+          tr(LocaleKeys.add_orders_no_subcategories, namedArgs: {'service': service.title}),
+        );
         return;
       }
 
@@ -180,5 +192,5 @@ class AddOrderPageController extends GetxController {
     return currentlyTappedId.value == serviceId;
   }
 
-  String get statusText => tr('orders.select_services_type');
+  String get statusText => tr(LocaleKeys.add_orders_select_services_type);
 }

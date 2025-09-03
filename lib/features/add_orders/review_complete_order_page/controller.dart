@@ -50,7 +50,7 @@ class ReviewCompletedOrderController extends GetxController {
         minPrice = args['minPrice'] ?? 50;
         maxPrice = args['maxPrice'] ?? 200;
         serviceSvg = args['serviceSvg'] ?? '';
-        serviceType = args['serviceType'] ?? 'As Soon As Possible';
+        serviceType = args['serviceType'] ?? tr(LocaleKeys.orders_as_soon_as_possible);
         selectedDate = args['selectedDate'];
         selectedTime = args['selectedTime'];
         description = args['description'] ?? '';
@@ -76,27 +76,41 @@ class ReviewCompletedOrderController extends GetxController {
     }
   }
 
-  // Getters for display
+  // Getters for display with proper localization
   String get serviceTypeDisplay {
-    return serviceType == 'Specific Date'
+    return serviceType == tr(LocaleKeys.add_order_details_specific_date)
         ? tr(LocaleKeys.orders_scheduled)
         : tr(LocaleKeys.orders_as_soon_as_possible);
   }
 
   String get dateTimeDisplay {
-    if (serviceType == 'Specific Date' && selectedDate != null) {
-      String display =
-          '${selectedDate!.day} - ${_getMonthAbbr(selectedDate!.month)} - ${selectedDate!.year}';
+    if (serviceType == tr(LocaleKeys.add_order_details_specific_date) && selectedDate != null) {
+      String display = DateFormat('dd/MM/yyyy').format(selectedDate!);
       if (selectedTime != null) {
-        display += ', ${selectedTime!.format(Get.context!)}';
+        display +=
+            ' ${tr(LocaleKeys.add_order_details_at_time)} ${selectedTime!.format(Get.context!)}';
       }
       return display;
     }
-    return 'As soon as possible';
+    return tr(LocaleKeys.orders_as_soon_as_possible);
   }
 
   String get priceRangeDisplay {
-    return '${priceRange.start.round()} SEK';
+    final currency = tr(LocaleKeys.complete_order_sek_currency);
+    return '${priceRange.start.round()} - ${priceRange.end.round()} $currency';
+  }
+
+  String get categoryDisplay {
+    return subcategoryTitle.isNotEmpty ? subcategoryTitle : categoryTitle;
+  }
+
+  String get descriptionDisplay {
+    return description.isNotEmpty ? description : tr(LocaleKeys.offer_details_default_description);
+  }
+
+  String get photoCountDisplay {
+    final count = uploadedPhotos.length;
+    return tr(LocaleKeys.complete_order_photos_count, namedArgs: {'count': count.toString()});
   }
 
   String _getMonthAbbr(int month) {
@@ -142,17 +156,17 @@ class ReviewCompletedOrderController extends GetxController {
   Future<void> _makeOrderCreationAPI() async {
     try {
       if (categoryId <= 0 || subcategoryId <= 0) {
-        PopUpToast.show('Invalid category selection');
+        PopUpToast.show(tr(LocaleKeys.add_orders_please_select_subcategory));
         return;
       }
 
       if (priceRange.start <= 0 || priceRange.end <= 0) {
-        PopUpToast.show('Invalid price range: ${priceRange.start} - ${priceRange.end}');
+        PopUpToast.show(tr(LocaleKeys.forms_invalid_price_range));
         return;
       }
 
       if (description.trim().length < 10) {
-        PopUpToast.show('Description must be at least 10 characters');
+        PopUpToast.show(tr(LocaleKeys.forms_min_length, args: ['10']));
         return;
       }
 
@@ -161,7 +175,10 @@ class ReviewCompletedOrderController extends GetxController {
         'category_id': subcategoryId.toString(),
         'prv_category_id': subcategoryId.toString(),
         'description': description.trim(),
-        'type': serviceType == 'As Soon As Possible' ? 'immediately' : 'none_immediately',
+        'type':
+            serviceType == tr(LocaleKeys.orders_as_soon_as_possible)
+                ? 'immediately'
+                : 'none_immediately',
         'min_price': priceRange.start.round().toString(),
         'max_price': priceRange.end.round().toString(),
         'address_lat': '32.000',
@@ -171,10 +188,12 @@ class ReviewCompletedOrderController extends GetxController {
       };
 
       DateTime dateToUse =
-          serviceType == 'Specific Date' && selectedDate != null ? selectedDate! : DateTime.now();
+          serviceType == tr(LocaleKeys.add_order_details_specific_date) && selectedDate != null
+              ? selectedDate!
+              : DateTime.now();
 
       String timeToUse =
-          serviceType == 'Specific Date' && selectedTime != null
+          serviceType == tr(LocaleKeys.add_order_details_specific_date) && selectedTime != null
               ? '${selectedTime!.hour.toString().padLeft(2, '0')}:${selectedTime!.minute.toString().padLeft(2, '0')}:00'
               : '09:00:00';
 
@@ -200,6 +219,7 @@ class ReviewCompletedOrderController extends GetxController {
           }
         }
       }
+
       ResponseModel response = await APIService.instance.request(
         Request(
           endPoint: EndPoints.new_order,
@@ -210,48 +230,45 @@ class ReviewCompletedOrderController extends GetxController {
       );
 
       if (response.success) {
-        // If API returns success, always call success handler
         await _handleSuccessfulOrderCreation(response);
       } else {
-        // Only call error handler if API actually failed
         _handleOrderCreationError(response);
       }
     } catch (e) {
-      PopUpToast.show('Network error. Please check your connection.');
+      PopUpToast.show(tr(LocaleKeys.offer_details_network_error));
     }
   }
 
   // Handle successful order creation
   Future<void> _handleSuccessfulOrderCreation(ResponseModel response) async {
     try {
-      // Extract order details from response
       if (response.data != null) {
         final responseData = response.data as Map<String, dynamic>;
 
         try {
           createdOrder.value = OrderResponseModel.fromJson(responseData);
         } catch (modelError) {
-          // Even if model creation fails, we can still show success
           print(' Model creation failed, but API was successful: $modelError');
           createdOrder.value = null;
         }
 
-        // Show success message
         String successMessage =
             responseData['message'] ??
             response.message ??
             tr(LocaleKeys.orders_order_created_successfully);
 
-        PopUpToast.show(successMessage.isNotEmpty ? successMessage : 'Order created successfully!');
+        PopUpToast.show(
+          successMessage.isNotEmpty
+              ? successMessage
+              : tr(LocaleKeys.orders_order_created_successfully),
+        );
 
-        // Navigate to success page
         _navigateAfterSuccess();
       } else {
         throw Exception('Response data is null despite success status');
       }
     } catch (e) {
-      // Even if there's an error in parsing, show success since API worked
-      PopUpToast.show('Order created successfully! (ID: ${response.data?['id'] ?? 'Unknown'})');
+      PopUpToast.show(tr(LocaleKeys.orders_order_created_successfully));
       _navigateAfterSuccess();
     }
   }
@@ -262,13 +279,11 @@ class ReviewCompletedOrderController extends GetxController {
 
     if (response.data != null) {
       if (response.data is Map<String, dynamic>) {
-        // Handle structured error response
         Map<String, dynamic> data = response.data;
 
         if (data['message'] != null) {
           errorMessage = data['message'];
         } else if (data['errors'] != null) {
-          // Handle validation errors
           if (data['errors'] is List) {
             List<String> errors = (data['errors'] as List).cast<String>();
             errorMessage = errors.join('\n');
@@ -286,11 +301,9 @@ class ReviewCompletedOrderController extends GetxController {
           }
         }
       } else if (response.data is List) {
-        // Handle list of errors directly
         List<String> errors = (response.data as List).cast<String>();
         errorMessage = errors.join('\n');
       } else {
-        // Handle other data types
         errorMessage = response.data.toString();
       }
     }
@@ -299,7 +312,6 @@ class ReviewCompletedOrderController extends GetxController {
   }
 
   void _navigateAfterSuccess() {
-    // Navigate to home or orders page after successful creation
     Get.offAllNamed('/home');
   }
 }

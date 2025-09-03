@@ -16,6 +16,7 @@ class AddOrdersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AddOrderPageController(), permanent: false);
+    final isRTL = context.locale.languageCode == 'ar';
 
     return Scaffold(
       body: Container(
@@ -68,7 +69,7 @@ class AddOrdersPage extends StatelessWidget {
                         errorWidget: (error) => _buildErrorState(controller, error),
 
                         itemBuilder: (context, index, service) {
-                          return _buildServiceItem(context, service, controller);
+                          return _buildServiceItem(context, service, controller, isRTL);
                         },
                       ),
                     ),
@@ -92,7 +93,7 @@ class AddOrdersPage extends StatelessWidget {
     return Column(
       children: [
         Text(
-          tr(LocaleKeys.orders_add_order),
+          tr(LocaleKeys.add_orders_add_order),
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             color: StyleRepo.softWhite,
             fontSize: 26,
@@ -101,7 +102,7 @@ class AddOrdersPage extends StatelessWidget {
         ),
         const SizedBox(height: 23),
         Text(
-          tr(LocaleKeys.orders_select_services_type_to_complete_order),
+          tr(LocaleKeys.add_orders_select_services_type),
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
             color: StyleRepo.softGrey,
             fontWeight: FontWeight.w700,
@@ -148,7 +149,7 @@ class AddOrdersPage extends StatelessWidget {
               backgroundColor: StyleRepo.softWhite,
               foregroundColor: StyleRepo.deepBlue,
             ),
-            child: Text('Retry'),
+            child: Text(tr(LocaleKeys.common_retry)),
           ),
         ],
       ),
@@ -159,6 +160,7 @@ class AddOrdersPage extends StatelessWidget {
     BuildContext context,
     ServiceCategoryModel service,
     AddOrderPageController controller,
+    bool isRTL,
   ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -179,6 +181,7 @@ class AddOrdersPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Row(
+                textDirection: Directionality.of(context),
                 children: [
                   SizedBox(
                     width: 48,
@@ -199,25 +202,40 @@ class AddOrdersPage extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             color: StyleRepo.softWhite,
                           ),
+                          textAlign: isRTL ? TextAlign.right : TextAlign.left,
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${service.prvCnt} providers available',
+                          _getProvidersAvailableText(service.prvCnt),
                           style: TextStyle(
                             fontSize: 12,
                             color: StyleRepo.softWhite.withOpacity(0.7),
                           ),
+                          textAlign: isRTL ? TextAlign.right : TextAlign.left,
                         ),
                       ],
                     ),
                   ),
 
                   Container(
-                    child: Assets.icons.arrows.rightCircle.svg(
-                      colorFilter: const ColorFilter.mode(StyleRepo.softWhite, BlendMode.srcIn),
-                      width: 22,
-                      height: 22,
-                    ),
+                    child:
+                        isRTL
+                            ? Assets.icons.arrows.leftCircle.svg(
+                              colorFilter: const ColorFilter.mode(
+                                StyleRepo.softWhite,
+                                BlendMode.srcIn,
+                              ),
+                              width: 22,
+                              height: 22,
+                            )
+                            : Assets.icons.arrows.rightCircle.svg(
+                              colorFilter: const ColorFilter.mode(
+                                StyleRepo.softWhite,
+                                BlendMode.srcIn,
+                              ),
+                              width: 22,
+                              height: 22,
+                            ),
                   ),
                 ],
               ),
@@ -226,6 +244,14 @@ class AddOrdersPage extends StatelessWidget {
         );
       }),
     );
+  }
+
+  String _getProvidersAvailableText(int count) {
+    if (count == 1) {
+      return '$count ${tr(LocaleKeys.add_orders_provider_available_single)}';
+    } else {
+      return '$count ${tr(LocaleKeys.add_orders_providers_available)}';
+    }
   }
 
   Widget _buildServiceIconWithShaderMask(ServiceCategoryModel service) {

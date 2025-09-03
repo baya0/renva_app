@@ -22,7 +22,7 @@ class AddSubOrderController extends GetxController {
   void onInit() {
     super.onInit();
     _loadArgumentsFromPreviousPage();
-    _fetchSubcategoriesFromAPI(); // 🔥 Fetch real data from API
+    _fetchSubcategoriesFromAPI();
   }
 
   void _loadArgumentsFromPreviousPage() {
@@ -36,8 +36,6 @@ class AddSubOrderController extends GetxController {
         minPrice = args['minPrice'] ?? 0;
         maxPrice = args['maxPrice'] ?? 0;
         serviceSvg = args['categorySvg'] ?? '';
-
-        // Don't use passed subcategories, fetch fresh from API instead
       } else {
         _loadFallbackData();
       }

@@ -17,6 +17,7 @@ class JoinAsProviderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(JoinAsProviderController());
+    final isRTL = Directionality.of(context) == TextDirection.rtl;
 
     return Scaffold(
       body: Container(
@@ -51,29 +52,8 @@ class JoinAsProviderPage extends StatelessWidget {
                   children: [
                     const SizedBox(height: 20),
 
-                    // Back button
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => Get.back(),
-                          child: Assets.icons.arrows.leftCircle.svg(
-                            width: 24,
-                            height: 24,
-                            colorFilter: const ColorFilter.mode(
-                              StyleRepo.softWhite,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          tr(LocaleKeys.common_back),
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleSmall?.copyWith(color: StyleRepo.softWhite),
-                        ),
-                      ],
-                    ),
+                    // Back button - RTL aware
+                    _buildBackButton(context, isRTL),
 
                     const SizedBox(height: 20),
 
@@ -104,6 +84,31 @@ class JoinAsProviderPage extends StatelessWidget {
     );
   }
 
+  // RTL-aware back button
+  Widget _buildBackButton(BuildContext context, bool isRTL) {
+    return Row(
+      textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
+      children: [
+        GestureDetector(
+          onTap: () => Get.back(),
+          child: Transform.flip(
+            flipX: isRTL,
+            child: Assets.icons.arrows.leftCircle.svg(
+              width: 24,
+              height: 24,
+              colorFilter: const ColorFilter.mode(StyleRepo.softWhite, BlendMode.srcIn),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          tr(LocaleKeys.common_back),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(color: StyleRepo.softWhite),
+        ),
+      ],
+    );
+  }
+
   Widget _buildCentralIcon() {
     return Center(child: Assets.images.background.addOrder.svg(height: 120, width: 120));
   }
@@ -112,16 +117,17 @@ class JoinAsProviderPage extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Select Services Type',
+          tr(LocaleKeys.join_provider_select_services_type),
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             color: StyleRepo.softWhite,
             fontSize: 24,
             fontWeight: FontWeight.w700,
           ),
+          textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
         Text(
-          'Welcome To Renva ... Join Us As A Service Provider\nAnd Get All The Features Of The App',
+          tr(LocaleKeys.join_provider_welcome_message),
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
             color: StyleRepo.softGrey,
             fontWeight: FontWeight.w400,
@@ -155,12 +161,13 @@ class JoinAsProviderPage extends StatelessWidget {
         CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(StyleRepo.softWhite)),
         const SizedBox(height: 16),
         Text(
-          'Loading services...',
+          tr(LocaleKeys.join_provider_loading_services),
           style: TextStyle(color: StyleRepo.softWhite.withOpacity(0.8), fontSize: 16),
+          textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
-          'Please wait while we fetch available services',
+          tr(LocaleKeys.join_provider_please_wait_loading),
           style: TextStyle(color: StyleRepo.softWhite.withOpacity(0.6), fontSize: 12),
           textAlign: TextAlign.center,
         ),
@@ -178,12 +185,13 @@ class JoinAsProviderPage extends StatelessWidget {
             Icon(Icons.error_outline, size: 64, color: StyleRepo.softWhite.withOpacity(0.7)),
             const SizedBox(height: 16),
             Text(
-              'Failed to load services',
+              tr(LocaleKeys.join_provider_failed_to_load_services),
               style: TextStyle(
                 color: StyleRepo.softWhite,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
@@ -198,7 +206,7 @@ class JoinAsProviderPage extends StatelessWidget {
                 backgroundColor: StyleRepo.softWhite,
                 foregroundColor: StyleRepo.deepBlue,
               ),
-              child: Text('Retry'),
+              child: Text(tr(LocaleKeys.join_provider_retry)),
             ),
           ],
         ),
@@ -217,8 +225,9 @@ class JoinAsProviderPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: Text(
-            controller.statusText,
+            _getStatusText(controller),
             style: TextStyle(color: StyleRepo.softWhite.withOpacity(0.8), fontSize: 12),
+            textAlign: TextAlign.center,
           ),
         ),
 
@@ -236,12 +245,30 @@ class JoinAsProviderPage extends StatelessWidget {
     );
   }
 
-  // : Individual service with selection state
+  String _getStatusText(JoinAsProviderController controller) {
+    if (controller.isServicesLoading) {
+      return tr(LocaleKeys.join_provider_loading_services);
+    }
+    if (controller.hasError) {
+      String error = controller.availableServices.error ?? controller.errorMessage.error ?? '';
+      return '${tr(LocaleKeys.join_provider_error_prefix)}$error';
+    }
+    if (!controller.hasServices) {
+      return tr(LocaleKeys.join_provider_no_services_available);
+    }
+    return tr(
+      LocaleKeys.join_provider_services_available,
+    ).replaceAll('{count}', controller.availableServices.valueLength.toString());
+  }
+
+  // Service item with selection state
   Widget _buildServiceItem(
     BuildContext context,
     ServiceCategoryModel service,
     JoinAsProviderController controller,
   ) {
+    final isRTL = Directionality.of(context) == TextDirection.rtl;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: Obx(() {
@@ -258,15 +285,19 @@ class JoinAsProviderPage extends StatelessWidget {
               border: isSelected ? Border.all(color: StyleRepo.softWhite, width: 2) : null,
             ),
             child: Row(
+              textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
               children: [
+                // Left edge color indicator
                 Container(
                   width: 9.5,
                   height: 105,
                   decoration: BoxDecoration(
                     color: service.leftEdgeColor,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(17),
-                      bottomLeft: Radius.circular(17),
+                    borderRadius: BorderRadius.only(
+                      topLeft: isRTL ? const Radius.circular(0) : const Radius.circular(17),
+                      bottomLeft: isRTL ? const Radius.circular(0) : const Radius.circular(17),
+                      topRight: isRTL ? const Radius.circular(17) : const Radius.circular(0),
+                      bottomRight: isRTL ? const Radius.circular(17) : const Radius.circular(0),
                     ),
                   ),
                 ),
@@ -275,14 +306,18 @@ class JoinAsProviderPage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     child: Row(
+                      textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
                       children: [
+                        // Service icon
                         SizedBox(width: 42, height: 42, child: _buildServiceIcon(service)),
 
                         const SizedBox(width: 26),
 
+                        // Service details
                         Expanded(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment:
+                                isRTL ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
@@ -294,10 +329,11 @@ class JoinAsProviderPage extends StatelessWidget {
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
+                                textAlign: isRTL ? TextAlign.right : TextAlign.left,
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                service.subtitle,
+                                _buildServiceSubtitle(service),
                                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                   color: StyleRepo.softGrey,
                                   fontSize: 10,
@@ -305,6 +341,7 @@ class JoinAsProviderPage extends StatelessWidget {
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
+                                textAlign: isRTL ? TextAlign.right : TextAlign.left,
                               ),
                             ],
                           ),
@@ -345,6 +382,24 @@ class JoinAsProviderPage extends StatelessWidget {
         );
       }),
     );
+  }
+
+  String _buildServiceSubtitle(ServiceCategoryModel service) {
+    List<String> parts = [];
+
+    if (service.subCategories.isNotEmpty) {
+      parts.add('${service.subCategories.length} ${tr(LocaleKeys.join_provider_subcategories)}');
+    }
+
+    if (service.prvCnt > 0) {
+      parts.add('${service.prvCnt} ${tr(LocaleKeys.join_provider_providers)}');
+    }
+
+    if (service.maxPrice > 0) {
+      parts.add('${tr(LocaleKeys.join_provider_up_to)} \$${service.maxPrice}');
+    }
+
+    return parts.isNotEmpty ? parts.join(' • ') : service.subtitle;
   }
 
   //  Handles different icon types
@@ -453,7 +508,7 @@ class JoinAsProviderPage extends StatelessWidget {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Loading...',
+                        tr(LocaleKeys.join_provider_loading),
                         style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -464,8 +519,10 @@ class JoinAsProviderPage extends StatelessWidget {
                   )
                   : Text(
                     hasSelection
-                        ? 'Next (${controller.selectedServiceIds.length} selected)'
-                        : 'Next',
+                        ? tr(
+                          LocaleKeys.join_provider_next_with_count,
+                        ).replaceAll('{count}', controller.selectedServiceIds.length.toString())
+                        : tr(LocaleKeys.join_provider_next),
                     style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

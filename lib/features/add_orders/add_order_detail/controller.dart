@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/localization/strings.dart';
 import '../../../../core/widgets/modern_toast.dart';
 
 class AddOrderDetailsController extends GetxController {
@@ -38,7 +40,8 @@ class AddOrderDetailsController extends GetxController {
         serviceSvg = args['serviceSvg'] ?? '';
 
         if (categoryId == 0 || subcategoryId == 0) {
-          PopUpToast.show('Invalid category selection');
+          // Use localized string instead of hardcoded English
+          PopUpToast.show(tr(LocaleKeys.add_order_details_invalid_category_selection));
           Get.back();
           return;
         }
@@ -53,7 +56,8 @@ class AddOrderDetailsController extends GetxController {
   void updateServiceType(String type) {
     selectedServiceType.value = type;
 
-    if (type == 'Specific Date') {
+    // Check using localized string comparison
+    if (type == tr(LocaleKeys.add_order_details_specific_date)) {
       _selectDateTime();
     }
   }
@@ -84,7 +88,8 @@ class AddOrderDetailsController extends GetxController {
   // Navigation to complete order page
   void navigateToCompleteOrder() {
     if (selectedServiceType.value.isEmpty) {
-      PopUpToast.show('Please select a service type');
+      // Use localized string
+      PopUpToast.show(tr(LocaleKeys.add_order_details_please_select_service_type));
       return;
     }
 
@@ -108,14 +113,24 @@ class AddOrderDetailsController extends GetxController {
   bool get isServiceTypeSelected => selectedServiceType.value.isNotEmpty;
 
   String get dateTimeDisplay {
-    if (selectedServiceType.value == 'Specific Date' && selectedDate.value != null) {
+    if (selectedServiceType.value == tr(LocaleKeys.add_order_details_specific_date) &&
+        selectedDate.value != null) {
       String dateStr =
           "${selectedDate.value!.day}/${selectedDate.value!.month}/${selectedDate.value!.year}";
       if (selectedTime.value != null) {
-        dateStr += " at ${selectedTime.value!.format(Get.context!)}";
+        // Use localized "at" string
+        dateStr +=
+            " ${tr(LocaleKeys.add_order_details_at_time)} ${selectedTime.value!.format(Get.context!)}";
       }
       return dateStr;
     }
-    return 'As Soon As Possible';
+    // Return localized "As Soon As Possible" string
+    return tr(LocaleKeys.add_order_details_as_soon_as_possible);
   }
+
+  // Getter for localized service type options
+  List<String> get serviceTypeOptions => [
+    tr(LocaleKeys.add_order_details_as_soon_as_possible),
+    tr(LocaleKeys.add_order_details_specific_date),
+  ];
 }

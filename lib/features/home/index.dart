@@ -293,7 +293,7 @@ class HomePage extends StatelessWidget {
                 Icon(Icons.category_outlined, color: Colors.white.withValues(alpha: 0.3), size: 40),
                 const SizedBox(height: 8),
                 Text(
-                  'Service',
+                  tr(LocaleKeys.home_service),
                   style: TextStyle(color: Colors.white.withValues(alpha: 0.3), fontSize: 12),
                 ),
               ],
@@ -579,9 +579,12 @@ class HomePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(tr("Join as a Services Providers"), style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            tr(LocaleKeys.home_join_as_service_provider),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 4),
-          Text(tr("Top-rated service providers"), style: Theme.of(context).textTheme.labelSmall),
+          Text(tr(LocaleKeys.home_top_providers), style: Theme.of(context).textTheme.labelSmall),
           const SizedBox(height: 16),
 
           Container(
@@ -627,7 +630,7 @@ class HomePage extends StatelessWidget {
                                     children: [
                                       Flexible(
                                         child: Text(
-                                          "Join us a Service Provider",
+                                          tr(LocaleKeys.home_join_as_service_provider),
                                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                             color: Colors.white,
                                             fontSize: 14,
@@ -647,11 +650,11 @@ class HomePage extends StatelessWidget {
                               ],
                             ),
 
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 10),
 
                             // Bullet points
-                            const Text(
-                              "• Personal Training, Tutoring...",
+                            Text(
+                              tr(LocaleKeys.home_personal_services),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 10,
@@ -659,8 +662,8 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 9),
-                            const Text(
-                              "• Personal Training, Tutoring...",
+                            Text(
+                              tr(LocaleKeys.home_professional_services),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 10,

@@ -8,6 +8,7 @@ import 'package:renva0/core/style/repo.dart';
 import 'package:renva0/features/provider/review_offer/index.dart';
 
 import '../../core/config/app_builder.dart';
+import '../../core/localization/strings.dart';
 import '../../core/services/pagination/options/list_view.dart';
 import '../../core/services/rest_api/rest_api.dart';
 import '../../core/widgets/modern_toast.dart';
@@ -34,7 +35,12 @@ class OrdersController extends GetxController {
   PaginationController<OrderModel>? completePaginationController;
   PaginationController<OrderModel>? cancelledPaginationController;
 
-  final List<String> tabs = ['Pending', 'Underway', 'Complete', 'Cancelled'];
+  List<String> get tabs => [
+    tr(LocaleKeys.orders_pending),
+    tr(LocaleKeys.orders_underway),
+    tr(LocaleKeys.orders_complete),
+    tr(LocaleKeys.orders_cancelled),
+  ];
 
   OrderStatus get currentStatus => OrderStatus.values[selectedTabIndex.value];
 
@@ -170,10 +176,6 @@ class OrdersController extends GetxController {
     }
   }
 
-  // Replace the fromJson method in your OrdersController with this fixed version
-
-  // Replace your fromJson method with this corrected version that uses the actual API field names
-
   OrderModel fromJson(Map<String, dynamic> orderJson) {
     DateTime dateTime = DateTime.tryParse(orderJson['created_at']) ?? DateTime.now();
 
@@ -192,10 +194,10 @@ class OrdersController extends GetxController {
     try {
       if (orderJson['provider'] != null) {
         provider = ProviderModel.fromJson(orderJson['provider']);
-        print('✅ Provider parsed: ${provider.name}');
+        print(' Provider parsed: ${provider.name}');
       }
     } catch (e) {
-      print('💥 Provider parsing failed: $e');
+      print(' Provider parsing failed: $e');
       provider = null;
     }
 
@@ -212,7 +214,7 @@ class OrdersController extends GetxController {
       }
     }
 
-    // Customer star rating - using 'rate' field from your API
+    // Customer star rating - using 'rate' field from  API
     if (orderJson['rate'] != null && orderJson['rate'] != 0) {
       customerStarRating = (orderJson['rate'] as num).round();
     }
@@ -279,9 +281,9 @@ class OrdersController extends GetxController {
     final difference = now.difference(order.dateTime);
 
     if (difference.inDays == 0) {
-      return 'Today at ${DateFormat('HH:mm').format(order.dateTime)}';
+      return '${tr(LocaleKeys.orders_today_at)} at ${DateFormat('HH:mm').format(order.dateTime)}';
     } else if (difference.inDays == 1) {
-      return 'Yesterday at ${DateFormat('HH:mm').format(order.dateTime)}';
+      return '${tr(LocaleKeys.orders_yesterday_at)} at ${DateFormat('HH:mm').format(order.dateTime)}';
     } else {
       return DateFormat('d MMM at HH:mm').format(order.dateTime).toUpperCase();
     }
@@ -330,7 +332,7 @@ class OrdersController extends GetxController {
                 child: Row(
                   children: [
                     Text(
-                      'Available Offers',
+                      tr(LocaleKeys.orders_available_offers),
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -395,7 +397,7 @@ class OrdersController extends GetxController {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Loading more offers...',
+                        tr(LocaleKeys.orders_loading_more_offers),
                         style: TextStyle(fontSize: 14, color: StyleRepo.grey),
                       ),
                     ],
@@ -409,7 +411,10 @@ class OrdersController extends GetxController {
                     children: [
                       CircularProgressIndicator(color: StyleRepo.deepBlue),
                       const SizedBox(height: 16),
-                      Text('Loading offers...', style: TextStyle(color: StyleRepo.grey)),
+                      Text(
+                        tr(LocaleKeys.orders_loading_offers),
+                        style: TextStyle(color: StyleRepo.grey),
+                      ),
                     ],
                   ),
                 ),
@@ -589,7 +594,7 @@ class OrdersController extends GetxController {
                       backgroundColor: StyleRepo.paleLavender,
                     ),
                     child: Text(
-                      'Details',
+                      tr(LocaleKeys.orders_details),
                       style: TextStyle(
                         color: StyleRepo.lavender,
                         fontSize: 14,
@@ -611,7 +616,7 @@ class OrdersController extends GetxController {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: Text(
-                      'Accept',
+                      tr(LocaleKeys.orders_accept),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -631,17 +636,25 @@ class OrdersController extends GetxController {
   void _acceptOfferFromCard(OfferModel offer, OrderModel order) {
     Get.dialog(
       AlertDialog(
-        title: Text('Accept Offer'),
-        content: Text('Are you sure you want to accept this offer from ${offer.providerName}?'),
+        title: Text(tr(LocaleKeys.orders_accept_offer)),
+        content: Text(
+          tr(
+            LocaleKeys.orders_accept_offer_confirmation,
+            namedArgs: {"providerName": offer.providerName},
+          ),
+        ),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
+          TextButton(onPressed: () => Get.back(), child: Text(tr(LocaleKeys.common_cancel))),
           TextButton(
             onPressed: () {
               Get.back(); // Close dialog
               Get.back(); // Close bottom sheet
               _performAcceptOffer(offer, order);
             },
-            child: Text('Accept', style: TextStyle(color: StyleRepo.forestGreen)),
+            child: Text(
+              tr(LocaleKeys.orders_accept),
+              style: TextStyle(color: StyleRepo.forestGreen),
+            ),
           ),
         ],
       ),
@@ -655,7 +668,7 @@ class OrdersController extends GetxController {
 
     try {
       // Show loading toast
-      PopUpToast.show('Accepting offer...');
+      PopUpToast.show(tr(LocaleKeys.orders_accepting_offer));
 
       final response = await APIService.instance.request(
         Request(
@@ -673,7 +686,7 @@ class OrdersController extends GetxController {
       }
     } catch (e) {
       print('Error accepting offer: $e');
-      PopUpToast.show('Network error. Please check your connection.');
+      PopUpToast.show(tr(LocaleKeys.orders_network_error));
     } finally {
       isAcceptingOffer.value = false;
     }
@@ -685,13 +698,13 @@ class OrdersController extends GetxController {
     ResponseModel response,
   ) async {
     try {
-      PopUpToast.show('Offer accepted successfully!');
+      PopUpToast.show(tr(LocaleKeys.orders_offer_accepted_successfully));
 
       // Refresh the current tab to reflect the updated order status
       await _refreshCurrentTab();
     } catch (e) {
       print('Error handling successful offer acceptance: $e');
-      PopUpToast.show('Offer accepted but failed to refresh data');
+      PopUpToast.show(tr(LocaleKeys.orders_failed_to_accept_offer));
     }
   }
 
@@ -724,39 +737,46 @@ class OrdersController extends GetxController {
   void _showOrderDetailsDialog(OrderModel order) {
     Get.dialog(
       AlertDialog(
-        title: Text('Order Details'),
+        title: Text(tr(LocaleKeys.orders_order_details)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Order ID: ${order.id}', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              '${tr(LocaleKeys.orders_order_id)}: ${order.id}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
-            Text('Service: ${order.serviceCategory}'),
+            Text('${tr(LocaleKeys.orders_service)}: ${order.serviceCategory}'),
             const SizedBox(height: 8),
-            Text('Subcategory: ${order.serviceSubcategory}'),
+            Text('${tr(LocaleKeys.orders_Subcategory)}: ${order.serviceSubcategory}'),
             const SizedBox(height: 8),
-            Text('Location: ${order.location}'),
+            Text('${tr(LocaleKeys.orders_location)}: ${order.location}'),
             const SizedBox(height: 8),
-            Text('Status: ${order.status.name}'),
+            Text('${tr(LocaleKeys.orders_status)}: ${order.status.name}'),
             const SizedBox(height: 8),
-            if ((order.offerCount ?? 0) > 0) Text('Offers: ${order.offerCount}'),
+            if ((order.offerCount ?? 0) > 0)
+              Text('${tr(LocaleKeys.orders_offers)}: ${order.offerCount}'),
             const SizedBox(height: 8),
-            Text('Description: ${order.description}'),
+            Text('${tr(LocaleKeys.orders_description)}: ${order.description}'),
             if (order.cancelReason != null && order.cancelReason!.isNotEmpty) ...[
               const SizedBox(height: 8),
-              Text('Cancel Reason: ${order.cancelReason}', style: TextStyle(color: StyleRepo.red)),
+              Text(
+                '${tr(LocaleKeys.orders_cancel_reason)}: ${order.cancelReason}',
+                style: TextStyle(color: StyleRepo.red),
+              ),
             ],
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('Close')),
+          TextButton(onPressed: () => Get.back(), child: Text(tr(LocaleKeys.common_close))),
           if (order.status == OrderStatus.pending)
             TextButton(
               onPressed: () {
                 Get.back();
                 _editOrder(order);
               },
-              child: Text('Edit Order'),
+              child: Text(tr(LocaleKeys.orders_edit_order)),
             ),
         ],
       ),
@@ -830,7 +850,7 @@ class OrdersController extends GetxController {
                   Row(
                     children: [
                       Text(
-                        'Reason for Cancellation',
+                        tr(LocaleKeys.orders_reason_for_cancellation),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -854,7 +874,7 @@ class OrdersController extends GetxController {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Please specify the reason for cancelling the order',
+                    tr(LocaleKeys.orders_specify_cancellation_reason),
                     style: TextStyle(fontSize: 14, color: StyleRepo.grey),
                   ),
                   const SizedBox(height: 24),
@@ -868,7 +888,7 @@ class OrdersController extends GetxController {
                             CircularProgressIndicator(color: StyleRepo.deepBlue),
                             const SizedBox(height: 16),
                             Text(
-                              'Loading cancellation reasons...',
+                              tr(LocaleKeys.orders_loading_cancellation_reasons),
                               style: TextStyle(color: StyleRepo.grey),
                             ),
                           ],
@@ -882,14 +902,17 @@ class OrdersController extends GetxController {
                           Icon(Icons.error_outline, size: 48, color: Colors.red[300]),
                           const SizedBox(height: 16),
                           Text(
-                            'Failed to load cancellation reasons',
+                            tr(LocaleKeys.orders_failed_to_load_cancel_reasons),
                             style: TextStyle(color: Colors.red[600]),
                           ),
                           const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: _fetchCancellationReasons,
                             style: ElevatedButton.styleFrom(backgroundColor: StyleRepo.deepBlue),
-                            child: Text('Retry', style: TextStyle(color: Colors.white)),
+                            child: Text(
+                              tr(LocaleKeys.orders_retry),
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ],
                       );
@@ -962,7 +985,9 @@ class OrdersController extends GetxController {
                                 ? null
                                 : () {
                                   if (selectedReasonId == 0) {
-                                    PopUpToast.show('Please select a cancellation reason');
+                                    PopUpToast.show(
+                                      tr(LocaleKeys.orders_select_cancellation_reason),
+                                    );
                                     return;
                                   }
                                   Get.back();
@@ -984,7 +1009,7 @@ class OrdersController extends GetxController {
                                   ),
                                 )
                                 : Text(
-                                  'Send',
+                                  tr(LocaleKeys.orders_send),
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
@@ -1012,7 +1037,7 @@ class OrdersController extends GetxController {
     isCancellingOrder.value = true;
 
     try {
-      PopUpToast.show('Cancelling order...');
+      PopUpToast.show(tr(LocaleKeys.orders_cancelling_order));
 
       final response = await APIService.instance.request(
         Request(
@@ -1024,7 +1049,7 @@ class OrdersController extends GetxController {
       );
 
       if (response.success) {
-        PopUpToast.show('Order cancelled successfully');
+        PopUpToast.show(tr(LocaleKeys.orders_order_cancelled_successfully));
         await _refreshCurrentTab();
       } else {
         String errorMsg = 'Failed to cancel order. Please try again.';
@@ -1045,7 +1070,7 @@ class OrdersController extends GetxController {
       }
     } catch (e) {
       print('Error cancelling order: $e');
-      PopUpToast.show('Network error. Please check your connection.');
+      PopUpToast.show(tr(LocaleKeys.orders_network_error));
     } finally {
       isCancellingOrder.value = false;
     }
@@ -1091,7 +1116,7 @@ class OrdersController extends GetxController {
 
         await _refreshCurrentTab();
       } else {
-        PopUpToast.show(response.message ?? 'Failed to submit rating');
+        PopUpToast.show(response.message);
       }
     } catch (e) {
       // Hide loading dialog if still showing
@@ -1100,7 +1125,7 @@ class OrdersController extends GetxController {
       }
 
       print('Error submitting rating: $e');
-      PopUpToast.show('An error occurred while submitting your rating');
+      PopUpToast.show(tr(LocaleKeys.orders_error_submitting_rating));
     }
   }
 }

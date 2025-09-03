@@ -16,6 +16,7 @@ class AddSubOrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AddSubOrderController(), permanent: false);
+    final isRTL = context.locale.languageCode == 'ar';
 
     return Scaffold(
       body: Container(
@@ -53,14 +54,24 @@ class AddSubOrderPage extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () => Get.back(),
-                          child: Assets.icons.arrows.leftCircle.svg(
-                            width: 24,
-                            height: 24,
-                            colorFilter: const ColorFilter.mode(
-                              StyleRepo.softWhite,
-                              BlendMode.srcIn,
-                            ),
-                          ),
+                          child:
+                              isRTL
+                                  ? Assets.icons.arrows.rightCircle.svg(
+                                    width: 24,
+                                    height: 24,
+                                    colorFilter: const ColorFilter.mode(
+                                      StyleRepo.softWhite,
+                                      BlendMode.srcIn,
+                                    ),
+                                  )
+                                  : Assets.icons.arrows.leftCircle.svg(
+                                    width: 24,
+                                    height: 24,
+                                    colorFilter: const ColorFilter.mode(
+                                      StyleRepo.softWhite,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
                         ),
                         const SizedBox(width: 16),
                         Text(
@@ -70,6 +81,7 @@ class AddSubOrderPage extends StatelessWidget {
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
+                          textAlign: isRTL ? TextAlign.right : TextAlign.left,
                         ),
                       ],
                     ),
@@ -114,13 +126,14 @@ class AddSubOrderPage extends StatelessWidget {
                                         fontWeight: FontWeight.w700,
                                         fontSize: 20,
                                       ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
 
                                   const SizedBox(height: 8),
 
                                   // Service description points
-                                  _buildServiceDescription(context),
+                                  _buildServiceDescription(context, isRTL),
 
                                   const SizedBox(height: 20),
 
@@ -131,6 +144,7 @@ class AddSubOrderPage extends StatelessWidget {
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
                                     ),
+                                    textAlign: isRTL ? TextAlign.right : TextAlign.left,
                                   ),
                                   const SizedBox(height: 19),
 
@@ -145,7 +159,7 @@ class AddSubOrderPage extends StatelessWidget {
                                               CircularProgressIndicator(color: StyleRepo.deepBlue),
                                               SizedBox(height: 16),
                                               Text(
-                                                'Loading subcategories...',
+                                                tr(LocaleKeys.add_orders_loading_subcategories),
                                                 style: TextStyle(color: StyleRepo.grey),
                                               ),
                                             ],
@@ -268,17 +282,30 @@ class AddSubOrderPage extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceDescription(BuildContext context) {
+  Widget _buildServiceDescription(BuildContext context, bool isRTL) {
     return Column(
+      crossAxisAlignment: isRTL ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Row(
           children: [
             Text(
-              '• Meet your home cleaning needs from A to Z',
+              '•',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: StyleRepo.black.withValues(alpha: 0.7),
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                tr(LocaleKeys.add_orders_service_description_1),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: StyleRepo.black.withValues(alpha: 0.7),
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
+                textAlign: isRTL ? TextAlign.right : TextAlign.left,
               ),
             ),
           ],
@@ -287,11 +314,24 @@ class AddSubOrderPage extends StatelessWidget {
         Row(
           children: [
             Text(
-              '• Commitment to the required deadline',
+              '•',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: StyleRepo.black.withValues(alpha: 0.7),
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
+              ),
+              textAlign: isRTL ? TextAlign.right : TextAlign.left,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                tr(LocaleKeys.add_orders_service_description_2),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: StyleRepo.black.withValues(alpha: 0.7),
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
+                textAlign: isRTL ? TextAlign.right : TextAlign.left,
               ),
             ),
           ],
@@ -299,14 +339,49 @@ class AddSubOrderPage extends StatelessWidget {
         const SizedBox(height: 8),
         Row(
           children: [
-            Text(
-              '• Ensuring complete safety and confidentiality',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: StyleRepo.black.withValues(alpha: 0.7),
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
+            if (isRTL) ...[
+              Expanded(
+                child: Text(
+                  tr(LocaleKeys.add_orders_service_description_3),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: StyleRepo.black.withValues(alpha: 0.7),
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.right,
+                ),
               ),
-            ),
+              const SizedBox(width: 8),
+              Text(
+                '•',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: StyleRepo.black.withValues(alpha: 0.7),
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
+              ),
+            ] else ...[
+              Text(
+                '•',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: StyleRepo.black.withValues(alpha: 0.7),
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  tr(LocaleKeys.add_orders_service_description_3),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: StyleRepo.black.withValues(alpha: 0.7),
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ],
           ],
         ),
       ],
@@ -341,30 +416,50 @@ class AddSubOrderPage extends StatelessWidget {
   }
 
   Widget _buildFallbackIcon(String title, Color color) {
-    switch (title.toLowerCase()) {
-      case 'cleaning':
-        return Assets.icons.services.house.svg(
-          width: 45,
-          height: 58,
-          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-        );
-      case 'washing':
-        return SvgIcon(icon: Assets.icons.services.wrench, color: color, size: 45);
-      case 'plant care':
-        return Icon(Icons.local_florist_outlined, color: color, size: 45);
-      case 'pet care':
-        return Icon(Icons.pets_outlined, color: color, size: 45);
-      case 'car wash':
-      case 'cars clean':
-      case 'car cleaning':
-        return Assets.icons.services.truck.svg(
-          width: 45,
-          height: 58,
-          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-        );
-      default:
-        return Icon(Icons.category_outlined, color: color, size: 45);
+    final titleLower = title.toLowerCase();
+
+    // Check for translated titles too
+    if (titleLower.contains('cleaning') || titleLower.contains('تنظيف')) {
+      return Assets.icons.services.house.svg(
+        width: 45,
+        height: 58,
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+    } else if (titleLower.contains('washing') || titleLower.contains('غسيل')) {
+      return SvgIcon(icon: Assets.icons.services.wrench, color: color, size: 45);
+    } else if (titleLower.contains('plant') || titleLower.contains('نبات')) {
+      return Icon(Icons.local_florist_outlined, color: color, size: 45);
+    } else if (titleLower.contains('pet') || titleLower.contains('حيوان')) {
+      return Icon(Icons.pets_outlined, color: color, size: 45);
+    } else if (titleLower.contains('car') || titleLower.contains('سيارة')) {
+      return Assets.icons.services.truck.svg(
+        width: 45,
+        height: 58,
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+    } else if (titleLower.contains('electrical') || titleLower.contains('كهرباء')) {
+      return Icon(Icons.electrical_services, color: color, size: 45);
+    } else if (titleLower.contains('plumbing') || titleLower.contains('سباكة')) {
+      return Icon(Icons.plumbing, color: color, size: 45);
+    } else if (titleLower.contains('painting') || titleLower.contains('طلاء')) {
+      return Icon(Icons.format_paint, color: color, size: 45);
+    } else if (titleLower.contains('training') || titleLower.contains('تدريب')) {
+      return Icon(Icons.fitness_center, color: color, size: 45);
+    } else if (titleLower.contains('tutoring') || titleLower.contains('تدريس')) {
+      return Icon(Icons.school, color: color, size: 45);
+    } else if (titleLower.contains('delivery') || titleLower.contains('توصيل')) {
+      return Icon(Icons.local_shipping, color: color, size: 45);
+    } else if (titleLower.contains('moving') || titleLower.contains('نقل')) {
+      return Assets.icons.services.truck.svg(
+        width: 45,
+        height: 58,
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+    } else if (titleLower.contains('transportation') || titleLower.contains('مواصلات')) {
+      return Icon(Icons.directions_bus, color: color, size: 45);
     }
+
+    return Icon(Icons.category_outlined, color: color, size: 45);
   }
 
   Widget _buildCentralIcon() {
@@ -375,7 +470,7 @@ class AddSubOrderPage extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Add Order',
+          tr(LocaleKeys.add_orders_add_order),
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             color: StyleRepo.softWhite,
             fontSize: 26,
@@ -384,7 +479,7 @@ class AddSubOrderPage extends StatelessWidget {
         ),
         const SizedBox(height: 23),
         Text(
-          'Select Services Type to completed order',
+          tr(LocaleKeys.add_orders_select_services_type),
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
             color: StyleRepo.softGrey,
             fontWeight: FontWeight.w700,

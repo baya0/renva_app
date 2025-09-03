@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       locale: context.locale,
       supportedLocales: context.supportedLocales,
+
       // Routing
       initialRoute: '/',
       unknownRoute: AppRouting.unknownRoute,

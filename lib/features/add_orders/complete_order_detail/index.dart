@@ -1,7 +1,7 @@
-// features/add_orders/sub_orders/add_order_detail/complete_order/index.dart
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:renva0/core/localization/strings.dart';
 
 import '../../../../../core/style/repo.dart';
 import '../../../../../gen/assets.gen.dart';
@@ -13,62 +13,88 @@ class CompleteOrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(CompleteOrderController(), permanent: false);
+    final isRTL = context.locale.languageCode == 'ar';
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: StyleRepo.softWhite,
-      body: SafeArea(child: _buildFormView(controller, context)),
+      body: SafeArea(child: _buildFormView(controller, context, isRTL, size)),
     );
   }
 
-  Widget _buildFormView(CompleteOrderController controller, BuildContext context) {
+  Widget _buildFormView(
+    CompleteOrderController controller,
+    BuildContext context,
+    bool isRTL,
+    Size size,
+  ) {
+    final isTablet = size.width > 600;
+
     return Column(
       children: [
-        _buildHeader(controller, context),
+        _buildHeader(controller, context, isRTL, size),
         Expanded(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 26),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 50),
-                _buildPriceRangeSection(controller, context),
-                const SizedBox(height: 40),
-                _buildDescriptionSection(controller, context),
-                const SizedBox(height: 35),
-                _buildPhotoSection(controller, context),
-                const SizedBox(height: 55),
-              ],
+            padding: EdgeInsets.symmetric(horizontal: isTablet ? 48 : 26),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: isTablet ? 600 : size.width),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: isTablet ? 60 : 50),
+                  _buildPriceRangeSection(controller, context, isRTL, size),
+                  SizedBox(height: isTablet ? 50 : 40),
+                  _buildDescriptionSection(controller, context, isRTL, size),
+                  SizedBox(height: isTablet ? 45 : 35),
+                  _buildPhotoSection(controller, context, isRTL, size),
+                  SizedBox(height: isTablet ? 70 : 55),
+                ],
+              ),
             ),
           ),
         ),
-        _buildDoneButton(controller, context),
+        _buildDoneButton(controller, context, size),
       ],
     );
   }
 
-  Widget _buildHeader(CompleteOrderController controller, BuildContext context) {
+  Widget _buildHeader(
+    CompleteOrderController controller,
+    BuildContext context,
+    bool isRTL,
+    Size size,
+  ) {
+    final isTablet = size.width > 600;
+
     return SafeArea(
       bottom: false,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: isTablet ? 48 : 24, vertical: 16),
         child: Row(
           children: [
             GestureDetector(
               onTap: () => Get.back(),
-              child: Assets.icons.arrows.leftCircle.svg(
-                color: StyleRepo.black,
-                width: 24,
-                height: 24,
-              ),
+              child:
+                  isRTL
+                      ? Assets.icons.arrows.rightCircle.svg(
+                        color: StyleRepo.black,
+                        width: isTablet ? 28 : 24,
+                        height: isTablet ? 28 : 24,
+                      )
+                      : Assets.icons.arrows.leftCircle.svg(
+                        color: StyleRepo.black,
+                        width: isTablet ? 28 : 24,
+                        height: isTablet ? 28 : 24,
+                      ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: isTablet ? 16 : 12),
             Expanded(
               child: Text(
-                'Complete Your Order',
-                style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
+                tr(LocaleKeys.complete_order_title),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: StyleRepo.black,
-                  fontSize: 20,
+                  fontSize: isTablet ? 24 : 20,
                 ),
               ),
             ),
@@ -78,18 +104,33 @@ class CompleteOrderPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPriceRangeSection(CompleteOrderController controller, BuildContext context) {
+  Widget _buildPriceRangeSection(
+    CompleteOrderController controller,
+    BuildContext context,
+    bool isRTL,
+    Size size,
+  ) {
+    final isTablet = size.width > 600;
+
     return Obx(() {
-      //  Use subcategory's actual price range as bounds
       double sliderMin = controller.minPrice.toDouble();
       double sliderMax = controller.maxPrice.toDouble();
 
-      // Get current range values
       double currentStart = controller.priceRange.value.start.clamp(sliderMin, sliderMax);
       double currentEnd = controller.priceRange.value.end.clamp(currentStart + 1, sliderMax);
 
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            tr(LocaleKeys.complete_order_price_range),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              color: StyleRepo.black,
+              fontWeight: FontWeight.w700,
+              fontSize: isTablet ? 18 : 16,
+            ),
+          ),
+          SizedBox(height: isTablet ? 20 : 16),
           RangeSlider(
             values: RangeValues(currentStart, currentEnd),
             min: sliderMin,
@@ -99,91 +140,126 @@ class CompleteOrderPage extends StatelessWidget {
             onChanged: (RangeValues values) {
               controller.updatePriceRange(values);
             },
+            activeColor: StyleRepo.deepBlue,
+            inactiveColor: StyleRepo.grey.withOpacity(0.3),
           ),
-          // Show the actual bounds
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Text('${sliderMin.round()} SYP'), Text('${sliderMax.round()} SYP')],
+            children: [
+              Text(
+                '${sliderMin.round()} ${tr(LocaleKeys.complete_order_syp_currency)}',
+                style: TextStyle(color: StyleRepo.grey, fontSize: isTablet ? 16 : 14),
+              ),
+              Text(
+                '${sliderMax.round()} ${tr(LocaleKeys.complete_order_syp_currency)}',
+                style: TextStyle(color: StyleRepo.grey, fontSize: isTablet ? 16 : 14),
+              ),
+            ],
           ),
         ],
       );
     });
   }
 
-  Widget _buildDescriptionSection(CompleteOrderController controller, BuildContext context) {
+  Widget _buildDescriptionSection(
+    CompleteOrderController controller,
+    BuildContext context,
+    bool isRTL,
+    Size size,
+  ) {
+    final isTablet = size.width > 600;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Description',
+          tr(LocaleKeys.complete_order_description),
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
             color: StyleRepo.black,
             fontWeight: FontWeight.w700,
-            fontSize: 16,
+            fontSize: isTablet ? 18 : 16,
           ),
         ),
-
-        const SizedBox(height: 12),
+        SizedBox(height: isTablet ? 16 : 12),
         Form(
           key: controller.descriptionFormKey,
           child: TextFormField(
             controller: controller.descriptionController,
             validator: controller.validateDescription,
-            maxLines: 4,
+            maxLines: isTablet ? 5 : 4,
+            textAlign: isRTL ? TextAlign.right : TextAlign.left,
             decoration: InputDecoration(
-              hintText: 'Add Description',
-              hintStyle: Theme.of(context).textTheme.labelMedium?.copyWith(color: StyleRepo.grey),
+              hintText: tr(LocaleKeys.complete_order_description_placeholder),
+              hintStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: StyleRepo.grey,
+                fontSize: isTablet ? 16 : 14,
+              ),
               filled: true,
               fillColor: StyleRepo.softWhite,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(isTablet ? 28 : 24),
                 borderSide: BorderSide(color: Colors.grey[300]!),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(isTablet ? 28 : 24),
                 borderSide: BorderSide(color: Colors.grey[300]!),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
-                borderSide: const BorderSide(color: StyleRepo.deepBlue),
+                borderRadius: BorderRadius.circular(isTablet ? 28 : 24),
+                borderSide: const BorderSide(color: StyleRepo.deepBlue, width: 2),
               ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(isTablet ? 28 : 24),
+                borderSide: const BorderSide(color: Colors.red),
+              ),
+              contentPadding: EdgeInsets.all(isTablet ? 20 : 16),
             ),
+            style: TextStyle(fontSize: isTablet ? 16 : 14),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildPhotoSection(CompleteOrderController controller, BuildContext context) {
+  Widget _buildPhotoSection(
+    CompleteOrderController controller,
+    BuildContext context,
+    bool isRTL,
+    Size size,
+  ) {
+    final isTablet = size.width > 600;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Upload Photos',
+          tr(LocaleKeys.complete_order_upload_photos),
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
             color: StyleRepo.black,
             fontWeight: FontWeight.w700,
-            fontSize: 16,
+            fontSize: isTablet ? 18 : 16,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: isTablet ? 20 : 16),
         Obx(
           () => Column(
             children: [
               if (controller.uploadedPhotos.isNotEmpty) ...[
-                //This avoids building an empty ListView when there are no photos.    ? [WidgetA(), WidgetB()] : [],
                 SizedBox(
-                  height: 80,
+                  height: isTablet ? 100 : 80,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: controller.uploadedPhotos.length,
                     itemBuilder: (context, index) {
                       return Container(
-                        width: 80,
-                        height: 80,
-                        margin: const EdgeInsets.only(right: 8),
+                        width: isTablet ? 100 : 80,
+                        height: isTablet ? 100 : 80,
+                        margin: EdgeInsets.only(
+                          right: isRTL ? 0 : (isTablet ? 12 : 8),
+                          left: isRTL ? (isTablet ? 12 : 8) : 0,
+                        ),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(isTablet ? 12 : 8),
                           image: DecorationImage(
                             image: FileImage(controller.uploadedPhotos[index]),
                             fit: BoxFit.cover,
@@ -193,17 +269,22 @@ class CompleteOrderPage extends StatelessWidget {
                           children: [
                             Positioned(
                               top: 4,
-                              right: 4,
+                              right: isRTL ? null : 4,
+                              left: isRTL ? 4 : null,
                               child: GestureDetector(
                                 onTap: () => controller.removePhoto(index),
                                 child: Container(
-                                  width: 20,
-                                  height: 20,
+                                  width: isTablet ? 24 : 20,
+                                  height: isTablet ? 24 : 20,
                                   decoration: const BoxDecoration(
                                     color: Colors.red,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Icon(Icons.close, size: 12, color: Colors.white),
+                                  child: Icon(
+                                    Icons.close,
+                                    size: isTablet ? 16 : 12,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
@@ -213,37 +294,46 @@ class CompleteOrderPage extends StatelessWidget {
                     },
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: isTablet ? 20 : 16),
               ],
               if (controller.canAddMorePhotos)
                 GestureDetector(
                   onTap: controller.addPhoto,
                   child: Container(
                     width: double.infinity,
-                    height: 120,
+                    height: isTablet ? 140 : 120,
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: StyleRepo.grey.withValues(alpha: 0.3),
                         style: BorderStyle.solid,
                       ),
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(isTablet ? 28 : 24),
                     ),
-                    child: Row(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Assets.icons.essentials.uplaod.svg(),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Upload Photo',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.labelSmall?.copyWith(color: StyleRepo.grey, fontSize: 14),
+                        Assets.icons.essentials.uplaod.svg(
+                          width: isTablet ? 32 : 24,
+                          height: isTablet ? 32 : 24,
                         ),
-                        if (controller.uploadedPhotos.isNotEmpty)
-                          Text(
-                            '${controller.uploadedPhotos.length}/5 photos',
-                            style: TextStyle(fontSize: 12, color: StyleRepo.grey.withOpacity(0.7)),
+                        SizedBox(height: isTablet ? 12 : 8),
+                        Text(
+                          tr(LocaleKeys.complete_order_upload_photo),
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: StyleRepo.grey,
+                            fontSize: isTablet ? 16 : 14,
                           ),
+                        ),
+                        if (controller.uploadedPhotos.isNotEmpty) ...[
+                          SizedBox(height: isTablet ? 8 : 4),
+                          Text(
+                            controller.photoCountDisplay,
+                            style: TextStyle(
+                              fontSize: isTablet ? 14 : 12,
+                              color: StyleRepo.grey.withOpacity(0.7),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -255,41 +345,48 @@ class CompleteOrderPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDoneButton(CompleteOrderController controller, context) {
+  Widget _buildDoneButton(CompleteOrderController controller, BuildContext context, Size size) {
+    final isTablet = size.width > 600;
+
     return Container(
-      padding: const EdgeInsets.all(24),
-      child: Obx(
-        () => SizedBox(
-          width: double.infinity,
-          height: 48,
-          child: ElevatedButton(
-            onPressed:
-                (controller.isFormValid.value && !controller.isSubmitting.value)
-                    ? controller.submitOrder
-                    : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: StyleRepo.deepBlue,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(38)),
-              disabledBackgroundColor: StyleRepo.grey.withValues(alpha: 0.3),
+      padding: EdgeInsets.all(isTablet ? 32 : 24),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: isTablet ? 400 : size.width),
+        child: Obx(
+          () => SizedBox(
+            width: double.infinity,
+            height: isTablet ? 56 : 48,
+            child: ElevatedButton(
+              onPressed:
+                  (controller.isFormValid.value && !controller.isSubmitting.value)
+                      ? controller.submitOrder
+                      : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: StyleRepo.deepBlue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(isTablet ? 44 : 38),
+                ),
+                disabledBackgroundColor: StyleRepo.grey.withValues(alpha: 0.3),
+              ),
+              child:
+                  controller.isSubmitting.value
+                      ? SizedBox(
+                        width: isTablet ? 24 : 20,
+                        height: isTablet ? 24 : 20,
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(StyleRepo.softWhite),
+                        ),
+                      )
+                      : Text(
+                        tr(LocaleKeys.complete_order_done),
+                        style: TextStyle(
+                          color: StyleRepo.softWhite,
+                          fontSize: isTablet ? 18 : 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
             ),
-            child:
-                controller.isSubmitting.value
-                    ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(StyleRepo.softWhite),
-                      ),
-                    )
-                    : Text(
-                      'Done',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: StyleRepo.softWhite,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
           ),
         ),
       ),

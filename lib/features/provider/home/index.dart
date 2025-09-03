@@ -2,6 +2,7 @@ import 'dart:ui' show ImageFilter;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart' as flutter;
 import 'package:get/get.dart';
 import 'package:renva0/core/services/pagination/options/list_view.dart';
 
@@ -16,7 +17,7 @@ import '../../../core/widgets/image.dart';
 import '../../../core/widgets/modern_toast.dart';
 import '../../../gen/assets.gen.dart';
 import '../../../gen/fonts.gen.dart';
-import 'controller.dart';
+import '../../provider/home/controller.dart';
 
 class ProviderHomePage extends StatelessWidget {
   const ProviderHomePage({super.key});
@@ -24,261 +25,280 @@ class ProviderHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appBuilder = Get.find<AppBuilder>();
+    final bool isRTL = context.locale.languageCode == 'ar';
 
     if (appBuilder.providerStatus.value != "Approved") {
-      return _buildPendingProviderHomeUI();
+      return _buildPendingProviderHomeUI(isRTL);
     }
 
-    return _buildNormalProviderHomePage(context);
+    return _buildNormalProviderHomePage(context, isRTL);
   }
 
-  Widget _buildPendingProviderHomeUI() {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomLeft,
-            colors: [Color(0xff002364), Color(0xff002364), StyleRepo.grey.withValues(alpha: 0.2)],
-            stops: [0.0, 0.25, 0.33],
+  Widget _buildPendingProviderHomeUI(bool isRTL) {
+    return Directionality(
+      textDirection: isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: isRTL ? Alignment.topRight : Alignment.topLeft,
+              end: isRTL ? Alignment.bottomRight : Alignment.bottomLeft,
+              colors: [Color(0xff002364), Color(0xff002364), StyleRepo.grey.withValues(alpha: 0.2)],
+              stops: [0.0, 0.25, 0.33],
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Builder(
-            builder: (context) {
-              // Get screen dimensions T_T
-              final screenHeight = MediaQuery.of(context).size.height;
-              final screenWidth = MediaQuery.of(context).size.width;
+          child: SafeArea(
+            child: Builder(
+              builder: (context) {
+                // Get screen dimensions
+                final screenHeight = MediaQuery.of(context).size.height;
+                final screenWidth = MediaQuery.of(context).size.width;
 
-              final horizontalPadding = screenWidth * 0.05; // 5% of screen width
-              final cardPadding = screenWidth * 0.08; // 8% of screen width
-              final titleFontSize = screenWidth * 0.065; // 6.5% of screen width
-              final bodyFontSize = screenWidth * 0.04; // 4% of screen width
-              final buttonHeight = screenHeight * 0.07; // 7% of screen height
+                final horizontalPadding = screenWidth * 0.05;
+                final cardPadding = screenWidth * 0.08;
+                final titleFontSize = screenWidth * 0.065;
+                final bodyFontSize = screenWidth * 0.04;
+                final buttonHeight = screenHeight * 0.07;
 
-              return Column(
-                children: [
-                  // Main content
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 40),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ClipRRect(
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 50, sigmaY: 30),
-                            child: Container(
-                              padding: EdgeInsets.all(cardPadding),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(40),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: StyleRepo.grey.withValues(alpha: 0.2),
-                                    blurRadius: 40,
-                                    spreadRadius: 0,
-                                    blurStyle: BlurStyle.inner,
+                return Column(
+                  children: [
+                    // Main content
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 40),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ClipRRect(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 50, sigmaY: 30),
+                              child: Container(
+                                padding: EdgeInsets.all(cardPadding),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(40),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: StyleRepo.grey.withValues(alpha: 0.2),
+                                      blurRadius: 40,
+                                      spreadRadius: 0,
+                                      blurStyle: BlurStyle.inner,
+                                    ),
+                                  ],
+                                  color: StyleRepo.softWhite.withValues(alpha: 0.1),
+                                  border: Border.all(
+                                    color: StyleRepo.grey.withValues(alpha: 0.5),
+                                    width: 1,
                                   ),
-                                ],
-                                color: StyleRepo.softWhite.withValues(alpha: 0.1),
-                                border: Border.all(
-                                  color: StyleRepo.grey.withValues(alpha: 0.5),
-                                  width: 1,
                                 ),
-                              ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ShaderMask(
+                                      shaderCallback:
+                                          (bounds) => LinearGradient(
+                                            colors: [
+                                              StyleRepo.softWhite,
+                                              StyleRepo.softWhite.withValues(alpha: 0.7),
+                                            ],
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                          ).createShader(bounds),
+                                      blendMode: BlendMode.srcIn,
+                                      child: Text(
+                                        tr(LocaleKeys.provider_home_welcome_future_provider),
+                                        style: TextStyle(
+                                          fontSize: titleFontSize.clamp(25.0, 32.0),
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: FontFamily.customFont,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
 
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                    SizedBox(height: screenHeight * 0.04),
 
-                                children: [
-                                  ShaderMask(
-                                    shaderCallback:
-                                        (bounds) => LinearGradient(
-                                          colors: [
-                                            StyleRepo.softWhite,
-                                            StyleRepo.softWhite.withValues(alpha: 0.7),
-                                          ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                        ).createShader(bounds),
-                                    blendMode: BlendMode.srcIn,
-                                    child: Text(
-                                      'Welcome Future Provider!',
+                                    Text(
+                                      tr(LocaleKeys.provider_home_review_description),
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        fontSize: titleFontSize.clamp(25.0, 32.0),
-                                        fontWeight: FontWeight.bold,
+                                        fontSize: bodyFontSize.clamp(14.0, 18.0),
+                                        color: StyleRepo.softWhite.withValues(alpha: 0.9),
+                                        fontFamily: FontFamily.customFont,
+                                        height: 1.5,
+                                      ),
+                                    ),
+
+                                    SizedBox(height: screenHeight * 0.03),
+
+                                    // Status indicator
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: BackdropFilter(
+                                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: screenWidth * 0.04,
+                                            vertical: screenHeight * 0.015,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(16),
+                                            color: StyleRepo.forestGreen.withValues(alpha: 0.1),
+                                            border: Border.all(
+                                              color: StyleRepo.forestGreen.withValues(alpha: 0.4),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            textDirection:
+                                                isRTL
+                                                    ? flutter.TextDirection.rtl
+                                                    : flutter.TextDirection.ltr,
+                                            children: [
+                                              Container(
+                                                width: 8,
+                                                height: 8,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: StyleRepo.forestGreen,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: StyleRepo.forestGreen.withValues(
+                                                        alpha: 0.5,
+                                                      ),
+                                                      blurRadius: 8,
+                                                      spreadRadius: 2,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                tr(LocaleKeys.provider_home_review_in_progress),
+                                                style: TextStyle(
+                                                  fontSize: bodyFontSize.clamp(12.0, 16.0),
+                                                  color: StyleRepo.forestGreen,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily: FontFamily.customFont,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    SizedBox(height: screenHeight * 0.02),
+
+                                    Text(
+                                      tr(LocaleKeys.provider_home_what_awaits_you),
+                                      style: TextStyle(
+                                        fontSize: bodyFontSize.clamp(14.0, 18.0),
+                                        color: StyleRepo.deepBlue,
+                                        fontWeight: FontWeight.w600,
                                         fontFamily: FontFamily.customFont,
                                       ),
                                     ),
-                                  ),
 
-                                  SizedBox(height: screenHeight * 0.04),
+                                    SizedBox(height: screenHeight * 0.02),
 
-                                  Text(
-                                    "We're reviewing your provider application to ensure the best quality service for our customers.",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: bodyFontSize.clamp(14.0, 18.0),
-                                      color: StyleRepo.softWhite.withValues(alpha: 0.9),
-                                      fontFamily: FontFamily.customFont,
-                                      height: 1.5,
-                                    ),
-                                  ),
-
-                                  SizedBox(height: screenHeight * 0.03),
-
-                                  // Status indicator
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: screenWidth * 0.04,
-                                          vertical: screenHeight * 0.015,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(16),
-                                          color: StyleRepo.forestGreen.withValues(alpha: 0.1),
-                                          border: Border.all(
-                                            color: StyleRepo.forestGreen.withValues(alpha: 0.4),
-                                            width: 1,
+                                    Row(
+                                      textDirection:
+                                          isRTL
+                                              ? flutter.TextDirection.rtl
+                                              : flutter.TextDirection.ltr,
+                                      children: [
+                                        Expanded(
+                                          child: _buildFeatureCard(
+                                            Assets.icons.services.request,
+                                            tr(LocaleKeys.provider_home_receive_requests),
+                                            screenWidth,
+                                            screenHeight,
+                                            isRTL,
                                           ),
                                         ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Container(
-                                              width: 8,
-                                              height: 8,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: StyleRepo.forestGreen,
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: StyleRepo.forestGreen.withValues(
-                                                      alpha: 0.5,
-                                                    ),
-                                                    blurRadius: 8,
-                                                    spreadRadius: 2,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              "Review in progress • 1-3 days",
-                                              style: TextStyle(
-                                                fontSize: bodyFontSize.clamp(12.0, 16.0),
-                                                color: StyleRepo.forestGreen,
-                                                fontWeight: FontWeight.w600,
-                                                fontFamily: FontFamily.customFont,
-                                              ),
-                                            ),
-                                          ],
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: _buildFeatureCard(
+                                            Assets.icons.services.coins,
+                                            tr(LocaleKeys.provider_home_earn_money),
+                                            screenWidth,
+                                            screenHeight,
+                                            isRTL,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10),
+                                    Row(
+                                      textDirection:
+                                          isRTL
+                                              ? flutter.TextDirection.rtl
+                                              : flutter.TextDirection.ltr,
+                                      children: [
+                                        Expanded(
+                                          child: _buildFeatureCard(
+                                            Assets.icons.services.reputation,
+                                            tr(LocaleKeys.provider_home_build_reputation),
+                                            screenWidth,
+                                            screenHeight,
+                                            isRTL,
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: _buildFeatureCard(
+                                            Assets.icons.services.trend,
+                                            tr(LocaleKeys.provider_home_grow_business),
+                                            screenWidth,
+                                            screenHeight,
+                                            isRTL,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    SizedBox(height: screenHeight * 0.04),
+
+                                    SizedBox(
+                                      width: double.infinity,
+                                      height: buttonHeight.clamp(45.0, 55.0),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          Get.find<AppBuilder>().setProviderMode(false);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: StyleRepo.deepBlue,
+                                          foregroundColor: StyleRepo.softWhite,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(16),
+                                          ),
+                                          elevation: 0,
+                                        ),
+                                        child: Text(
+                                          tr(LocaleKeys.provider_home_continue_as_customer),
+                                          style: TextStyle(
+                                            fontSize: bodyFontSize.clamp(14.0, 18.0),
+                                            fontWeight: FontWeight.w700,
+                                            fontFamily: FontFamily.customFont,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-
-                                  SizedBox(height: screenHeight * 0.02),
-
-                                  Text(
-                                    "What awaits you:",
-                                    style: TextStyle(
-                                      fontSize: bodyFontSize.clamp(14.0, 18.0),
-                                      color: StyleRepo.deepBlue,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: FontFamily.customFont,
-                                    ),
-                                  ),
-
-                                  SizedBox(height: screenHeight * 0.02),
-
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: _buildFeatureCard(
-                                          Assets.icons.services.request,
-                                          "Receive\nRequests",
-                                          screenWidth,
-                                          screenHeight,
-                                        ),
-                                      ),
-                                      SizedBox(width: 10),
-                                      Expanded(
-                                        child: _buildFeatureCard(
-                                          Assets.icons.services.coins,
-                                          "Earn\nMoney",
-                                          screenWidth,
-                                          screenHeight,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: _buildFeatureCard(
-                                          Assets.icons.services.reputation,
-                                          "Build\nReputation",
-                                          screenWidth,
-                                          screenHeight,
-                                        ),
-                                      ),
-                                      SizedBox(width: 10),
-                                      Expanded(
-                                        child: _buildFeatureCard(
-                                          Assets.icons.services.trend,
-                                          "Grow\nBusiness",
-                                          screenWidth,
-                                          screenHeight,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  SizedBox(height: screenHeight * 0.04),
-
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: buttonHeight.clamp(45.0, 55.0),
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        Get.find<AppBuilder>().setProviderMode(false);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: StyleRepo.deepBlue,
-                                        foregroundColor: StyleRepo.softWhite,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16),
-                                        ),
-                                        elevation: 0,
-                                      ),
-                                      child: Text(
-                                        "Continue as Customer",
-                                        style: TextStyle(
-                                          fontSize: bodyFontSize.clamp(14.0, 18.0),
-                                          fontWeight: FontWeight.w700,
-                                          fontFamily: FontFamily.customFont,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
 
-                        // Bottom spacer
-                        SizedBox(height: screenHeight * 0.1),
-                      ],
+                          // Bottom spacer
+                          SizedBox(height: screenHeight * 0.1),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              );
-            },
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -290,6 +310,7 @@ class ProviderHomePage extends StatelessWidget {
     String text,
     double screenWidth,
     double screenHeight,
+    bool isRTL,
   ) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
@@ -339,217 +360,232 @@ class ProviderHomePage extends StatelessWidget {
     );
   }
 
-  ///------------------------------------------------------------------------------------------------------///
-
-  Widget _buildNormalProviderHomePage(BuildContext context) {
+  Widget _buildNormalProviderHomePage(BuildContext context, bool isRTL) {
     final controller = Get.put(ProviderHomePageController());
 
-    return Scaffold(
-      backgroundColor: StyleRepo.deepBlue,
-      body: Stack(
-        children: [
-          Positioned(
-            top: -40,
-            left: 0,
-            right: -60,
-            bottom: MediaQuery.of(context).size.width * 1.4,
-            child: Opacity(
-              opacity: 0.50,
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: Assets.images.background.homeProviderBackground.provider(),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      StyleRepo.deepBlue.withValues(alpha: 0.65),
-                      BlendMode.multiply,
+    return Directionality(
+      textDirection: isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
+      child: Scaffold(
+        backgroundColor: StyleRepo.deepBlue,
+        body: Stack(
+          children: [
+            Positioned(
+              top: -40,
+              left: isRTL ? -60 : 0,
+              right: isRTL ? 0 : -60,
+              bottom: MediaQuery.of(context).size.width * 1.4,
+              child: Opacity(
+                opacity: 0.50,
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: Assets.images.background.homeProviderBackground.provider(),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        StyleRepo.deepBlue.withValues(alpha: 0.65),
+                        BlendMode.multiply,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          Column(
-            children: [
-              SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Logo and notifications row
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(23, 12, 20, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Assets.images.logo.renva.svg(
-                            width: 85,
-                            height: 22,
-                            colorFilter: ColorFilter.mode(StyleRepo.softWhite, BlendMode.srcIn),
-                          ),
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () => controller.onNotificationTap(),
-                                child: Assets.icons.essentials.search.svg(
-                                  width: 24,
-                                  height: 24,
-                                  colorFilter: ColorFilter.mode(
-                                    StyleRepo.softWhite,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 26),
-                              GestureDetector(
-                                onTap: () => controller.onNotificationTap(),
-                                child: Assets.icons.messages.notifications.svg(
-                                  width: 24,
-                                  height: 24,
-                                  colorFilter: ColorFilter.mode(
-                                    StyleRepo.softWhite,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 25),
-
-                    _buildProviderInfoSection(controller),
-                    const SizedBox(height: 30),
-                  ],
-                ),
-              ),
-
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: StyleRepo.softWhite,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                    ),
-                  ),
+            Column(
+              children: [
+                SafeArea(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Section header
+                      // Logo and notifications row
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(19, 23, 20, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        padding: EdgeInsets.fromLTRB(isRTL ? 20 : 23, 12, isRTL ? 23 : 20, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          textDirection:
+                              isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
                           children: [
+                            Assets.images.logo.renva.svg(
+                              width: 85,
+                              height: 22,
+                              colorFilter: ColorFilter.mode(StyleRepo.softWhite, BlendMode.srcIn),
+                            ),
                             Row(
+                              textDirection:
+                                  isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
                               children: [
-                                Text(
-                                  tr(LocaleKeys.provider_latest_orders),
-                                  style: Theme.of(
-                                    Get.context!,
-                                  ).textTheme.titleMedium?.copyWith(color: StyleRepo.black),
-                                ),
-                                const Spacer(),
                                 GestureDetector(
-                                  onTap: controller.onFilterOrdersTap,
-                                  child: Assets.icons.essentials.searchList.svg(
-                                    colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
-                                    height: 24,
+                                  onTap: () => controller.onNotificationTap(),
+                                  child: Assets.icons.essentials.search.svg(
                                     width: 24,
+                                    height: 24,
+                                    colorFilter: ColorFilter.mode(
+                                      StyleRepo.softWhite,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 26),
+                                GestureDetector(
+                                  onTap: () => controller.onNotificationTap(),
+                                  child: Assets.icons.messages.notifications.svg(
+                                    width: 24,
+                                    height: 24,
+                                    colorFilter: ColorFilter.mode(
+                                      StyleRepo.softWhite,
+                                      BlendMode.srcIn,
+                                    ),
                                   ),
                                 ),
                               ],
-                            ),
-                            SizedBox(height: 7),
-                            Text(
-                              tr(LocaleKeys.provider_requests_sent_from_newest_to_oldest),
-                              style: Theme.of(
-                                Get.context!,
-                              ).textTheme.labelSmall?.copyWith(color: StyleRepo.grey),
                             ),
                           ],
                         ),
                       ),
+                      const SizedBox(height: 25),
 
-                      // Orders list
-                      Expanded(
-                        child: ListViewPagination<Map<String, dynamic>>.builder(
-                          tag: 'provider_orders_pager',
-                          fetchApi: controller.fetchOrdersPage,
-                          fromJson: (json) => controller.formatOrderForPager(json),
-                          hasRefresh: true,
-                          closeToListEnd: 300,
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-
-                          initialLoading: const InitialLoading(),
-                          loading: Container(
-                            padding: const EdgeInsets.all(16),
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    color: StyleRepo.deepBlue,
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  'Loading more orders...',
-                                  style: TextStyle(fontSize: 14, color: StyleRepo.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          errorWidget:
-                              (error) => InitialError(
-                                error: error,
-                                refresh: () async {
-                                  try {
-                                    if (Get.isRegistered<
-                                      PaginationController<Map<String, dynamic>>
-                                    >(tag: 'provider_orders_pager')) {
-                                      final paginationController =
-                                          Get.find<PaginationController<Map<String, dynamic>>>(
-                                            tag: 'provider_orders_pager',
-                                          );
-                                      await paginationController.refreshData();
-                                    }
-                                  } catch (e) {
-                                    PopUpToast.show(e.toString());
-                                  }
-                                },
-                              ),
-
-                          itemBuilder: (context, index, order) {
-                            return _buildOrderCard(order, index, controller);
-                          },
-                        ),
-                      ),
+                      _buildProviderInfoSection(controller, isRTL),
+                      const SizedBox(height: 30),
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      color: StyleRepo.softWhite,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Section header
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(isRTL ? 20 : 19, 23, isRTL ? 19 : 20, 0),
+                          child: Column(
+                            crossAxisAlignment:
+                                isRTL ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                            children: [
+                              Row(
+                                textDirection:
+                                    isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
+                                children: [
+                                  Text(
+                                    tr(LocaleKeys.provider_latest_orders),
+                                    style: Theme.of(
+                                      Get.context!,
+                                    ).textTheme.titleMedium?.copyWith(color: StyleRepo.black),
+                                  ),
+                                  const Spacer(),
+                                  GestureDetector(
+                                    onTap: controller.onFilterOrdersTap,
+                                    child: Assets.icons.essentials.searchList.svg(
+                                      colorFilter: ColorFilter.mode(
+                                        StyleRepo.grey,
+                                        BlendMode.srcIn,
+                                      ),
+                                      height: 24,
+                                      width: 24,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 7),
+                              Text(
+                                tr(LocaleKeys.provider_requests_sent_from_newest_to_oldest),
+                                style: Theme.of(
+                                  Get.context!,
+                                ).textTheme.labelSmall?.copyWith(color: StyleRepo.grey),
+                                textAlign: isRTL ? TextAlign.right : TextAlign.left,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Orders list
+                        Expanded(
+                          child: ListViewPagination<Map<String, dynamic>>.builder(
+                            tag: 'provider_orders_pager',
+                            fetchApi: controller.fetchOrdersPage,
+                            fromJson: (json) => controller.formatOrderForPager(json),
+                            hasRefresh: true,
+                            closeToListEnd: 300,
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+
+                            initialLoading: const InitialLoading(),
+                            loading: Container(
+                              padding: const EdgeInsets.all(16),
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                textDirection:
+                                    isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
+                                children: [
+                                  SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: StyleRepo.deepBlue,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    tr(LocaleKeys.provider_home_loading_more_orders),
+                                    style: TextStyle(fontSize: 14, color: StyleRepo.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            errorWidget:
+                                (error) => InitialError(
+                                  error: error,
+                                  refresh: () async {
+                                    try {
+                                      if (Get.isRegistered<
+                                        PaginationController<Map<String, dynamic>>
+                                      >(tag: 'provider_orders_pager')) {
+                                        final paginationController =
+                                            Get.find<PaginationController<Map<String, dynamic>>>(
+                                              tag: 'provider_orders_pager',
+                                            );
+                                        await paginationController.refreshData();
+                                      }
+                                    } catch (e) {
+                                      PopUpToast.show(e.toString());
+                                    }
+                                  },
+                                ),
+
+                            itemBuilder: (context, index, order) {
+                              return _buildOrderCard(order, index, controller, isRTL);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildProviderInfoSection(ProviderHomePageController controller) {
+  Widget _buildProviderInfoSection(ProviderHomePageController controller, bool isRTL) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Obx(() {
         final providerData = controller.providerInfo.value;
 
         return Row(
+          textDirection: isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
           children: [
             // Provider avatar
             Container(
@@ -567,27 +603,30 @@ class ProviderHomePage extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 15),
+            SizedBox(width: isRTL ? 15 : 15),
 
             // Provider details
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: isRTL ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                 children: [
                   Text(
-                    providerData?['name'] ?? 'Provider Name',
+                    providerData?['name'] ?? tr(LocaleKeys.provider_home_provider_name_fallback),
                     style: const TextStyle(
                       fontSize: 14,
                       color: StyleRepo.softWhite,
                       fontWeight: FontWeight.w500,
                     ),
+                    textAlign: isRTL ? TextAlign.right : TextAlign.left,
                   ),
                   const SizedBox(height: 4),
                   Row(
+                    textDirection: isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
                     children: [
                       // Category
                       Text(
-                        providerData?['category'] ?? 'Service Provider',
+                        providerData?['category'] ??
+                            tr(LocaleKeys.provider_home_service_provider_fallback),
                         style: TextStyle(
                           color: StyleRepo.softWhite,
                           fontSize: 11,
@@ -601,6 +640,7 @@ class ProviderHomePage extends StatelessWidget {
 
                       // Rating stars
                       Row(
+                        textDirection: flutter.TextDirection.ltr, // Stars always LTR
                         children: [
                           ...List.generate(5, (index) {
                             final rating = providerData?['rating']?.toDouble() ?? 0.0;
@@ -636,6 +676,7 @@ class ProviderHomePage extends StatelessWidget {
     Map<String, dynamic> order,
     int index,
     ProviderHomePageController controller,
+    bool isRTL,
   ) {
     if (order.isEmpty) {
       return Container(
@@ -646,14 +687,19 @@ class ProviderHomePage extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Center(
-          child: Text('Invalid order data', style: TextStyle(color: Colors.grey.shade600)),
+          child: Text(
+            tr(LocaleKeys.provider_home_invalid_order_data),
+            style: TextStyle(color: Colors.grey.shade600),
+          ),
         ),
       );
     }
 
     final orderId = order['id']?.toString() ?? 'unknown';
-    final requesterName = order['requesterName']?.toString() ?? 'Unknown Customer';
-    final location = order['location']?.toString() ?? 'Location not specified';
+    final requesterName =
+        order['requesterName']?.toString() ?? tr(LocaleKeys.provider_home_unknown_customer);
+    final location =
+        order['location']?.toString() ?? tr(LocaleKeys.provider_home_location_not_specified);
     final date = order['date']?.toString() ?? '--';
     final time = order['time']?.toString() ?? '--';
     final duration = order['duration']?.toString() ?? '20 min';
@@ -680,18 +726,22 @@ class ProviderHomePage extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              // Card content with left-edge color
+              // Card content with left-edge color (adjust for RTL)
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  border: Border(left: BorderSide(color: StyleRepo.deepBlue, width: 20)),
+                  border:
+                      isRTL
+                          ? Border(right: BorderSide(color: StyleRepo.deepBlue, width: 20))
+                          : Border(left: BorderSide(color: StyleRepo.deepBlue, width: 20)),
                 ),
                 padding: const EdgeInsets.all(16),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: isRTL ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                   children: [
                     // Requester Name
                     Row(
+                      textDirection: isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
                       children: [
                         Assets.icons.essentials.circleUser.svg(
                           colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
@@ -705,6 +755,7 @@ class ProviderHomePage extends StatelessWidget {
                             style: Get.textTheme.labelLarge?.copyWith(color: StyleRepo.black),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
+                            textAlign: isRTL ? TextAlign.right : TextAlign.left,
                           ),
                         ),
                       ],
@@ -714,6 +765,7 @@ class ProviderHomePage extends StatelessWidget {
 
                     // Location
                     Row(
+                      textDirection: isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
                       children: [
                         Assets.icons.essentials.locationPin.svg(
                           colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
@@ -729,6 +781,7 @@ class ProviderHomePage extends StatelessWidget {
                             ).textTheme.bodyMedium?.copyWith(color: StyleRepo.grey),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
+                            textAlign: isRTL ? TextAlign.right : TextAlign.left,
                           ),
                         ),
                       ],
@@ -738,6 +791,7 @@ class ProviderHomePage extends StatelessWidget {
 
                     // Date
                     Row(
+                      textDirection: isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
                       children: [
                         Assets.icons.document.calendar.svg(
                           colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
@@ -758,6 +812,7 @@ class ProviderHomePage extends StatelessWidget {
 
                     // Time + Duration
                     Row(
+                      textDirection: isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
                       children: [
                         Assets.icons.document.timerAlt.svg(
                           colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
@@ -793,13 +848,14 @@ class ProviderHomePage extends StatelessWidget {
                 ),
               ),
 
-              // Close Button
+              // Close Button (adjust position for RTL)
               if (hasCloseButton)
                 Positioned(
                   top: 16,
-                  right: 21,
+                  right: isRTL ? null : 21,
+                  left: isRTL ? 21 : null,
                   child: GestureDetector(
-                    onTap: () => PopUpToast.show('Close button tapped'),
+                    onTap: () => PopUpToast.show(tr(LocaleKeys.provider_home_close_button_tapped)),
                     child: Container(
                       padding: const EdgeInsets.all(1.5),
                       width: 14,

@@ -1,11 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:renva0/features/orders/models/order_model.dart';
 
+import '../../../core/localization/strings.dart';
 import '../../../core/services/rest_api/rest_api.dart';
 import '../../../core/style/repo.dart';
 import '../../../core/widgets/modern_toast.dart';
+import '../../../gen/assets.gen.dart';
 import '../models/offer_model.dart';
 
 class OfferDetailsPage extends StatelessWidget {
@@ -42,11 +44,11 @@ class OfferDetailsPage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Assets.icons.arrows.leftCircle.svg(),
           onPressed: () => Get.back(),
         ),
         title: Text(
-          'View Offer',
+          tr(LocaleKeys.offer_details_view_offer),
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
@@ -169,7 +171,7 @@ class OfferDetailsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Pictures',
+          tr(LocaleKeys.offer_details_pictures),
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
         ),
         const SizedBox(height: 12),
@@ -237,7 +239,7 @@ class OfferDetailsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Description',
+          tr(LocaleKeys.offer_details_description),
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
         ),
         const SizedBox(height: 12),
@@ -256,7 +258,7 @@ class OfferDetailsPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Price Range',
+          tr(LocaleKeys.offer_details_price_range),
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
         ),
         Text(
@@ -272,7 +274,7 @@ class OfferDetailsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Date & Time',
+          tr(LocaleKeys.offer_details_date_and_time),
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
         ),
         const SizedBox(height: 12),
@@ -319,7 +321,7 @@ class OfferDetailsPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                   ),
                   child: Text(
-                    'Delete',
+                    tr(LocaleKeys.offer_details_delete),
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
@@ -339,7 +341,7 @@ class OfferDetailsPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                   ),
                   child: Text(
-                    'Accept',
+                    tr(LocaleKeys.offer_details_accept),
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
@@ -368,12 +370,20 @@ class OfferDetailsPage extends StatelessWidget {
   void _acceptOffer(OfferModel offer, OrderModel? order) {
     Get.dialog(
       AlertDialog(
-        title: Text('Accept Offer'),
-        content: Text('Are you sure you want to accept this offer from ${offer.providerName}?'),
+        title: Text(tr(LocaleKeys.offer_details_accept_offer)),
+        content: Text(
+          tr(
+            LocaleKeys.offer_details_accept_offer_confirmation,
+            namedArgs: {"providerName": offer.providerName},
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text('Cancel', style: TextStyle(color: StyleRepo.lavender)),
+            child: Text(
+              tr(LocaleKeys.offer_details_cancel),
+              style: TextStyle(color: StyleRepo.lavender),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -381,7 +391,10 @@ class OfferDetailsPage extends StatelessWidget {
               Get.back(); // Go back to orders page
               _performAcceptOffer(offer, order);
             },
-            child: Text('Accept', style: TextStyle(color: StyleRepo.forestGreen)),
+            child: Text(
+              tr(LocaleKeys.offer_details_accept),
+              style: TextStyle(color: StyleRepo.forestGreen),
+            ),
           ),
         ],
       ),
@@ -391,12 +404,15 @@ class OfferDetailsPage extends StatelessWidget {
   void _declineOffer(OfferModel offer, OrderModel order) {
     Get.dialog(
       AlertDialog(
-        title: Text('Delete Offer'),
-        content: Text('Are you sure you want to delete this offer?'),
+        title: Text(tr(LocaleKeys.offer_details_delete_offer)),
+        content: Text(tr(LocaleKeys.offer_details_delete_offer_confirmation)),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text('Cancel', style: TextStyle(color: StyleRepo.lavender)),
+            child: Text(
+              tr(LocaleKeys.offer_details_cancel),
+              style: TextStyle(color: StyleRepo.lavender),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -404,7 +420,10 @@ class OfferDetailsPage extends StatelessWidget {
               Get.back(); // Close bottom sheet
               _performDeletOffer(offer, order);
             },
-            child: Text('Delete', style: TextStyle(color: StyleRepo.red)),
+            child: Text(
+              tr(LocaleKeys.offer_details_delete),
+              style: TextStyle(color: StyleRepo.red),
+            ),
           ),
         ],
       ),
@@ -420,7 +439,7 @@ void _performDeletOffer(OfferModel offer, OrderModel order) {
 // API call for accepting offer
 Future<void> _performAcceptOffer(OfferModel offer, OrderModel? order) async {
   try {
-    PopUpToast.show('Accepting offer...');
+    PopUpToast.show(tr(LocaleKeys.offer_details_accepting_offer));
 
     final response = await APIService.instance.request(
       Request(
@@ -452,14 +471,14 @@ Future<void> _performAcceptOffer(OfferModel offer, OrderModel? order) async {
     }
   } catch (e) {
     print('Error accepting offer: $e');
-    PopUpToast.show('Network error. Please check your connection.');
+    PopUpToast.show(tr(LocaleKeys.offer_details_network_error));
   }
 }
 
 // API call for declining offer
 Future<void> _performDeclineOffer(OfferModel offer, OrderModel? order) async {
   try {
-    PopUpToast.show('Declining offer...');
+    PopUpToast.show(tr(LocaleKeys.offer_details_declining_offer));
 
     final response = await APIService.instance.request(
       Request(
@@ -488,6 +507,6 @@ Future<void> _performDeclineOffer(OfferModel offer, OrderModel? order) async {
     }
   } catch (e) {
     print('Error declining offer: $e');
-    PopUpToast.show('Network error. Please check your connection.');
+    PopUpToast.show(tr(LocaleKeys.offer_details_network_error));
   }
 }

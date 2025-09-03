@@ -60,10 +60,10 @@ class CompleteOrderController extends GetxController {
     try {
       if (Get.arguments != null && Get.arguments is Map) {
         final args = Get.arguments as Map<String, dynamic>;
-        categoryId = args['categoryId'] ?? 0; // Main category ID
-        subcategoryId = args['subcategoryId'] ?? 0; // Sub category ID
-        categoryTitle = args['categoryTitle'] ?? ''; // Main category title
-        subcategoryTitle = args['subcategoryTitle'] ?? ''; // Sub category title
+        categoryId = args['categoryId'] ?? 0;
+        subcategoryId = args['subcategoryId'] ?? 0;
+        categoryTitle = args['categoryTitle'] ?? '';
+        subcategoryTitle = args['subcategoryTitle'] ?? '';
         minPrice = args['minPrice'] ?? 50;
         maxPrice = args['maxPrice'] ?? 200;
         serviceSvg = args['serviceSvg'] ?? '';
@@ -105,7 +105,7 @@ class CompleteOrderController extends GetxController {
       return tr(LocaleKeys.forms_required_field);
     }
     if (value.trim().length < 10) {
-      return tr(LocaleKeys.forms_min_length, args: ['10']);
+      return tr(LocaleKeys.forms_min_length, namedArgs: {'min': '10'});
     }
     return null;
   }
@@ -114,7 +114,7 @@ class CompleteOrderController extends GetxController {
   bool _isPicking = false;
 
   Future<void> addPhoto() async {
-    if (_isPicking) return; // 🛑 already picking
+    if (_isPicking) return; // Already picking
     _isPicking = true;
 
     if (uploadedPhotos.length >= 5) {
@@ -138,7 +138,7 @@ class CompleteOrderController extends GetxController {
     } catch (e) {
       PopUpToast.show(tr(LocaleKeys.forms_error_adding_photo));
     } finally {
-      _isPicking = false; // ✅ done picking
+      _isPicking = false;
     }
   }
 
@@ -150,6 +150,7 @@ class CompleteOrderController extends GetxController {
   }
 
   bool get canAddMorePhotos => uploadedPhotos.length < 5;
+
   Future<void> submitOrder() async {
     if (!descriptionFormKey.currentState!.validate()) {
       return;
@@ -186,37 +187,34 @@ class CompleteOrderController extends GetxController {
 
   // Navigation methods
   void goToMyOrders() {
-    // Navigate to orders page - adjust route as needed
     Get.offAllNamed('/home');
   }
 
   void createAnotherOrder() {
-    // Navigate back to add order page
     Get.offAllNamed('/add_order_page');
   }
 
   void goBack() {
     if (isSuccess.value == true) {
-      // If on success page, go to home
       Get.offAllNamed('/home');
     } else {
-      // If on order form, go back to service type selection
       Get.back();
     }
   }
 
-  // Getters for display
+  // Getters for display with localization
   String get serviceTypeDisplay {
-    return serviceType == 'Specific Date'
+    return serviceType == tr(LocaleKeys.add_order_details_specific_date)
         ? tr(LocaleKeys.orders_scheduled)
         : tr(LocaleKeys.orders_as_soon_as_possible);
   }
 
   String get dateTimeDisplay {
-    if (serviceType == 'Specific Date' && selectedDate != null) {
+    if (serviceType == tr(LocaleKeys.add_order_details_specific_date) && selectedDate != null) {
       String display = '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}';
       if (selectedTime != null) {
-        display += ' at ${selectedTime!.format(Get.context!)}';
+        display +=
+            ' ${tr(LocaleKeys.add_order_details_at_time)} ${selectedTime!.format(Get.context!)}';
       }
       return display;
     }
@@ -224,7 +222,14 @@ class CompleteOrderController extends GetxController {
   }
 
   String get priceRangeDisplay {
-    return '${priceRange.value.start.round()} - ${priceRange.value.end.round()} SEK';
+    final currency = tr(LocaleKeys.complete_order_sek_currency);
+    return '${priceRange.value.start.round()} - ${priceRange.value.end.round()} $currency';
+  }
+
+  String get priceRangeDisplaySYP {
+    // Alternative currency display
+    final currency = tr(LocaleKeys.complete_order_syp_currency);
+    return '${priceRange.value.start.round()} - ${priceRange.value.end.round()} $currency';
   }
 
   bool get hasPhotos => uploadedPhotos.isNotEmpty;
@@ -238,5 +243,10 @@ class CompleteOrderController extends GetxController {
       return desc;
     }
     return '${desc.substring(0, 100)}...';
+  }
+
+  // Localized photo count display
+  String get photoCountDisplay {
+    return tr(LocaleKeys.complete_order_photos_count, namedArgs: {'count': photoCount.toString()});
   }
 }

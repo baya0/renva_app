@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:renva0/core/localization/strings.dart';
 import 'package:renva0/core/services/pagination/options/list_view.dart';
 import 'package:renva0/features/orders/controller.dart';
 import 'package:renva0/features/orders/widgets/order_card.dart';
@@ -39,7 +41,7 @@ class OrdersPage extends StatelessWidget {
       title: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
         child: Text(
-          'My Order',
+          tr(LocaleKeys.orders_my_orders),
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w700,
             color: StyleRepo.black,
@@ -61,7 +63,7 @@ class OrdersPage extends StatelessWidget {
         child: TextField(
           controller: Get.find<OrdersController>().searchController,
           decoration: InputDecoration(
-            hintText: 'Car, furniture, cleaning, ... ',
+            hintText: tr(LocaleKeys.orders_search_placeholder),
             hintStyle: TextStyle(color: StyleRepo.grey, fontSize: 14),
             prefixIcon: SizedBox(
               width: 24,
@@ -137,7 +139,7 @@ class OrdersPage extends StatelessWidget {
         children: [
           Obx(
             () => Text(
-              '${controller.ordersCount} Orders',
+              '${controller.ordersCount} ${tr(LocaleKeys.orders_orders_count)}',
               style: TextStyle(color: Colors.grey[600], fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
@@ -198,7 +200,7 @@ class OrdersPage extends StatelessWidget {
         children: [
           CircularProgressIndicator(color: StyleRepo.deepBlue),
           const SizedBox(height: 16),
-          Text('Loading orders...', style: TextStyle(color: Colors.grey[600])),
+          Text(tr(LocaleKeys.orders_loading_orders), style: TextStyle(color: Colors.grey[600])),
         ],
       ),
     );
@@ -212,7 +214,7 @@ class OrdersPage extends StatelessWidget {
           Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
           const SizedBox(height: 16),
           Text(
-            'Error loading orders',
+            tr(LocaleKeys.orders_error_loading_orders),
             style: TextStyle(color: Colors.red[600], fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
@@ -227,7 +229,7 @@ class OrdersPage extends StatelessWidget {
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: StyleRepo.deepBlue),
-            child: Text('Retry', style: TextStyle(color: Colors.white)),
+            child: Text(tr(LocaleKeys.orders_retry), style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
