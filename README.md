@@ -85,9 +85,3 @@ Currently supports:
 
 ....
 
-
-- Easy Localization for internationalization support
-
----
-
-**Made with ❤️ using Flutter**
