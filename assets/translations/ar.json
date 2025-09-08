@@ -516,7 +516,7 @@
     "tap_to_rating": "اضغط للتقييم من فضلك"
   },
   "offer_details": {
-    "view_offer": "عرض العرض",
+    "view_offer": "مشاهدة العرض",
     "pictures": "الصور",
     "description": "الوصف",
     "default_description": "لوريم إيبسوم دولور سيت أميت، كونسيكتيتور أديبيسكينج إليت، سيد دو إيوسمود تيمبور إنكيديدنت أوت لابوري إت دولوري ماجنا أليكا. أوت إنيم أد مينيم فينيام، كويس نوسترود إكسيرسيتاشون",
@@ -535,7 +535,15 @@
     "network_error": "خطأ في الشبكة. يرجى التحقق من الاتصال.",
     "declining_offer": "جاري رفض العرض...",
     "offer_declined_successfully": "تم رفض العرض بنجاح!",
-    "failed_to_decline_offer": "فشل في رفض العرض. يرجى المحاولة مرة أخرى."
+    "failed_to_decline_offer": "فشل في رفض العرض. يرجى المحاولة مرة أخرى.",
+    "accept_success": "تم قبول العرض بنجاح!",
+    "decline_success": "تم رفض العرض بنجاح!",
+    "accept_failed": "فشل في قبول العرض. يرجى المحاولة مرة أخرى.",
+    "decline_failed": "فشل في رفض العرض. يرجى المحاولة مرة أخرى.",
+    "reviews": "مراجعات",
+    "currency_sek": "كرونة سويدية",
+    "created_at": "في",
+    "close_image": "إغلاق الصورة"
   },
   "add_orders": {
     "add_order": "إضافة طلب",
@@ -632,5 +640,80 @@
     "filter_orders_tapped": "تم النقر على تصفية الطلبات",
     "close_button_tapped": "تم النقر على زر الإغلاق",
     "unable_to_view_order_details": "غير قادر على عرض تفاصيل الطلب"
+  },
+  "provider_orders": {
+    "application_pending": "طلب مزود الخدمة قيد الانتظار...",
+    "review_description": "طلب تطبيق مزود الخدمة الخاص بك قيد المراجعة حالياً من قبل فريقنا.",
+    "approval_note": "ستتمكن من استقبال الطلبات بمجرد الموافقة عليك",
+    "continue_as_customer": "المتابعة كعميل",
+    
+    "my_orders": "طلباتي",
+    "search_orders": "البحث في الطلبات...",
+    "loading_orders": "تحميل الطلبات...",
+    "orders_count": "طلبات",
+    
+    "pending": "في الانتظار",
+    "underway": "قيد التنفيذ",
+    "complete": "مكتملة",
+    "cancelled": "ملغية",
+    
+    "order_completed_success": "تم إكمال الطلب بنجاح!",
+    "offer_cancelled_success": "تم إلغاء العرض بنجاح",
+    "offer_deleted_success": "تم حذف العرض بنجاح!",
+    "cancelling_offer": "جاري إلغاء العرض...",
+    
+    "complete_order_failed": "فشل في إكمال الطلب. يرجى المحاولة مرة أخرى.",
+    "network_error": "خطأ في الشبكة. يرجى التحقق من اتصالك.",
+    "cancel_reasons_failed": "فشل في تحميل أسباب الإلغاء",
+    "loading_reasons_error": "خطأ في الشبكة أثناء تحميل الأسباب",
+    "cancel_offer_failed": "فشل في إلغاء العرض. يرجى المحاولة مرة أخرى.",
+    "delete_offer_failed": "فشل في إلغاء العرض.",
+    "view_details_error": "خطأ في عرض تفاصيل الطلب"
+  },
+  "provider_order_card": {
+    "id_prefix": "رقم التعريف ",
+    "services_fallback": "الخدمات",
+    "no_address": "لا يوجد عنوان",
+    
+    "view_details": "عرض التفاصيل",
+    "delete_offer": "حذف العرض",
+    "cancel_offer": "إلغاء العرض",
+    "view_offers": "مشاهدة العرض",
+    
+    "your_offer": "عرضك:",
+    "offer_accepted": "مقبول",
+    "offer_pending": "قيد الانتظار",
+    "offer_declined": "مرفوض",
+    
+    "order_cancelled": "تم إلغاء الطلب",
+    "cancelled_by_customer": "تم إلغاء الطلب من قبل العميل",
+    "order_completed": "تم إكمال الطلب",
+    "completed_successfully": "تم إكمال الطلب بنجاح",
+    "complete_order": "إكمال الطلب",
+    "customer": "العميل",
+    "success": "نجح",
+    
+    "delete_offer_title": "حذف العرض؟",
+    "delete_offer_description": "سيؤدي هذا إلى إزالة عرضك نهائياً من هذا الطلب.",
+    "delete_offer_cancel": "إلغاء",
+    "delete_offer_confirm": "حذف",
+    
+    "cancel_offer_title": "إلغاء العرض؟",
+    "cancel_offer_description": "ستحتاج إلى تقديم سبب لإلغاء هذا العرض.",
+    "keep_offer": "الاحتفاظ بالعرض",
+    "cancel_offer_confirm": "إلغاء العرض",
+    
+    "reason_for_cancellation": "سبب الإلغاء",
+    "reason_description": "يرجى تحديد سبب إلغاء هذا العرض",
+    "loading_reasons": "تحميل أسباب الإلغاء...",
+    "no_reasons_available": "لا توجد أسباب إلغاء متاحة",
+    "contact_support": "يرجى الاتصال بالدعم أو المحاولة مرة أخرى لاحقاً.",
+    "retry": "إعادة المحاولة",
+    "other_reason": "سبب آخر",
+    "specify_reason": "يرجى تحديد سببك...",
+    "cancel_offer_submit": "إلغاء العرض",
+    
+    "select_reason": "يرجى اختيار سبب الإلغاء",
+    "provide_custom_reason": "يرجى تقديم سبب مخصص"
   }
 }

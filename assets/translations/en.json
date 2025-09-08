@@ -534,7 +534,15 @@
     "network_error": "Network error. Please check your connection.",
     "declining_offer": "Declining offer...",
     "offer_declined_successfully": "Offer declined successfully!",
-    "failed_to_decline_offer": "Failed to decline offer. Please try again."
+    "failed_to_decline_offer": "Failed to decline offer. Please try again.",
+    "accept_success": "Offer accepted successfully!",
+    "decline_success": "Offer declined successfully!",
+    "accept_failed": "Failed to accept offer. Please try again.",
+    "decline_failed": "Failed to decline offer. Please try again.",
+    "reviews": "reviews",
+    "currency_sek": "SEK",
+    "created_at": "at",
+    "close_image": "Close Image"
   },
   "add_orders": {
     "add_order": "Add Order",
@@ -632,5 +640,80 @@
     "filter_orders_tapped": "Filter orders tapped",
     "close_button_tapped": "Close button tapped",
     "unable_to_view_order_details": "Unable to view order details"
+  },
+  "provider_orders": {
+    "application_pending": "Provider Application Pending...",
+    "review_description": "Your provider application is currently under review by our team.",
+    "approval_note": "You'll be able to receive orders once approved",
+    "continue_as_customer": "Continue as Customer",
+    
+    "my_orders": "My Orders",
+    "search_orders": "Search orders...",
+    "loading_orders": "Loading orders...",
+    "orders_count": "Orders",
+    
+    "pending": "Pending",
+    "underway": "Underway", 
+    "complete": "Complete",
+    "cancelled": "Cancelled",
+    
+    "order_completed_success": "Order completed successfully!",
+    "offer_cancelled_success": "Offer cancelled successfully",
+    "offer_deleted_success": "Offer deleted successfully!",
+    "cancelling_offer": "Cancelling offer...",
+    
+    "complete_order_failed": "Failed to complete order. Please try again.",
+    "network_error": "Network error. Please check your connection.",
+    "cancel_reasons_failed": "Failed to load cancel reasons",
+    "loading_reasons_error": "Network error while loading reasons",
+    "cancel_offer_failed": "Failed to cancel offer. Please try again.",
+    "delete_offer_failed": "Failed to cancel offer.",
+    "view_details_error": "Error viewing order details"
+  },
+  "provider_order_card": {
+    "id_prefix": "ID ",
+    "services_fallback": "Services",
+    "no_address": "No address",
+    
+    "view_details": "View details",
+    "delete_offer": "Delete offer",
+    "cancel_offer": "Cancel offer",
+    "view_offers": "View Offers",
+    
+    "your_offer": "Your offer:",
+    "offer_accepted": "Accepted",
+    "offer_pending": "Pending",
+    "offer_declined": "Declined",
+    
+    "order_cancelled": "Order cancelled",
+    "cancelled_by_customer": "Order was cancelled by customer",
+    "order_completed": "Order Completed",
+    "completed_successfully": "Order completed successfully",
+    "complete_order": "Complete Order",
+    "customer": "Customer",
+    "success": "Success",
+    
+    "delete_offer_title": "Delete Offer?",
+    "delete_offer_description": "This will permanently remove your offer from this order.",
+    "delete_offer_cancel": "Cancel",
+    "delete_offer_confirm": "Delete",
+    
+    "cancel_offer_title": "Cancel Offer?",
+    "cancel_offer_description": "You will need to provide a reason for cancelling this offer.",
+    "keep_offer": "Keep Offer",
+    "cancel_offer_confirm": "Cancel Offer",
+    
+    "reason_for_cancellation": "Reason for Cancellation",
+    "reason_description": "Please specify the reason for cancelling this offer",
+    "loading_reasons": "Loading cancel reasons...",
+    "no_reasons_available": "No cancel reasons available",
+    "contact_support": "Please contact support or try again later.",
+    "retry": "Retry",
+    "other_reason": "Other reason",
+    "specify_reason": "Please specify your reason...",
+    "cancel_offer_submit": "Cancel Offer",
+    
+    "select_reason": "Please select a cancellation reason",
+    "provide_custom_reason": "Please provide a custom reason"
   }
 }

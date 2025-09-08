@@ -1,4 +1,3 @@
-// controllers/orders_controller.dart
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +21,8 @@ class OrdersController extends GetxController {
   final RxInt selectedTabIndex = 0.obs;
   final RxString searchQuery = ''.obs;
   final RxBool isAcceptingOffer = false.obs;
-  final RxBool isCancellingOrder = false.obs; // Add loading state for cancellation
-  final RxBool isLoadingCancelReasons = false.obs; // Add loading state for fetching reasons
+  final RxBool isCancellingOrder = false.obs;
+  final RxBool isLoadingCancelReasons = false.obs;
   final TextEditingController searchController = TextEditingController();
 
   // Cancellation reasons cache
@@ -45,7 +44,7 @@ class OrdersController extends GetxController {
   OrderStatus get currentStatus => OrderStatus.values[selectedTabIndex.value];
 
   final AppBuilder appBuilder = Get.find<AppBuilder>();
-  final RxBool isCompletingOrder = false.obs; // For provider complete button
+  final RxBool isCompletingOrder = false.obs;
   bool get isProviderMode => appBuilder.isProviderMode.value;
 
   // Get current pagination controller based on selected tab
@@ -111,7 +110,7 @@ class OrdersController extends GetxController {
           reasonsData = [];
         }
 
-        // Parse the cancellation reasons using your existing model
+        // Parse the cancellation reasons using existing model
         final reasons =
             reasonsData.map((reasonJson) => CancelReasonModel.fromJson(reasonJson)).toList();
 
@@ -168,7 +167,7 @@ class OrdersController extends GetxController {
         );
       }
 
-      print('API Response failed: ${response.message}'); // Debug log
+      print('API Response failed: ${response.message}');
       return response;
     } catch (e) {
       print('Error fetching orders page $page: $e');

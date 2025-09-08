@@ -544,6 +544,15 @@ abstract class LocaleKeys {
   static const offer_details_offer_declined_successfully =
       'offer_details.offer_declined_successfully';
   static const offer_details_failed_to_decline_offer = 'offer_details.failed_to_decline_offer';
+  static const offer_details_accept_success = 'offer_details.accept_success';
+  static const offer_details_decline_success = 'offer_details.decline_success';
+  static const offer_details_accept_failed = 'offer_details.accept_failed';
+  static const offer_details_decline_failed = 'offer_details.decline_failed';
+  static const offer_details_reviews = 'offer_details.reviews';
+  static const offer_details_currency_sek = 'offer_details.currency_sek';
+  static const offer_details_created_at = 'offer_details.created_at';
+
+  static const offer_details_close_image = 'offer_details.close_image';
   static const offer_details = 'offer_details';
 
   static const add_orders_add_order = 'add_orders.add_order';
@@ -637,4 +646,75 @@ abstract class LocaleKeys {
   static const provider_home_unable_to_view_order_details =
       'provider_home.unable_to_view_order_details';
   static const provider_home = 'provider_home';
+  static const provider_orders_application_pending = 'provider_orders.application_pending';
+  static const provider_orders_review_description = 'provider_orders.review_description';
+  static const provider_orders_approval_note = 'provider_orders.approval_note';
+  static const provider_orders_continue_as_customer = 'provider_orders.continue_as_customer';
+  static const provider_orders_my_orders = 'provider_orders.my_orders';
+  static const provider_orders_search_orders = 'provider_orders.search_orders';
+  static const provider_orders_loading_orders = 'provider_orders.loading_orders';
+  static const provider_orders_orders_count = 'provider_orders.orders_count';
+  static const provider_orders_pending = 'provider_orders.pending';
+  static const provider_orders_underway = 'provider_orders.underway';
+  static const provider_orders_complete = 'provider_orders.complete';
+  static const provider_orders_cancelled = 'provider_orders.cancelled';
+  static const provider_orders_order_completed_success = 'provider_orders.order_completed_success';
+  static const provider_orders_offer_cancelled_success = 'provider_orders.offer_cancelled_success';
+  static const provider_orders_offer_deleted_success = 'provider_orders.offer_deleted_success';
+  static const provider_orders_cancelling_offer = 'provider_orders.cancelling_offer';
+  static const provider_orders_complete_order_failed = 'provider_orders.complete_order_failed';
+  static const provider_orders_network_error = 'provider_orders.network_error';
+  static const provider_orders_cancel_reasons_failed = 'provider_orders.cancel_reasons_failed';
+  static const provider_orders_loading_reasons_error = 'provider_orders.loading_reasons_error';
+  static const provider_orders_cancel_offer_failed = 'provider_orders.cancel_offer_failed';
+  static const provider_orders_delete_offer_failed = 'provider_orders.delete_offer_failed';
+  static const provider_orders_view_details_error = 'provider_orders.view_details_error';
+  static const provider_orders = 'provider_orders';
+  static const provider_order_card_id_prefix = 'provider_order_card.id_prefix';
+  static const provider_order_card_services_fallback = 'provider_order_card.services_fallback';
+  static const provider_order_card_no_address = 'provider_order_card.no_address';
+  static const provider_order_card_view_details = 'provider_order_card.view_details';
+  static const provider_order_card_delete_offer = 'provider_order_card.delete_offer';
+  static const provider_order_card_cancel_offer = 'provider_order_card.cancel_offer';
+  static const provider_order_card_view_offers = 'provider_order_card.view_offers';
+  static const provider_order_card_your_offer = 'provider_order_card.your_offer';
+  static const provider_order_card_offer_accepted = 'provider_order_card.offer_accepted';
+  static const provider_order_card_offer_pending = 'provider_order_card.offer_pending';
+  static const provider_order_card_offer_declined = 'provider_order_card.offer_declined';
+  static const provider_order_card_order_cancelled = 'provider_order_card.order_cancelled';
+  static const provider_order_card_cancelled_by_customer =
+      'provider_order_card.cancelled_by_customer';
+  static const provider_order_card_order_completed = 'provider_order_card.order_completed';
+  static const provider_order_card_completed_successfully =
+      'provider_order_card.completed_successfully';
+  static const provider_order_card_complete_order = 'provider_order_card.complete_order';
+  static const provider_order_card_customer = 'provider_order_card.customer';
+  static const provider_order_card_success = 'provider_order_card.success';
+  static const provider_order_card_delete_offer_title = 'provider_order_card.delete_offer_title';
+  static const provider_order_card_delete_offer_description =
+      'provider_order_card.delete_offer_description';
+  static const provider_order_card_delete_offer_cancel = 'provider_order_card.delete_offer_cancel';
+  static const provider_order_card_delete_offer_confirm =
+      'provider_order_card.delete_offer_confirm';
+  static const provider_order_card_cancel_offer_title = 'provider_order_card.cancel_offer_title';
+  static const provider_order_card_cancel_offer_description =
+      'provider_order_card.cancel_offer_description';
+  static const provider_order_card_keep_offer = 'provider_order_card.keep_offer';
+  static const provider_order_card_cancel_offer_confirm =
+      'provider_order_card.cancel_offer_confirm';
+  static const provider_order_card_reason_for_cancellation =
+      'provider_order_card.reason_for_cancellation';
+  static const provider_order_card_reason_description = 'provider_order_card.reason_description';
+  static const provider_order_card_loading_reasons = 'provider_order_card.loading_reasons';
+  static const provider_order_card_no_reasons_available =
+      'provider_order_card.no_reasons_available';
+  static const provider_order_card_contact_support = 'provider_order_card.contact_support';
+  static const provider_order_card_retry = 'provider_order_card.retry';
+  static const provider_order_card_other_reason = 'provider_order_card.other_reason';
+  static const provider_order_card_specify_reason = 'provider_order_card.specify_reason';
+  static const provider_order_card_cancel_offer_submit = 'provider_order_card.cancel_offer_submit';
+  static const provider_order_card_select_reason = 'provider_order_card.select_reason';
+  static const provider_order_card_provide_custom_reason =
+      'provider_order_card.provide_custom_reason';
+  static const provider_order_card = 'provider_order_card';
 }

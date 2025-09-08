@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:renva0/core/config/app_builder.dart';
 import 'package:renva0/core/constants/controllers_tags.dart';
+import 'package:renva0/core/localization/strings.dart';
 import 'package:renva0/core/routes/routes.dart';
 import 'package:renva0/core/services/pagination/controller.dart';
 import 'package:renva0/core/services/rest_api/rest_api.dart';
@@ -20,7 +22,14 @@ class ProviderOrdersController extends GetxController {
   final RxBool isLoadingReasons = false.obs;
   final AppBuilder appBuilder = Get.find<AppBuilder>();
   bool get isProviderMode => appBuilder.isProviderMode.value;
-  final List<String> tabs = ['Pending', 'Underway', 'Complete', 'Cancelled'];
+
+  // Localized tab names - these will be updated when language changes
+  List<String> get tabs => [
+    tr(LocaleKeys.provider_orders_pending),
+    tr(LocaleKeys.provider_orders_underway),
+    tr(LocaleKeys.provider_orders_complete),
+    tr(LocaleKeys.provider_orders_cancelled),
+  ];
 
   // Tag mapping for each tab
   final Map<int, String> tabTags = {
@@ -117,22 +126,22 @@ class ProviderOrdersController extends GetxController {
       String apiStatus;
       switch (selectedTabIndex.value) {
         case 0: // Pending tab
-          apiStatus = 'waiting'; //  pending orders
+          apiStatus = 'waiting';
           break;
         case 1: // Underway tab
-          apiStatus = 'processing'; //  in-progress orders
+          apiStatus = 'processing';
           break;
         case 2: // Complete tab
-          apiStatus = 'completed'; //  completed orders
+          apiStatus = 'completed';
           break;
         case 3: // Cancelled tab
-          apiStatus = 'cancelled'; // cancelled orders
+          apiStatus = 'cancelled';
           break;
         default:
           apiStatus = 'waiting';
       }
 
-      params['status'] = apiStatus; //  Adding status parameter to API call
+      params['status'] = apiStatus;
 
       final response = await APIService.instance.request(
         Request(endPoint: EndPoints.providerOrders, method: RequestMethod.Get, params: params),
@@ -153,9 +162,7 @@ class ProviderOrdersController extends GetxController {
         List filteredOrders =
             ordersData.where((orderJson) {
               final order = ProviderOrderModel.fromJson(orderJson);
-
-              ///// Only show orders where provider has made an offer
-              //// API should already filter this, but adding as safety check :P
+              // Only show orders where provider has made an offer
               return order.providerOffer != null;
             }).toList();
 
@@ -178,24 +185,28 @@ class ProviderOrdersController extends GetxController {
     return ProviderOrderModel.fromJson(orderJson);
   }
 
-  // Navigate to order details
   void viewOrderDetails(ProviderOrderModel order) {
     try {
       final orderData = {
         'id': order.id.toString(),
         'requesterName':
             '${order.customer['first_name'] ?? ''} ${order.customer['last_name'] ?? ''}'.trim(),
-        'categoryTitle': order.category['title'] ?? 'Service Request',
+        'categoryTitle':
+            order.category['title'] ?? tr(LocaleKeys.provider_home_service_request_fallback),
         'description': order.description,
         'date': order.date,
         'time': order.startAt ?? '09:00:00',
         'status': order.status,
         'apiData': order.toJson(),
+
+        // flags to indicate this is a provider viewing their own orders
+        'isProviderView': true, // This tells the controller it's a provider view
+        'showAddOfferButton': false, // Explicitly hide the Add Offer button
       };
 
       Get.toNamed(Pages.view_order_detail.value, arguments: orderData);
     } catch (e) {
-      PopUpToast.show('Error viewing order details');
+      PopUpToast.show(tr(LocaleKeys.provider_orders_view_details_error));
       print('Error navigating to order details: $e');
     }
   }
@@ -216,16 +227,16 @@ class ProviderOrdersController extends GetxController {
       );
 
       if (response.success) {
-        PopUpToast.show('Order completed successfully!');
-        refreshCurrentTab(); // Refresh the current tab data (underway tab :D)
-        refreshTab(2); //2 is complete order
+        PopUpToast.show(tr(LocaleKeys.provider_orders_order_completed_success));
+        refreshCurrentTab(); // Refresh the current tab data (underway tab)
+        refreshTab(2); // Refresh complete orders tab
       } else {
-        PopUpToast.show('Failed to complete order. Please try again.');
+        PopUpToast.show(tr(LocaleKeys.provider_orders_complete_order_failed));
       }
     } catch (e) {
-      PopUpToast.show('Network error. Please check your connection.');
+      PopUpToast.show(tr(LocaleKeys.provider_orders_network_error));
     } finally {
-      //  Remove this specific order ID from the completing set
+      // Remove this specific order ID from the completing set
       completingOrderIds.remove(order.id);
     }
   }
@@ -253,31 +264,33 @@ class ProviderOrdersController extends GetxController {
           reasonsData = data['data'] as List? ?? [];
         } else {
           reasonsData = [];
-          print(' Unexpected data type, using empty list');
+          print('Unexpected data type, using empty list');
         }
 
-        //  Convert all reasons with detailed logging
+        // Convert all reasons with detailed logging
         List<CancelReasonModel> allReasons = [];
         for (var reasonJson in reasonsData) {
           try {
             final reason = CancelReasonModel.fromJson(reasonJson);
             allReasons.add(reason);
           } catch (e) {
-            print('  Error parsing reason: $e');
+            print('Error parsing reason: $e');
           }
         }
 
         cancelReasons.value = allReasons;
-        print(' Final result: ${allReasons.length} cancel reasons loaded');
+        print('Final result: ${allReasons.length} cancel reasons loaded');
 
         for (var reason in allReasons) {
-          print('    Reason ${reason.id}: "${reason.reasonText}"');
+          print('Reason ${reason.id}: "${reason.reasonText}"');
         }
       } else {
-        PopUpToast.show('Failed to load cancel reasons: ${response.message}');
+        PopUpToast.show(
+          '${tr(LocaleKeys.provider_orders_cancel_reasons_failed)}: ${response.message}',
+        );
       }
     } catch (e) {
-      PopUpToast.show('Network error while loading reasons');
+      PopUpToast.show(tr(LocaleKeys.provider_orders_loading_reasons_error));
     } finally {
       isLoadingReasons.value = false;
     }
@@ -289,7 +302,7 @@ class ProviderOrdersController extends GetxController {
     String customReason,
   ) async {
     try {
-      PopUpToast.show('Cancelling offer...');
+      PopUpToast.show(tr(LocaleKeys.provider_orders_cancelling_offer));
 
       Map<String, dynamic> requestBody = {'order_id': order.id, 'order_cancel_reason_id': reasonId};
 
@@ -307,20 +320,20 @@ class ProviderOrdersController extends GetxController {
       );
 
       if (response.success) {
-        PopUpToast.show('Offer cancelled successfully');
+        PopUpToast.show(tr(LocaleKeys.provider_orders_offer_cancelled_success));
 
         refreshCurrentTab(); // Remove from Underway
-        refreshTab(3); // Add to Cancelled :D
+        refreshTab(3); // Add to Cancelled
       } else {
-        String errorMsg = 'Failed to cancel offer. Please try again.';
+        String errorMsg = tr(LocaleKeys.provider_orders_cancel_offer_failed);
         if (response.message.isNotEmpty) {
           errorMsg = response.message;
         }
         PopUpToast.show(errorMsg);
       }
     } catch (e) {
-      print(' Error cancelling offer: $e');
-      PopUpToast.show('Network error. Please check your connection.');
+      print('Error cancelling offer: $e');
+      PopUpToast.show(tr(LocaleKeys.provider_orders_network_error));
     }
   }
 
@@ -335,15 +348,15 @@ class ProviderOrdersController extends GetxController {
       );
 
       if (response.success) {
-        PopUpToast.show('Offer deleted successfully!');
+        PopUpToast.show(tr(LocaleKeys.provider_orders_offer_deleted_success));
 
         refreshCurrentTab(); // Remove from current tab
         refreshTab(3); // Refresh Cancelled tab
       } else {
-        PopUpToast.show('Failed to cancel offer.');
+        PopUpToast.show(tr(LocaleKeys.provider_orders_delete_offer_failed));
       }
     } catch (e) {
-      PopUpToast.show('Network error.');
+      PopUpToast.show(tr(LocaleKeys.provider_orders_network_error));
     }
   }
 }

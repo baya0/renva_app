@@ -19,10 +19,10 @@ class ViewOrderDetail extends StatelessWidget {
         elevation: 0,
         leadingWidth: 40,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 8),
+          padding: const EdgeInsets.only(left: 0),
           child: IconButton(
             onPressed: () => Get.back(),
-            icon: Assets.icons.arrows.leftCircle.svg(
+            icon: Assets.icons.arrows.rightCircle.svg(
               colorFilter: ColorFilter.mode(StyleRepo.black, BlendMode.srcIn),
               width: 24,
               height: 24,
@@ -75,30 +75,31 @@ class ViewOrderDetail extends StatelessWidget {
               ],
             ),
 
-            // Add Offer Button
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: SizedBox(
-                width: 160,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: controller.addOffer,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: StyleRepo.deepBlue,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    'add offer',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: StyleRepo.softWhite,
+            // NEW: Conditionally show Add Offer Button
+            if (controller.showAddOfferButton)
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: SizedBox(
+                  width: 160,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: controller.addOffer,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: StyleRepo.deepBlue,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      'add offer',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: StyleRepo.softWhite,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),

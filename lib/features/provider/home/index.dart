@@ -640,7 +640,7 @@ class ProviderHomePage extends StatelessWidget {
 
                       // Rating stars
                       Row(
-                        textDirection: flutter.TextDirection.ltr, // Stars always LTR
+                        textDirection: flutter.TextDirection.ltr,
                         children: [
                           ...List.generate(5, (index) {
                             final rating = providerData?['rating']?.toDouble() ?? 0.0;
@@ -726,7 +726,7 @@ class ProviderHomePage extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              // Card content with left-edge color (adjust for RTL)
+              // Card content with left-edge color
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -848,7 +848,7 @@ class ProviderHomePage extends StatelessWidget {
                 ),
               ),
 
-              // Close Button (adjust position for RTL)
+              // Close Button
               if (hasCloseButton)
                 Positioned(
                   top: 16,

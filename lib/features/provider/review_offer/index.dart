@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/style/repo.dart';
+import '../../../gen/assets.gen.dart';
 import 'controller.dart';
 
 class ReviewOfferPage extends StatelessWidget {
@@ -8,52 +10,52 @@ class ReviewOfferPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ReviewOfferController>(
-      init: ReviewOfferController(),
-      builder: (controller) {
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: controller.goBack,
-            ),
-            title: const Text(
-              'View Offer',
-              style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            centerTitle: true,
+    final controller = Get.put(ReviewOfferController());
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Assets.icons.arrows.rightCircle.svg(
+            colorBlendMode: BlendMode.srcIn,
+            color: StyleRepo.black,
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Picture Section
-                _buildPictureSection(controller, context),
-                const SizedBox(height: 24),
+          onPressed: controller.goBack,
+        ),
+        title: Text(
+          controller.isViewMode ? 'View Offer' : 'Review Offer', // Dynamic title
+          style: const TextStyle(color: StyleRepo.black, fontSize: 18, fontWeight: FontWeight.w600),
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Picture Section
+            _buildPictureSection(controller, context),
+            const SizedBox(height: 24),
 
-                // Description Section
-                _buildDescriptionSection(controller, context),
-                const SizedBox(height: 24),
+            // Description Section
+            _buildDescriptionSection(controller, context),
+            const SizedBox(height: 24),
 
-                // Price Range Section
-                _buildPriceRangeSection(controller, context),
-                const SizedBox(height: 24),
+            // Price Range Section
+            _buildPriceRangeSection(controller, context),
+            const SizedBox(height: 24),
 
-                // Date & Time Section
-                _buildDateTimeSection(controller, context),
-                const SizedBox(height: 40),
+            // Date & Time Section
+            _buildDateTimeSection(controller, context),
+            const SizedBox(height: 40),
 
-                // Action Buttons
-                _buildActionButtons(controller, context),
-              ],
-            ),
-          ),
-        );
-      },
+            // Action Buttons - conditional rendering
+            if (controller.shouldShowActionButton) _buildActionButtons(controller, context),
+          ],
+        ),
+      ),
     );
   }
 
@@ -66,15 +68,21 @@ class ReviewOfferPage extends StatelessWidget {
           children: [
             const Text(
               'Picture',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: StyleRepo.black),
             ),
-            GestureDetector(
-              onTap: controller.editOffer,
-              child: const Text(
-                'Edit',
-                style: TextStyle(fontSize: 14, color: Colors.blue, fontWeight: FontWeight.w500),
+            // Conditionally show Edit button
+            if (controller.showEditButtons)
+              GestureDetector(
+                onTap: controller.editOffer,
+                child: const Text(
+                  'Edit',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: StyleRepo.deepBlue,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
           ],
         ),
         const SizedBox(height: 12),
@@ -126,15 +134,15 @@ class ReviewOfferPage extends StatelessWidget {
       width: 80,
       height: 80,
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
+        color: StyleRepo.grey.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: StyleRepo.grey.withValues(alpha: 0.2)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          color: Colors.grey.shade200,
-          child: Icon(Icons.image, color: Colors.grey.shade400, size: 32),
+          color: StyleRepo.grey.withValues(alpha: 0.2),
+          child: Icon(Icons.image, color: StyleRepo.deepBlue, size: 32),
         ),
       ),
     );
@@ -149,23 +157,27 @@ class ReviewOfferPage extends StatelessWidget {
           children: [
             const Text(
               'Description',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: StyleRepo.black),
             ),
-            GestureDetector(
-              onTap: controller.editOffer,
-              child: const Text(
-                'Edit',
-                style: TextStyle(fontSize: 14, color: Colors.blue, fontWeight: FontWeight.w500),
+            // Conditionally show Edit button
+            if (controller.showEditButtons)
+              GestureDetector(
+                onTap: controller.editOffer,
+                child: const Text(
+                  'Edit',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: StyleRepo.deepBlue,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
           ],
         ),
         const SizedBox(height: 12),
 
         Text(
-          controller.offerDescription.isNotEmpty
-              ? controller.offerDescription
-              : 'Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit, Sed Do Eiusmod Tempor Incididunt Ut Labore Et Dolore Magna Aliqua. Ut Enim Ad Minim Veniam, Quis Nostrud Exercitation',
+          controller.offerDescription.isNotEmpty ? controller.offerDescription : 'Description',
           style: TextStyle(fontSize: 14, color: Colors.grey.shade700, height: 1.4),
         ),
       ],
@@ -181,22 +193,32 @@ class ReviewOfferPage extends StatelessWidget {
           children: [
             const Text(
               'Price Range',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: StyleRepo.black),
             ),
-            GestureDetector(
-              onTap: controller.editOffer,
-              child: const Text(
-                'Edit',
-                style: TextStyle(fontSize: 14, color: Colors.blue, fontWeight: FontWeight.w500),
+            // Conditionally show Edit button
+            if (controller.showEditButtons)
+              GestureDetector(
+                onTap: controller.editOffer,
+                child: const Text(
+                  'Edit',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: StyleRepo.deepBlue,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
           ],
         ),
         const SizedBox(height: 12),
 
         Text(
           controller.formattedPrice,
-          style: const TextStyle(fontSize: 18, color: Colors.blue, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            fontSize: 18,
+            color: StyleRepo.deepBlue,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ],
     );
@@ -211,15 +233,21 @@ class ReviewOfferPage extends StatelessWidget {
           children: [
             const Text(
               'Date & Time',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: StyleRepo.black),
             ),
-            GestureDetector(
-              onTap: controller.editOffer,
-              child: const Text(
-                'Edit',
-                style: TextStyle(fontSize: 14, color: Colors.blue, fontWeight: FontWeight.w500),
+            // Conditionally show Edit button
+            if (controller.showEditButtons)
+              GestureDetector(
+                onTap: controller.editOffer,
+                child: const Text(
+                  'Edit',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: StyleRepo.deepBlue,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
           ],
         ),
         const SizedBox(height: 16),
@@ -239,7 +267,7 @@ class ReviewOfferPage extends StatelessWidget {
           children: [
             Icon(Icons.access_time_outlined, size: 20, color: Colors.grey.shade600),
             const SizedBox(width: 12),
-            Text(controller.orderTime, style: TextStyle(fontSize: 14, color: Colors.grey.shade700)),
+            Text(controller.orderTime, style: TextStyle(fontSize: 14, color: StyleRepo.grey)),
           ],
         ),
         const SizedBox(height: 12),
@@ -265,11 +293,11 @@ class ReviewOfferPage extends StatelessWidget {
         width: double.infinity,
         height: 56,
         child: ElevatedButton(
-          onPressed: controller.isSubmitting.value ? null : controller.submitOffer,
+          onPressed: controller.isSubmitting.value ? null : controller.handleActionButton,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF1E3A8A),
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
+            backgroundColor: controller.isViewMode ? StyleRepo.deepBlue : const Color(0xFF1E3A8A),
+            foregroundColor: StyleRepo.softWhite,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             elevation: 0,
           ),
           child:
@@ -277,9 +305,12 @@ class ReviewOfferPage extends StatelessWidget {
                   ? const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                    child: CircularProgressIndicator(color: StyleRepo.softWhite, strokeWidth: 2),
                   )
-                  : const Text('Done', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  : Text(
+                    controller.actionButtonText, // Dynamic button text
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
         ),
       ),
     );

@@ -8,6 +8,10 @@ class ViewOrderDetailController extends GetxController {
   // Order data received from navigation arguments
   late Map<String, dynamic> orderData;
 
+  // NEW: Flag to control Add Offer button visibility
+  bool showAddOfferButton = true;
+  bool isProviderView = false;
+
   // Loading state
   final RxBool isLoading = false.obs;
 
@@ -24,7 +28,20 @@ class ViewOrderDetailController extends GetxController {
 
       if (arguments != null && arguments is Map<String, dynamic>) {
         orderData = arguments;
+
+        // NEW: Check if this is a provider viewing their own orders
+        isProviderView = arguments['isProviderView'] == true;
+        showAddOfferButton =
+            arguments['showAddOfferButton'] != false; // Default true unless explicitly false
+
+        // If coming from ProviderOrderCard, hide the Add Offer button
+        if (isProviderView) {
+          showAddOfferButton = false;
+        }
+
         print('✅ Order data loaded: ${orderData['id']}');
+        print('📝 isProviderView: $isProviderView');
+        print('🔘 showAddOfferButton: $showAddOfferButton');
       } else {
         // Fallback data if no arguments provided
         orderData = {
@@ -36,6 +53,9 @@ class ViewOrderDetailController extends GetxController {
           'time': 'Time not specified',
           'status': 'pending',
         };
+        // Default behavior for fallback
+        showAddOfferButton = true;
+        isProviderView = false;
       }
     } catch (e) {
       PopUpToast.show('Error loading order details');
@@ -208,9 +228,14 @@ class ViewOrderDetailController extends GetxController {
     }
   }
 
-  // Navigate to add offer page
+  // Navigate to add offer page (only available when showAddOfferButton is true)
   void addOffer() {
     try {
+      if (!showAddOfferButton) {
+        PopUpToast.show('Cannot add offer in view mode');
+        return;
+      }
+
       // Pass the order data to the add offer page
       Get.toNamed(
         Pages.add_offer_page.value,
