@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:renva0/core/localization/localization.dart';
@@ -12,6 +13,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   await EasyLocalization.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await dotenv.load(fileName: ".env"); // <-- load .env
+    print('API_BASE_URL = ${dotenv.env['API_BASE_URL']}'); // debug
+  } catch (e) {
+    print('Error loading .env: $e'); // catch exception
+  }
 
   runApp(
     EasyLocalization(
