@@ -15,7 +15,7 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
   try {
-    await dotenv.load(fileName: ".env"); // <-- load .env
+    await dotenv.load(fileName: "assets/.env");
     print('API_BASE_URL = ${dotenv.env['API_BASE_URL']}'); // debug
   } catch (e) {
     print('Error loading .env: $e'); // catch exception

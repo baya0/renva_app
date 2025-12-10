@@ -96,7 +96,7 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
     final isProvider = appBuilder.isProvider.value;
 
     if (!isProvider) {
-      PopUpToast.show('User is not a provider');
+      PopUpToast.show(tr(LocaleKeys.errors_user_not_provider));
       return;
     }
 
@@ -108,7 +108,7 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
       await _animationController.forward();
     } catch (e) {
       print(' Error during mode switch animation: $e');
-      PopUpToast.show('Failed to switch mode. Please try again.');
+      PopUpToast.show(tr(LocaleKeys.errors_mode_switch_failed));
       _resetAnimation();
     }
   }
@@ -133,10 +133,10 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
       _forceProfileRefresh();
 
       // Show success message
-      final modeText = newMode ? "Provider" : "User";
-      PopUpToast.show('Switched to $modeText mode');
+      final successKey = newMode ? LocaleKeys.success_switched_to_provider_mode : LocaleKeys.success_switched_to_user_mode;
+      PopUpToast.show(tr(successKey));
     } catch (e) {
-      PopUpToast.show('Failed to switch mode. Please try again.');
+      PopUpToast.show(tr(LocaleKeys.errors_mode_switch_failed));
     } finally {
       _resetAnimation();
     }
@@ -243,7 +243,8 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
       Get.forceAppUpdate();
 
       //  Show success message ^____^
-      PopUpToast.show('Language changed to ${newLanguage == 'ar' ? 'العربية' : 'English'}');
+      String languageName = newLanguage == 'ar' ? tr(LocaleKeys.language_arabic) : tr(LocaleKeys.language_english);
+      PopUpToast.show('${tr(LocaleKeys.language_language_changed_to)} $languageName');
     } catch (e) {
       PopUpToast.show(tr(LocaleKeys.profile_language_failed));
     }
@@ -348,29 +349,36 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
   }
 
   Future<void> resetPasswordFromProfile() async {
-    final userData = user.value; //  access user
+    final userData = user.value;
 
     if (userData == null) {
-      PopUpToast.show('User data not found. Please login again.');
+      PopUpToast.show(tr(LocaleKeys.errors_user_data_not_found));
       return;
     }
 
-    // Get phone number - I  have fullPhoneNumber in my user model
+    // Get phone number
     String? userPhone = userData.fullPhoneNumber;
 
     if (userPhone.isEmpty) {
-      PopUpToast.show('Phone number not found. Please contact support.');
+      PopUpToast.show(tr(LocaleKeys.errors_phone_not_found));
       return;
     }
 
     // Show confirmation dialog
     bool? confirm = await Get.dialog<bool>(
       AlertDialog(
-        title: Text('Reset Password'),
-        content: Text('Do you want to reset your password?'),
+        title: Text(tr(LocaleKeys.auth_reset_password_title)),
+        content: Text(tr(LocaleKeys.dialogs_reset_password_confirm)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
-          TextButton(onPressed: () => Get.back(result: false), child: Text('Cancel')),
-          ElevatedButton(onPressed: () => Get.back(result: true), child: Text('Continue')),
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: Text(tr(LocaleKeys.common_cancel)),
+          ),
+          ElevatedButton(
+            onPressed: () => Get.back(result: true),
+            child: Text(tr(LocaleKeys.common_continue)),
+          ),
         ],
       ),
     );
@@ -378,13 +386,16 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
     if (confirm != true) return;
 
     try {
-      // Parse phone number (assuming format is "+963911111111 which is my account :D ")
+      // Parse phone number
       String cleanPhone = '';
       String dialCode = '';
 
       if (userPhone.startsWith('+963')) {
         dialCode = '963';
-        cleanPhone = userPhone.replaceFirst('+963', ''); // Remove +963 to get clean number
+        cleanPhone = userPhone.replaceFirst('+963', '');
+      } else if (userPhone.startsWith('963')) {
+        dialCode = '963';
+        cleanPhone = userPhone.replaceFirst('963', '');
       } else {
         // Fallback parsing
         dialCode = '963';
@@ -393,6 +404,11 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
           cleanPhone = cleanPhone.replaceFirst('963', '');
         }
       }
+
+      print('🔐 Profile reset password request:');
+      print('   Full phone: $userPhone');
+      print('   Clean phone: $cleanPhone');
+      print('   Dial code: $dialCode');
 
       Map<String, dynamic> jsonData = {'phone': cleanPhone, 'dial_country_code': dialCode};
 
@@ -406,25 +422,48 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
       );
 
       if (response.success) {
-        PopUpToast.show('Verification code sent to your phone');
+        PopUpToast.show(tr(LocaleKeys.auth_verification_code_sent));
 
-        // Navigate to verification with forgot password context
+        // IMPORTANT: Navigate to verification with forgot password flag
         Get.toNamed(
-          Pages.verify.value,
+          Pages.verify.value, // Make sure this matches your route
           arguments: {
             'phoneNumber': userPhone,
             'cleanPhone': cleanPhone,
             'dialCode': dialCode,
-            'fromForgotPassword': true,
+            'fromForgotPassword': true, // This flag is CRITICAL!
+            'fromProfile': true, // Optional: to know it came from profile
           },
         );
       } else {
-        PopUpToast.show('Failed to send verification code. Please try again.');
+        _handleResetPasswordError(response);
       }
     } catch (e) {
-      print(' Profile reset password error: $e');
-      PopUpToast.show('Network error. Please check your connection and try again.');
+      print('💥 Profile reset password error: $e');
+      PopUpToast.show(tr(LocaleKeys.messages_network_error_check_connection));
     }
+  }
+
+  // Helper method to handle errors
+  void _handleResetPasswordError(ResponseModel response) {
+    String errorMsg = tr(LocaleKeys.errors_something_went_wrong);
+
+    try {
+      if (response.data is Map<String, dynamic>) {
+        final errorData = response.data as Map<String, dynamic>;
+        if (errorData['message'] != null) {
+          errorMsg = errorData['message'].toString();
+        } else if (errorData['error'] != null) {
+          errorMsg = errorData['error'].toString();
+        }
+      } else if (response.message.isNotEmpty) {
+        errorMsg = response.message;
+      }
+    } catch (e) {
+      print('💥 Error parsing reset error: $e');
+    }
+
+    PopUpToast.show(errorMsg);
   }
 
   void toggleAppNotifications(bool value) {
@@ -510,7 +549,7 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
       try {
         profileImagePath.value = '';
         await appBuilder.logout();
-        PopUpToast.show('Logged out locally due to network error');
+        PopUpToast.show(tr(LocaleKeys.success_logout_offline));
       } catch (localError) {
         PopUpToast.show(tr(LocaleKeys.errors_something_went_wrong));
       }
@@ -605,7 +644,7 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text('Deleting...', style: TextStyle(color: StyleRepo.red)),
+                      Text(tr(LocaleKeys.profile_menu_deleting_account), style: TextStyle(color: StyleRepo.red)),
                     ],
                   )
                   : Text(
@@ -631,7 +670,7 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
 
       PopUpToast.show(tr(LocaleKeys.success_account_deleted));
     } catch (e) {
-      PopUpToast.show('Failed to delete account: ${e.toString()}');
+      PopUpToast.show('${tr(LocaleKeys.errors_delete_account_failed)}: ${e.toString()}');
     } finally {
       isDeletingAccount.value = false;
     }
@@ -643,7 +682,7 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
     }
 
     if (user.value?.id == null) {
-      throw Exception('User ID not found');
+      throw Exception(tr(LocaleKeys.errors_user_id_not_found));
     }
 
     final userId = user.value!.id;
@@ -707,7 +746,7 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
                 );
               },
               loader: (context) => CircularProgressIndicator(),
-              errorBuilder: (context, error) => Text('Error loading points'),
+              errorBuilder: (context, error) => Text(tr(LocaleKeys.errors_loading_points)),
             ),
             const SizedBox(height: 8),
             Text(
@@ -746,7 +785,7 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
                 );
               },
               loader: (context) => CircularProgressIndicator(),
-              errorBuilder: (context, error) => Text('Error loading balance'),
+              errorBuilder: (context, error) => Text(tr(LocaleKeys.errors_loading_balance)),
             ),
           ],
         ),
@@ -766,7 +805,7 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
     final isProviderMode = appBuilder.isProviderMode.value;
     final userData = user.value;
 
-    if (userData == null) return 'User';
+    if (userData == null) return tr(LocaleKeys.common_user);
 
     if (isProviderMode && userData.isProvider) {
       // Show provider name: "bayan"
@@ -785,7 +824,7 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
     final isProviderMode = appBuilder.isProviderMode.value;
     final userData = user.value;
 
-    if (userData == null) return 'No phone';
+    if (userData == null) return tr(LocaleKeys.common_no_phone);
 
     if (isProviderMode && userData.isProvider) {
       // Show provider phone: "+963 91234567"
@@ -892,7 +931,7 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
         return providerData['status']; // "Not approved"
       }
     }
-    return 'Not a provider';
+    return tr(LocaleKeys.profile_menu_not_a_provider);
   }
 
   //  Get the image to display (local first, then mode-specific API)

@@ -189,13 +189,14 @@ class AddSubOrderPage extends StatelessWidget {
                                                 controller.selectSubcategory(subcategory);
                                               },
                                               child: Container(
-                                                padding: EdgeInsets.all(8),
+                                                padding: EdgeInsets.all(6),
                                                 decoration: BoxDecoration(
                                                   color: Colors.transparent,
                                                   borderRadius: BorderRadius.circular(12),
                                                 ),
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                     SizedBox(
                                                       width: 64,
@@ -208,21 +209,23 @@ class AddSubOrderPage extends StatelessWidget {
                                                         ),
                                                       ),
                                                     ),
-                                                    const SizedBox(height: 8),
+                                                    const SizedBox(height: 6),
                                                     // Title
-                                                    Text(
-                                                      subcategory.title,
-                                                      style: TextStyle(
-                                                        color:
-                                                            isSelected
-                                                                ? StyleRepo.deepBlue
-                                                                : StyleRepo.black,
-                                                        fontWeight: FontWeight.w600,
-                                                        fontSize: 12,
+                                                    Flexible(
+                                                      child: Text(
+                                                        subcategory.title,
+                                                        style: TextStyle(
+                                                          color:
+                                                              isSelected
+                                                                  ? StyleRepo.deepBlue
+                                                                  : StyleRepo.black,
+                                                          fontWeight: FontWeight.w600,
+                                                          fontSize: 12,
+                                                        ),
+                                                        textAlign: TextAlign.center,
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow.ellipsis,
                                                       ),
-                                                      textAlign: TextAlign.center,
-                                                      maxLines: 2,
-                                                      overflow: TextOverflow.ellipsis,
                                                     ),
                                                   ],
                                                 ),
@@ -258,7 +261,7 @@ class AddSubOrderPage extends StatelessWidget {
                                           style: TextStyle(
                                             color:
                                                 canContinue ? StyleRepo.softWhite : StyleRepo.grey,
-                                            fontSize: 16,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),

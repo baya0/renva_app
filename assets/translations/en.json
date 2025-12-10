@@ -39,7 +39,22 @@
     "show": "Show",
     "user": "User",
     "no_phone": "No phone",
-    "continue": "Continue"
+    "continue": "Continue",
+    "submit": "Submit",
+    "from": "From",
+    "to": "To",
+    "unknown_service": "Unknown Service",
+    "unknown_subcategory": "Unknown Subcategory",
+    "unknown_location": "Unknown Location",
+    "unknown_user": "Unknown User",
+    "no_description": "No description",
+    "not_specified": "Not specified",
+    "date_not_specified": "Date not specified",
+    "time_not_specified": "Time not specified",
+    "price_not_specified": "Price not specified",
+    "no_description_available": "No description available",
+    "service_request": "Service Request",
+    "some_error": "Some error occurred"
   },
   "auth": {
     "login": "Login",
@@ -63,21 +78,30 @@
     "have_account": "Already have an account?",
     "no_account": "Don't have an account?",
     "sign_in_instead": "Sign in instead",
-    "sign_up_instead": "Sign up instead"
+    "sign_up_instead": "Sign up instead",
+    "forgot_password_title": "Forgot Password",
+    "forgot_password_subtitle": "Enter your phone number to receive a verification code",
+    "reset_password_title": "Reset Password",
+    "reset_password_subtitle": "Enter your new password",
+    "new_password": "New Password",
+    "new_password_placeholder": "Enter new password",
+    "password_changed": "Password changed successfully",
+    "verification_code_sent": "Verification code sent successfully",
+    "verification_code_resent": "Verification code resent"
   },
   "verification": {
-    "title": "Verify Phone Number",
-    "subtitle": "Enter the Code Sent To",
+    "title": "Verification",
+    "subtitle": "Enter the 4-digit code sent to your phone",
     "code_label": "Verification Code",
-    "code_placeholder": "0000",
+    "code_placeholder": "Enter 4-digit code",
     "resend_code": "Resend Code",
-    "resend_in": "Resend code in",
+    "resend_in": "Resend in {seconds}s",
     "seconds": "seconds",
     "verify": "Verify",
-    "verification_sent": "Verification code sent successfully",
+    "verification_sent": "Verification successful!",
     "verification_failed": "Verification failed",
     "invalid_code": "Invalid verification code",
-    "code_expired": "Verification code expired"
+    "code_expired": "Verification code has expired"
   },
   "profile": {
     "complete_profile": "Complete information's",
@@ -168,6 +192,7 @@
   },
   "home": {
     "title": "Home",
+    "join":"Join",
     "your_location": "Your Location",
     "location_name": "Location Name",
     "services": "Services",
@@ -304,7 +329,8 @@
     "feature_coming_soon": "Feature Coming Soon",
     "forgot_password_feature": "Forgot password feature will be available soon",
     "join_as_guest_clicked": "Join as Guest clicked",
-    "welcome_back": "Welcome Back!"
+    "welcome_back": "Welcome Back!",
+    "unknown_error": "Unknown error occurred"
   },
   "language": {
     "english": "English",
@@ -363,10 +389,12 @@
     "phone_min_length": "Phone number must be at least 7 digits",
     "phone_max_length": "Phone number must be less than 15 digits",
     "phone_invalid_format": "Invalid phone number format",
-    "password_min_length": "Password must be at least 6 characters",
     "password_required": "Password is required",
-    "invalid_price_range": "Invalid price range"
+    "invalid_price_range": "Invalid price range",
+    "password_min_length": "Password must be at least 6 characters",
+    "confirm_password_required": "Please confirm your password"
   },
+  
   "dialogs": {
     "go_back_title": "Go Back?",
     "unsaved_changes": "You have unsaved changes. Are you sure you want to go back?",
@@ -386,7 +414,22 @@
     "delete_account_warning": "Are you sure you want to delete your account? This action cannot be undone.",
     "final_confirmation": "Final Confirmation",
     "delete_account_final": "This will permanently delete your account and all data. Are you absolutely sure?",
-    "delete_forever": "Delete Forever"
+    "delete_forever": "Delete Forever",
+    "reset_password_confirm": "Are you sure you want to reset your password? A verification code will be sent to your phone.",
+    "select_location": "Select Location",
+    "location_selection_coming_soon": "Location selection will be implemented here",
+    "about_renva": "About Renva",
+    "about_renva_description": "Renva is your trusted platform for connecting with service providers. Find qualified professionals for all your service needs.",
+    "select_gallery_photos": "Select Gallery Photos",
+    "male": "Male",
+    "female": "Female",
+    "add_photo": "Add Photo",
+    "delete_order_confirm": "Are You Sure you want to delete the Request ?",
+    "reason_for_delete": "Reason for Delete",
+    "reason_for_delete_subtitle": "Please specify the reason for deleting the order",
+    "another_reason": "Another reason",
+    "select_deletion_reason": "Please select a deletion reason",
+    "provide_custom_deletion_reason": "Please provide a custom reason"
   },
   "errors": {
     "network_error": "Network connection error",
@@ -411,7 +454,37 @@
     "no_auth_token": "No authentication token found. Please login again.",
     "failed_complete_profile": "Failed to complete profile. Please try again.",
     "api_call_failed": "API call failed",
-    "processing_response_failed": "Profile completed but there was an issue processing the response."
+    "processing_response_failed": "Profile completed but there was an issue processing the response.",
+    "user_data_not_found": "User data not found. Please login again.",
+    "phone_not_found": "Phone number not found in your profile.",
+    "user_id_not_found": "User ID not found",
+    "user_not_provider": "User is not a provider",
+    "mode_switch_failed": "Failed to switch mode. Please try again.",
+    "loading_points": "Error loading points",
+    "loading_balance": "Error loading balance",
+    "delete_account_failed": "Failed to delete account",
+    "failed_to_select_gallery_photo": "Failed to select gallery photo",
+    "failed_to_remove_image": "Failed to remove image",
+    "gallery_photo_required": "At least one gallery photo is required",
+    "service_area_required": "Please select a service area",
+    "service_category_required": "Please select at least one service category",
+    "deleting_order": "Deleting order...",
+    "network_error_check_connection": "Network error. Please check your connection.",
+    "all_profile_updates_failed": "All profile updates failed. Please contact support.",
+    "verification_proceed_failed": "Verification successful but failed to proceed. Please try again.",
+    "failed_to_load_stories": "Failed to load stories",
+    "missing_reset_token": "Missing reset token. Please try again.",
+    "password_reset_processing_failed": "Password reset succeeded but failed to process response.",
+    "password_reset_failed": "Failed to reset password. Please try again.",
+    "error_loading_order_details": "Error loading order details",
+    "error_extracting_user_avatar": "Error extracting user avatar",
+    "cannot_add_offer_view_mode": "Cannot add offer in view mode",
+    "unable_to_add_offer": "Unable to add offer at this time",
+    "error_loading_offer_data": "Error loading offer data",
+    "cannot_edit_offer": "This offer cannot be edited",
+    "offer_submit_failed": "Failed to submit offer. Please try again.",
+    "navigation_error": "Navigation error",
+    "max_photos_allowed": "Maximum 5 photos allowed"
   },
   "success": {
     "login_successful": "Login successful",
@@ -424,7 +497,7 @@
     "password_changed": "Password changed successfully",
     "profile_photo_selected": "Profile photo selected successfully",
     "login_success": "Login successful",
-    "registration_success": "Registration successful", 
+    "registration_success": "Registration successful",
     "verification_success": "Phone number verified successfully",
     "password_reset_sent": "Password reset link sent to your email",
     "image_selected": "Image Selected",
@@ -434,7 +507,21 @@
     "logged_out": "You have been successfully logged out",
     "account_deleted": "Your account has been successfully deleted",
     "profile_completed_welcome": "Profile completed successfully! Welcome to Renva!",
-    "id_photo_selected": "ID photo selected successfully"
+    "id_photo_selected": "ID photo selected successfully",
+    "switched_to_provider_mode": "Switched to Provider mode",
+    "switched_to_user_mode": "Switched to User mode",
+    "logout_offline": "Logged out locally due to network error",
+    "gallery_photo_added": "Gallery photo added",
+    "order_deleted_successfully": "Order deleted successfully",
+    "provider_profile_updated": "Provider profile updated successfully!",
+    "profile_basic_updated": "Provider profile locked. Updating basic profile only...",
+    "profile_updated_categories_pending": "Profile updated! (Categories not saved - provider pending approval)",
+    "phone_verified_set_password": "Phone verified! Now set your new password.",
+    "otp_sent_password_reset": "OTP Sent for Password Reset",
+    "password_reset_successful": "Password reset successfully",
+    "login_with_new_password": "You can now login with your new password",
+    "provider_registration_successful": "Provider registration successful!",
+    "offer_submitted_successfully": "Offer submitted successfully"
   },
   "profile_menu": {
     "account": "Account",
@@ -462,7 +549,11 @@
     "password_change": "Password change functionality will be implemented here",
     "privacy_policy_content": "Privacy policy content will be shown here",
     "contact_info": "Contact information and support options will be shown here",
-    "faq_content": "Frequently asked questions will be shown here"
+    "faq_content": "Frequently asked questions will be shown here",
+    "provider_mode_label": "Provider",
+    "user_mode_label": "User",
+    "deleting_account": "Deleting...",
+    "not_a_provider": "Not a provider"
   },
   "stats": {
     "orders": "Orders",
@@ -497,7 +588,23 @@
     "subcategories": "subcategories",
     "providers": "providers",
     "up_to": "Up to",
-    "error_prefix": "Error: "
+    "error_prefix": "Error: ",
+    "service_area": "Service Area",
+    "service_area_specific": "I Provide A Service In A Specific Place",
+    "service_area_all_regions": "I Provide Services In All Regions",
+    "working_time": "Working time",
+    "working_time_from": "From",
+    "working_time_to": "To",
+    "working_time_any_time": "Any Time",
+    "description": "Description",
+    "description_placeholder": "Add Description",
+    "description_required": "Description is required",
+    "description_min_length": "Description must be at least 10 characters",
+    "upload_photos": "Upload Photos",
+    "upload_photo": "Upload Photo",
+    "working_hours_required": "Please set working hours or select \"Any Time\"",
+    "form_title": "Provider Registration Form",
+    "complete_registration": "Complete your provider registration"
   },
   "order_card": {
     "id_prefix": "ID ",
@@ -674,17 +781,17 @@
     "id_prefix": "ID ",
     "services_fallback": "Services",
     "no_address": "No address",
-    
+
     "view_details": "View details",
     "delete_offer": "Delete offer",
     "cancel_offer": "Cancel offer",
     "view_offers": "View Offers",
-    
+
     "your_offer": "Your offer:",
     "offer_accepted": "Accepted",
     "offer_pending": "Pending",
     "offer_declined": "Declined",
-    
+
     "order_cancelled": "Order cancelled",
     "cancelled_by_customer": "Order was cancelled by customer",
     "order_completed": "Order Completed",
@@ -692,17 +799,17 @@
     "complete_order": "Complete Order",
     "customer": "Customer",
     "success": "Success",
-    
+
     "delete_offer_title": "Delete Offer?",
     "delete_offer_description": "This will permanently remove your offer from this order.",
     "delete_offer_cancel": "Cancel",
     "delete_offer_confirm": "Delete",
-    
+
     "cancel_offer_title": "Cancel Offer?",
     "cancel_offer_description": "You will need to provide a reason for cancelling this offer.",
     "keep_offer": "Keep Offer",
     "cancel_offer_confirm": "Cancel Offer",
-    
+
     "reason_for_cancellation": "Reason for Cancellation",
     "reason_description": "Please specify the reason for cancelling this offer",
     "loading_reasons": "Loading cancel reasons...",
@@ -712,8 +819,39 @@
     "other_reason": "Other reason",
     "specify_reason": "Please specify your reason...",
     "cancel_offer_submit": "Cancel Offer",
-    
+
     "select_reason": "Please select a cancellation reason",
     "provide_custom_reason": "Please provide a custom reason"
+  },
+  "hints": {
+    "from": "From",
+    "to": "To",
+    "add_description": "Add Description",
+    "add_deletion_reason": "Add Another Reason For Deletion",
+    "write_review_here": "Write your review here...",
+    "time": "Time",
+    "offer_details_description": "Describe your offer details...",
+    "enter_new_password": "Enter new password",
+    "confirm_new_password": "Confirm new password"
+  },
+  "validation": {
+    "confirm_password_required": "Please confirm your password",
+    "passwords_do_not_match": "Passwords do not match",
+    "enter_valid_price": "Please enter a valid price",
+    "price_range_validation": "Price must be between {min} - {max} SEK",
+    "enter_valid_number": "Please enter a valid number"
+  },
+  "deletion_reasons": {
+    "change_mind": "Change my mind",
+    "no_longer_need": "I no longer need the service",
+    "provider_no_response": "The service provider did not respond to messages",
+    "high_prices": "Service provider prices are high"
+  },
+  "provider_status": {
+    "not_a_provider": "Not a provider",
+    "approved_provider": " Approved Provider",
+    "pending_approval": " Pending Approval",
+    "application_rejected": " Application Rejected",
+    "provider_status_prefix": " Provider Status: "
   }
 }

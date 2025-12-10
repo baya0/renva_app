@@ -13,6 +13,7 @@ import '../../../core/services/pagination/controller.dart';
 import '../../../core/services/pagination/widgets/initial_error.dart';
 import '../../../core/services/pagination/widgets/initial_loading.dart';
 import '../../../core/style/repo.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/image.dart';
 import '../../../core/widgets/modern_toast.dart';
 import '../../../gen/assets.gen.dart';
@@ -39,6 +40,7 @@ class ProviderHomePage extends StatelessWidget {
       textDirection: isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
       child: Scaffold(
         body: Container(
+          height: double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: isRTL ? Alignment.topRight : Alignment.topLeft,
@@ -50,252 +52,237 @@ class ProviderHomePage extends StatelessWidget {
           child: SafeArea(
             child: Builder(
               builder: (context) {
-                // Get screen dimensions
-                final screenHeight = MediaQuery.of(context).size.height;
-                final screenWidth = MediaQuery.of(context).size.width;
+                final r = context.responsive;
 
-                final horizontalPadding = screenWidth * 0.05;
-                final cardPadding = screenWidth * 0.08;
-                final titleFontSize = screenWidth * 0.065;
-                final bodyFontSize = screenWidth * 0.04;
-                final buttonHeight = screenHeight * 0.07;
-
-                return Column(
-                  children: [
-                    // Main content
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 40),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ClipRRect(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 50, sigmaY: 30),
-                              child: Container(
-                                padding: EdgeInsets.all(cardPadding),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(40),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: StyleRepo.grey.withValues(alpha: 0.2),
-                                      blurRadius: 40,
-                                      spreadRadius: 0,
-                                      blurStyle: BlurStyle.inner,
-                                    ),
-                                  ],
-                                  color: StyleRepo.softWhite.withValues(alpha: 0.1),
-                                  border: Border.all(
-                                    color: StyleRepo.grey.withValues(alpha: 0.5),
-                                    width: 1,
+                return SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: r.space24, vertical: r.space64),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ClipRRect(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 50, sigmaY: 30),
+                            child: Container(
+                              padding: EdgeInsets.all(r.space24),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(r.radius24),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: StyleRepo.grey.withValues(alpha: 0.2),
+                                    blurRadius: 40,
+                                    spreadRadius: 0,
+                                    blurStyle: BlurStyle.inner,
                                   ),
+                                ],
+                                color: StyleRepo.softWhite.withValues(alpha: 0.1),
+                                border: Border.all(
+                                  color: StyleRepo.grey.withValues(alpha: 0.5),
+                                  width: 1,
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ShaderMask(
-                                      shaderCallback:
-                                          (bounds) => LinearGradient(
-                                            colors: [
-                                              StyleRepo.softWhite,
-                                              StyleRepo.softWhite.withValues(alpha: 0.7),
-                                            ],
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                          ).createShader(bounds),
-                                      blendMode: BlendMode.srcIn,
-                                      child: Text(
-                                        tr(LocaleKeys.provider_home_welcome_future_provider),
-                                        style: TextStyle(
-                                          fontSize: titleFontSize.clamp(25.0, 32.0),
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: FontFamily.customFont,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-
-                                    SizedBox(height: screenHeight * 0.04),
-
-                                    Text(
-                                      tr(LocaleKeys.provider_home_review_description),
-                                      textAlign: TextAlign.center,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  ShaderMask(
+                                    shaderCallback:
+                                        (bounds) => LinearGradient(
+                                          colors: [
+                                            StyleRepo.softWhite,
+                                            StyleRepo.softWhite.withValues(alpha: 0.7),
+                                          ],
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                        ).createShader(bounds),
+                                    blendMode: BlendMode.srcIn,
+                                    child: Text(
+                                      tr(LocaleKeys.provider_home_welcome_future_provider),
                                       style: TextStyle(
-                                        fontSize: bodyFontSize.clamp(14.0, 18.0),
-                                        color: StyleRepo.softWhite.withValues(alpha: 0.9),
+                                        fontSize: r.fontSize24,
+                                        fontWeight: FontWeight.bold,
                                         fontFamily: FontFamily.customFont,
-                                        height: 1.5,
                                       ),
+                                      textAlign: TextAlign.center,
                                     ),
+                                  ),
 
-                                    SizedBox(height: screenHeight * 0.03),
+                                  SizedBox(height: r.space24),
 
-                                    // Status indicator
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(16),
-                                      child: BackdropFilter(
-                                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: screenWidth * 0.04,
-                                            vertical: screenHeight * 0.015,
+                                  Text(
+                                    tr(LocaleKeys.provider_home_review_description),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: r.fontSize14,
+                                      color: StyleRepo.softWhite.withValues(alpha: 0.9),
+                                      fontFamily: FontFamily.customFont,
+                                      height: 1.5,
+                                    ),
+                                  ),
+
+                                  SizedBox(height: r.space20),
+
+                                  // Status indicator
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(r.radius16),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: r.space16,
+                                          vertical: r.space12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(r.radius16),
+                                          color: StyleRepo.forestGreen.withValues(alpha: 0.1),
+                                          border: Border.all(
+                                            color: StyleRepo.forestGreen.withValues(alpha: 0.4),
+                                            width: 1,
                                           ),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(16),
-                                            color: StyleRepo.forestGreen.withValues(alpha: 0.1),
-                                            border: Border.all(
-                                              color: StyleRepo.forestGreen.withValues(alpha: 0.4),
-                                              width: 1,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            textDirection:
-                                                isRTL
-                                                    ? flutter.TextDirection.rtl
-                                                    : flutter.TextDirection.ltr,
-                                            children: [
-                                              Container(
-                                                width: 8,
-                                                height: 8,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: StyleRepo.forestGreen,
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: StyleRepo.forestGreen.withValues(
-                                                        alpha: 0.5,
-                                                      ),
-                                                      blurRadius: 8,
-                                                      spreadRadius: 2,
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          textDirection:
+                                              isRTL
+                                                  ? flutter.TextDirection.rtl
+                                                  : flutter.TextDirection.ltr,
+                                          children: [
+                                            Container(
+                                              width: 8,
+                                              height: 8,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: StyleRepo.forestGreen,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: StyleRepo.forestGreen.withValues(
+                                                      alpha: 0.5,
                                                     ),
-                                                  ],
-                                                ),
+                                                    blurRadius: 8,
+                                                    spreadRadius: 2,
+                                                  ),
+                                                ],
                                               ),
-                                              SizedBox(width: 10),
-                                              Text(
+                                            ),
+                                            SizedBox(width: r.space8),
+                                            Flexible(
+                                              child: Text(
                                                 tr(LocaleKeys.provider_home_review_in_progress),
                                                 style: TextStyle(
-                                                  fontSize: bodyFontSize.clamp(12.0, 16.0),
+                                                  fontSize: r.fontSize12,
                                                   color: StyleRepo.forestGreen,
                                                   fontWeight: FontWeight.w600,
                                                   fontFamily: FontFamily.customFont,
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
+                                  ),
 
-                                    SizedBox(height: screenHeight * 0.02),
+                                  SizedBox(height: r.space16),
 
-                                    Text(
-                                      tr(LocaleKeys.provider_home_what_awaits_you),
-                                      style: TextStyle(
-                                        fontSize: bodyFontSize.clamp(14.0, 18.0),
-                                        color: StyleRepo.deepBlue,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: FontFamily.customFont,
+                                  Text(
+                                    tr(LocaleKeys.provider_home_what_awaits_you),
+                                    style: TextStyle(
+                                      fontSize: r.fontSize14,
+                                      color: StyleRepo.deepBlue,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: FontFamily.customFont,
+                                    ),
+                                  ),
+
+                                  SizedBox(height: r.space16),
+
+                                  Row(
+                                    textDirection:
+                                        isRTL
+                                            ? flutter.TextDirection.rtl
+                                            : flutter.TextDirection.ltr,
+                                    children: [
+                                      Expanded(
+                                        child: _buildFeatureCard(
+                                          Assets.icons.services.request,
+                                          tr(LocaleKeys.provider_home_receive_requests),
+                                          r,
+                                          isRTL,
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(width: r.space8),
+                                      Expanded(
+                                        child: _buildFeatureCard(
+                                          Assets.icons.services.coins,
+                                          tr(LocaleKeys.provider_home_earn_money),
+                                          r,
+                                          isRTL,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: r.space8),
+                                  Row(
+                                    textDirection:
+                                        isRTL
+                                            ? flutter.TextDirection.rtl
+                                            : flutter.TextDirection.ltr,
+                                    children: [
+                                      Expanded(
+                                        child: _buildFeatureCard(
+                                          Assets.icons.services.reputation,
+                                          tr(LocaleKeys.provider_home_build_reputation),
+                                          r,
+                                          isRTL,
+                                        ),
+                                      ),
+                                      SizedBox(width: r.space8),
+                                      Expanded(
+                                        child: _buildFeatureCard(
+                                          Assets.icons.services.trend,
+                                          tr(LocaleKeys.provider_home_grow_business),
+                                          r,
+                                          isRTL,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
 
-                                    SizedBox(height: screenHeight * 0.02),
+                                  SizedBox(height: r.space24),
 
-                                    Row(
-                                      textDirection:
-                                          isRTL
-                                              ? flutter.TextDirection.rtl
-                                              : flutter.TextDirection.ltr,
-                                      children: [
-                                        Expanded(
-                                          child: _buildFeatureCard(
-                                            Assets.icons.services.request,
-                                            tr(LocaleKeys.provider_home_receive_requests),
-                                            screenWidth,
-                                            screenHeight,
-                                            isRTL,
-                                          ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: r.buttonHeightMedium,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Get.find<AppBuilder>().setProviderMode(false);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: StyleRepo.deepBlue,
+                                        foregroundColor: StyleRepo.softWhite,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(r.radius16),
                                         ),
-                                        SizedBox(width: 10),
-                                        Expanded(
-                                          child: _buildFeatureCard(
-                                            Assets.icons.services.coins,
-                                            tr(LocaleKeys.provider_home_earn_money),
-                                            screenWidth,
-                                            screenHeight,
-                                            isRTL,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 10),
-                                    Row(
-                                      textDirection:
-                                          isRTL
-                                              ? flutter.TextDirection.rtl
-                                              : flutter.TextDirection.ltr,
-                                      children: [
-                                        Expanded(
-                                          child: _buildFeatureCard(
-                                            Assets.icons.services.reputation,
-                                            tr(LocaleKeys.provider_home_build_reputation),
-                                            screenWidth,
-                                            screenHeight,
-                                            isRTL,
-                                          ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Expanded(
-                                          child: _buildFeatureCard(
-                                            Assets.icons.services.trend,
-                                            tr(LocaleKeys.provider_home_grow_business),
-                                            screenWidth,
-                                            screenHeight,
-                                            isRTL,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-
-                                    SizedBox(height: screenHeight * 0.04),
-
-                                    SizedBox(
-                                      width: double.infinity,
-                                      height: buttonHeight.clamp(45.0, 55.0),
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Get.find<AppBuilder>().setProviderMode(false);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: StyleRepo.deepBlue,
-                                          foregroundColor: StyleRepo.softWhite,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(16),
-                                          ),
-                                          elevation: 0,
-                                        ),
-                                        child: Text(
-                                          tr(LocaleKeys.provider_home_continue_as_customer),
-                                          style: TextStyle(
-                                            fontSize: bodyFontSize.clamp(14.0, 18.0),
-                                            fontWeight: FontWeight.w700,
-                                            fontFamily: FontFamily.customFont,
-                                          ),
+                                        elevation: 0,
+                                      ),
+                                      child: Text(
+                                        tr(LocaleKeys.provider_home_continue_as_customer),
+                                        style: TextStyle(
+                                          fontSize: r.fontSize12,
+                                          fontWeight: FontWeight.w700,
+                                          fontFamily: FontFamily.customFont,
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-
-                          // Bottom spacer
-                          SizedBox(height: screenHeight * 0.1),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 );
               },
             ),
@@ -305,32 +292,24 @@ class ProviderHomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureCard(
-    SvgGenImage iconAsset,
-    String text,
-    double screenWidth,
-    double screenHeight,
-    bool isRTL,
-  ) {
+  Widget _buildFeatureCard(SvgGenImage iconAsset, String text, Responsive r, bool isRTL) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(r.radius12),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
-          padding: EdgeInsets.symmetric(
-            vertical: screenHeight * 0.015,
-            horizontal: screenWidth * 0.02,
-          ),
+          padding: EdgeInsets.symmetric(vertical: r.space12, horizontal: r.space8),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(r.radius12),
             color: StyleRepo.deepBlue.withValues(alpha: 0.1),
             border: Border.all(color: StyleRepo.deepBlue.withValues(alpha: 0.2), width: 1),
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                width: screenWidth * 0.08,
-                height: screenWidth * 0.08,
+                width: r.iconSize32,
+                height: r.iconSize32,
                 child: ShaderMask(
                   shaderCallback:
                       (bounds) => LinearGradient(
@@ -341,17 +320,19 @@ class ProviderHomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 4),
+              SizedBox(height: r.space4),
               Text(
                 text,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: (screenWidth * 0.028).clamp(10.0, 14.0),
+                  fontSize: r.fontSize10,
                   color: StyleRepo.deepBlue.withValues(alpha: 0.9),
                   fontWeight: FontWeight.w500,
                   fontFamily: FontFamily.customFont,
                   height: 1.2,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
@@ -362,6 +343,7 @@ class ProviderHomePage extends StatelessWidget {
 
   Widget _buildNormalProviderHomePage(BuildContext context, bool isRTL) {
     final controller = Get.put(ProviderHomePageController());
+    final r = context.responsive;
 
     return Directionality(
       textDirection: isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
@@ -398,15 +380,20 @@ class ProviderHomePage extends StatelessWidget {
                     children: [
                       // Logo and notifications row
                       Padding(
-                        padding: EdgeInsets.fromLTRB(isRTL ? 20 : 23, 12, isRTL ? 23 : 20, 0),
+                        padding: EdgeInsets.fromLTRB(
+                          isRTL ? r.space20 : r.space24,
+                          r.space12,
+                          isRTL ? r.space24 : r.space20,
+                          0,
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           textDirection:
                               isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
                           children: [
                             Assets.images.logo.renva.svg(
-                              width: 85,
-                              height: 22,
+                              width: r.value(mobile: 75.0, tablet: 85.0, desktop: 95.0),
+                              height: r.value(mobile: 20.0, tablet: 22.0, desktop: 25.0),
                               colorFilter: ColorFilter.mode(StyleRepo.softWhite, BlendMode.srcIn),
                             ),
                             Row(
@@ -416,20 +403,20 @@ class ProviderHomePage extends StatelessWidget {
                                 GestureDetector(
                                   onTap: () => controller.onNotificationTap(),
                                   child: Assets.icons.essentials.search.svg(
-                                    width: 24,
-                                    height: 24,
+                                    width: r.iconSize24,
+                                    height: r.iconSize24,
                                     colorFilter: ColorFilter.mode(
                                       StyleRepo.softWhite,
                                       BlendMode.srcIn,
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 26),
+                                SizedBox(width: r.space24),
                                 GestureDetector(
                                   onTap: () => controller.onNotificationTap(),
                                   child: Assets.icons.messages.notifications.svg(
-                                    width: 24,
-                                    height: 24,
+                                    width: r.iconSize24,
+                                    height: r.iconSize24,
                                     colorFilter: ColorFilter.mode(
                                       StyleRepo.softWhite,
                                       BlendMode.srcIn,
@@ -441,10 +428,10 @@ class ProviderHomePage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 25),
+                      SizedBox(height: r.space24),
 
-                      _buildProviderInfoSection(controller, isRTL),
-                      const SizedBox(height: 30),
+                      _buildProviderInfoSection(controller, isRTL, r),
+                      SizedBox(height: r.space32),
                     ],
                   ),
                 ),
@@ -452,11 +439,11 @@ class ProviderHomePage extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: StyleRepo.softWhite,
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
+                        topLeft: Radius.circular(r.radius24),
+                        topRight: Radius.circular(r.radius24),
                       ),
                     ),
                     child: Column(
@@ -464,7 +451,12 @@ class ProviderHomePage extends StatelessWidget {
                       children: [
                         // Section header
                         Padding(
-                          padding: EdgeInsets.fromLTRB(isRTL ? 20 : 19, 23, isRTL ? 19 : 20, 0),
+                          padding: EdgeInsets.fromLTRB(
+                            isRTL ? r.space20 : r.space20,
+                            r.space24,
+                            isRTL ? r.space20 : r.space20,
+                            0,
+                          ),
                           child: Column(
                             crossAxisAlignment:
                                 isRTL ? CrossAxisAlignment.start : CrossAxisAlignment.end,
@@ -473,13 +465,15 @@ class ProviderHomePage extends StatelessWidget {
                                 textDirection:
                                     isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
                                 children: [
-                                  Text(
-                                    tr(LocaleKeys.provider_latest_orders),
-                                    style: Theme.of(
-                                      Get.context!,
-                                    ).textTheme.titleMedium?.copyWith(color: StyleRepo.black),
+                                  Expanded(
+                                    child: Text(
+                                      tr(LocaleKeys.provider_latest_orders),
+                                      style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
+                                        color: StyleRepo.black,
+                                        fontSize: r.fontSize16,
+                                      ),
+                                    ),
                                   ),
-                                  const Spacer(),
                                   GestureDetector(
                                     onTap: controller.onFilterOrdersTap,
                                     child: Assets.icons.essentials.searchList.svg(
@@ -487,18 +481,19 @@ class ProviderHomePage extends StatelessWidget {
                                         StyleRepo.grey,
                                         BlendMode.srcIn,
                                       ),
-                                      height: 24,
-                                      width: 24,
+                                      height: r.iconSize24,
+                                      width: r.iconSize24,
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 7),
+                              SizedBox(height: r.space8),
                               Text(
                                 tr(LocaleKeys.provider_requests_sent_from_newest_to_oldest),
-                                style: Theme.of(
-                                  Get.context!,
-                                ).textTheme.labelSmall?.copyWith(color: StyleRepo.grey),
+                                style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+                                  color: StyleRepo.grey,
+                                  fontSize: r.fontSize12,
+                                ),
                                 textAlign: isRTL ? TextAlign.right : TextAlign.left,
                               ),
                             ],
@@ -513,11 +508,14 @@ class ProviderHomePage extends StatelessWidget {
                             fromJson: (json) => controller.formatOrderForPager(json),
                             hasRefresh: true,
                             closeToListEnd: 300,
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: r.space20,
+                              vertical: r.space20,
+                            ),
 
                             initialLoading: const InitialLoading(),
                             loading: Container(
-                              padding: const EdgeInsets.all(16),
+                              padding: EdgeInsets.all(r.space16),
                               alignment: Alignment.center,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -525,17 +523,17 @@ class ProviderHomePage extends StatelessWidget {
                                     isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
                                 children: [
                                   SizedBox(
-                                    width: 20,
-                                    height: 20,
+                                    width: r.iconSize20,
+                                    height: r.iconSize20,
                                     child: CircularProgressIndicator(
                                       color: StyleRepo.deepBlue,
                                       strokeWidth: 2,
                                     ),
                                   ),
-                                  const SizedBox(width: 12),
+                                  SizedBox(width: r.space12),
                                   Text(
                                     tr(LocaleKeys.provider_home_loading_more_orders),
-                                    style: TextStyle(fontSize: 14, color: StyleRepo.grey),
+                                    style: TextStyle(fontSize: r.fontSize14, color: StyleRepo.grey),
                                   ),
                                 ],
                               ),
@@ -562,7 +560,7 @@ class ProviderHomePage extends StatelessWidget {
                                 ),
 
                             itemBuilder: (context, index, order) {
-                              return _buildOrderCard(order, index, controller, isRTL);
+                              return _buildOrderCard(order, index, controller, isRTL, r);
                             },
                           ),
                         ),
@@ -578,9 +576,13 @@ class ProviderHomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProviderInfoSection(ProviderHomePageController controller, bool isRTL) {
+  Widget _buildProviderInfoSection(
+    ProviderHomePageController controller,
+    bool isRTL,
+    Responsive r,
+  ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: r.space20),
       child: Obx(() {
         final providerData = controller.providerInfo.value;
 
@@ -589,8 +591,8 @@ class ProviderHomePage extends StatelessWidget {
           children: [
             // Provider avatar
             Container(
-              width: 50,
-              height: 50,
+              width: r.value(mobile: 50.0, tablet: 55.0, desktop: 60.0),
+              height: r.value(mobile: 50.0, tablet: 55.0, desktop: 60.0),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white.withValues(alpha: 0.3),
@@ -600,10 +602,11 @@ class ProviderHomePage extends StatelessWidget {
                 child: _buildAvatarWidget(
                   providerData?['avatar'],
                   controller.isLoadingProviderInfo.value,
+                  r,
                 ),
               ),
             ),
-            SizedBox(width: isRTL ? 15 : 15),
+            SizedBox(width: r.space16),
 
             // Provider details
             Expanded(
@@ -612,49 +615,56 @@ class ProviderHomePage extends StatelessWidget {
                 children: [
                   Text(
                     providerData?['name'] ?? tr(LocaleKeys.provider_home_provider_name_fallback),
-                    style: const TextStyle(
-                      fontSize: 14,
+                    style: TextStyle(
+                      fontSize: r.fontSize14,
                       color: StyleRepo.softWhite,
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: isRTL ? TextAlign.right : TextAlign.left,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: r.space4),
                   Row(
                     textDirection: isRTL ? flutter.TextDirection.rtl : flutter.TextDirection.ltr,
                     children: [
                       // Category
-                      Text(
-                        providerData?['category'] ??
-                            tr(LocaleKeys.provider_home_service_provider_fallback),
-                        style: TextStyle(
-                          color: StyleRepo.softWhite,
-                          fontSize: 11,
-                          fontFamily: FontFamily.customFont,
-                          decoration: TextDecoration.underline,
-                          decorationColor: StyleRepo.softWhite,
-                          decorationThickness: 1.2,
+                      Flexible(
+                        child: Text(
+                          providerData?['category'] ??
+                              tr(LocaleKeys.provider_home_service_provider_fallback),
+                          style: TextStyle(
+                            color: StyleRepo.softWhite,
+                            fontSize: r.fontSize11,
+                            fontFamily: FontFamily.customFont,
+                            decoration: TextDecoration.underline,
+                            decorationColor: StyleRepo.softWhite,
+                            decorationThickness: 1.2,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      SizedBox(width: 12),
+                      SizedBox(width: r.space12),
 
                       // Rating stars
                       Row(
                         textDirection: flutter.TextDirection.ltr,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           ...List.generate(5, (index) {
                             final rating = providerData?['rating']?.toDouble() ?? 0.0;
                             return Icon(
                               index < rating.floor() ? Icons.star : Icons.star_border,
                               color: Colors.amber,
-                              size: 14,
+                              size: r.iconSize14,
                             );
                           }),
-                          const SizedBox(width: 6),
+                          SizedBox(width: r.space4),
                           Text(
                             "${providerData?['rating']?.toStringAsFixed(1) ?? '0.0'}",
-                            style: const TextStyle(
-                              fontSize: 12,
+                            style: TextStyle(
+                              fontSize: r.fontSize12,
                               color: Colors.amber,
                               fontWeight: FontWeight.w500,
                             ),
@@ -677,19 +687,20 @@ class ProviderHomePage extends StatelessWidget {
     int index,
     ProviderHomePageController controller,
     bool isRTL,
+    Responsive r,
   ) {
     if (order.isEmpty) {
       return Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.only(bottom: r.space12),
+        padding: EdgeInsets.all(r.space16),
         decoration: BoxDecoration(
           color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(r.radius12),
         ),
         child: Center(
           child: Text(
             tr(LocaleKeys.provider_home_invalid_order_data),
-            style: TextStyle(color: Colors.grey.shade600),
+            style: TextStyle(color: Colors.grey.shade600, fontSize: r.fontSize14),
           ),
         ),
       );
@@ -706,7 +717,7 @@ class ProviderHomePage extends StatelessWidget {
     final hasCloseButton = order['hasCloseButton'] == true;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.only(bottom: r.space12),
       child: GestureDetector(
         onTap: () {
           Get.toNamed(Pages.view_order_detail.value, arguments: order);
@@ -714,13 +725,13 @@ class ProviderHomePage extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: StyleRepo.softWhite,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(r.radius12),
             border: Border.all(color: StyleRepo.softGrey, width: 1),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                blurRadius: r.value(mobile: 6.0, tablet: 8.0, desktop: 10.0),
+                offset: Offset(0, r.value(mobile: 1.0, tablet: 2.0, desktop: 2.0)),
               ),
             ],
           ),
@@ -729,13 +740,23 @@ class ProviderHomePage extends StatelessWidget {
               // Card content with left-edge color
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(r.radius12),
                   border:
                       isRTL
-                          ? Border(right: BorderSide(color: StyleRepo.deepBlue, width: 20))
-                          : Border(left: BorderSide(color: StyleRepo.deepBlue, width: 20)),
+                          ? Border(
+                            right: BorderSide(
+                              color: StyleRepo.deepBlue,
+                              width: r.value(mobile: 16.0, tablet: 18.0, desktop: 20.0),
+                            ),
+                          )
+                          : Border(
+                            left: BorderSide(
+                              color: StyleRepo.deepBlue,
+                              width: r.value(mobile: 16.0, tablet: 18.0, desktop: 20.0),
+                            ),
+                          ),
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(r.space16),
                 child: Column(
                   crossAxisAlignment: isRTL ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                   children: [
@@ -745,14 +766,17 @@ class ProviderHomePage extends StatelessWidget {
                       children: [
                         Assets.icons.essentials.circleUser.svg(
                           colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
-                          height: 18,
-                          width: 18,
+                          height: r.value(mobile: 16.0, tablet: 18.0, desktop: 20.0),
+                          width: r.value(mobile: 16.0, tablet: 18.0, desktop: 20.0),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: r.space8),
                         Expanded(
                           child: Text(
                             requesterName,
-                            style: Get.textTheme.labelLarge?.copyWith(color: StyleRepo.black),
+                            style: Get.textTheme.labelLarge?.copyWith(
+                              color: StyleRepo.black,
+                              fontSize: r.fontSize14,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             textAlign: isRTL ? TextAlign.right : TextAlign.left,
@@ -761,7 +785,7 @@ class ProviderHomePage extends StatelessWidget {
                       ],
                     ),
 
-                    const SizedBox(height: 18),
+                    SizedBox(height: r.space16),
 
                     // Location
                     Row(
@@ -769,16 +793,17 @@ class ProviderHomePage extends StatelessWidget {
                       children: [
                         Assets.icons.essentials.locationPin.svg(
                           colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
-                          height: 18,
-                          width: 18,
+                          height: r.value(mobile: 16.0, tablet: 18.0, desktop: 20.0),
+                          width: r.value(mobile: 16.0, tablet: 18.0, desktop: 20.0),
                         ),
-                        const SizedBox(width: 16),
+                        SizedBox(width: r.space16),
                         Expanded(
                           child: Text(
                             location,
-                            style: Theme.of(
-                              Get.context!,
-                            ).textTheme.bodyMedium?.copyWith(color: StyleRepo.grey),
+                            style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(
+                              color: StyleRepo.grey,
+                              fontSize: r.fontSize12,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             textAlign: isRTL ? TextAlign.right : TextAlign.left,
@@ -787,7 +812,7 @@ class ProviderHomePage extends StatelessWidget {
                       ],
                     ),
 
-                    const SizedBox(height: 18),
+                    SizedBox(height: r.space16),
 
                     // Date
                     Row(
@@ -795,20 +820,21 @@ class ProviderHomePage extends StatelessWidget {
                       children: [
                         Assets.icons.document.calendar.svg(
                           colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
-                          height: 18,
-                          width: 18,
+                          height: r.value(mobile: 16.0, tablet: 18.0, desktop: 20.0),
+                          width: r.value(mobile: 16.0, tablet: 18.0, desktop: 20.0),
                         ),
-                        const SizedBox(width: 16),
+                        SizedBox(width: r.space16),
                         Text(
                           date,
-                          style: Theme.of(
-                            Get.context!,
-                          ).textTheme.bodyMedium?.copyWith(color: StyleRepo.grey),
+                          style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(
+                            color: StyleRepo.grey,
+                            fontSize: r.fontSize12,
+                          ),
                         ),
                       ],
                     ),
 
-                    const SizedBox(height: 18),
+                    SizedBox(height: r.space16),
 
                     // Time + Duration
                     Row(
@@ -816,27 +842,28 @@ class ProviderHomePage extends StatelessWidget {
                       children: [
                         Assets.icons.document.timerAlt.svg(
                           colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
-                          height: 18,
-                          width: 18,
+                          height: r.value(mobile: 16.0, tablet: 18.0, desktop: 20.0),
+                          width: r.value(mobile: 16.0, tablet: 18.0, desktop: 20.0),
                         ),
-                        const SizedBox(width: 16),
+                        SizedBox(width: r.space16),
                         Text(
                           time,
-                          style: Theme.of(
-                            Get.context!,
-                          ).textTheme.bodyMedium?.copyWith(color: StyleRepo.grey),
+                          style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(
+                            color: StyleRepo.grey,
+                            fontSize: r.fontSize12,
+                          ),
                         ),
                         const Spacer(),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: EdgeInsets.symmetric(horizontal: r.space8, vertical: r.space4),
                           decoration: BoxDecoration(
                             color: StyleRepo.deepBlue.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(r.radius12),
                           ),
                           child: Text(
                             duration,
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: r.fontSize12,
                               color: StyleRepo.deepBlue,
                               fontWeight: FontWeight.w600,
                             ),
@@ -851,15 +878,15 @@ class ProviderHomePage extends StatelessWidget {
               // Close Button
               if (hasCloseButton)
                 Positioned(
-                  top: 16,
-                  right: isRTL ? null : 21,
-                  left: isRTL ? 21 : null,
+                  top: r.space16,
+                  right: isRTL ? null : r.value(mobile: 18.0, tablet: 20.0, desktop: 21.0),
+                  left: isRTL ? r.value(mobile: 18.0, tablet: 20.0, desktop: 21.0) : null,
                   child: GestureDetector(
                     onTap: () => PopUpToast.show(tr(LocaleKeys.provider_home_close_button_tapped)),
                     child: Container(
-                      padding: const EdgeInsets.all(1.5),
-                      width: 14,
-                      height: 14,
+                      padding: EdgeInsets.all(r.value(mobile: 1.0, tablet: 1.5, desktop: 1.5)),
+                      width: r.value(mobile: 12.0, tablet: 14.0, desktop: 14.0),
+                      height: r.value(mobile: 12.0, tablet: 14.0, desktop: 14.0),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(color: StyleRepo.grey, width: 1),
@@ -879,14 +906,14 @@ class ProviderHomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatarWidget(String? avatarUrl, bool isLoading) {
+  Widget _buildAvatarWidget(String? avatarUrl, bool isLoading, Responsive r) {
     if (isLoading) {
       return Container(
         color: StyleRepo.softWhite.withValues(alpha: 0.3),
         child: Center(
           child: SizedBox(
-            width: 20,
-            height: 20,
+            width: r.value(mobile: 18.0, tablet: 20.0, desktop: 22.0),
+            height: r.value(mobile: 18.0, tablet: 20.0, desktop: 22.0),
             child: CircularProgressIndicator(color: StyleRepo.softWhite, strokeWidth: 2),
           ),
         ),
@@ -902,23 +929,24 @@ class ProviderHomePage extends StatelessWidget {
           color: StyleRepo.softWhite.withOpacity(0.3),
           child: Center(
             child: SizedBox(
-              width: 20,
-              height: 20,
+              width: r.value(mobile: 18.0, tablet: 20.0, desktop: 22.0),
+              height: r.value(mobile: 18.0, tablet: 20.0, desktop: 22.0),
               child: CircularProgressIndicator(color: StyleRepo.softWhite, strokeWidth: 2),
             ),
           ),
         ),
-        errorWidget: _buildDefaultAvatar(),
+        errorWidget: _buildDefaultAvatar(r),
       );
     } else {
-      return _buildDefaultAvatar();
+      return _buildDefaultAvatar(r);
     }
   }
 
-  Widget _buildDefaultAvatar() {
+  Widget _buildDefaultAvatar(Responsive r) {
+    final avatarSize = r.value(mobile: 45.0, tablet: 50.0, desktop: 55.0);
     return Container(
-      width: 50,
-      height: 50,
+      width: avatarSize,
+      height: avatarSize,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: StyleRepo.softWhite.withValues(alpha: 0.3),

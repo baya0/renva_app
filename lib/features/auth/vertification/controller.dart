@@ -6,6 +6,7 @@ import 'package:get/get.dart' hide Response;
 import 'package:renva0/core/widgets/modern_toast.dart';
 
 import '../../../core/config/app_builder.dart';
+import '../../../core/config/role.dart';
 import '../../../core/localization/strings.dart';
 import '../../../core/routes/routes.dart';
 import '../../../core/services/rest_api/rest_api.dart';
@@ -29,6 +30,9 @@ class VerifyPhoneController extends GetxController {
 
   Timer? _resendTimer;
   final String? initialPhoneNumber;
+
+  // Getter to access AppBuilder instance
+  AppBuilder get appBuilder => Get.find<AppBuilder>();
 
   VerifyPhoneController({this.initialPhoneNumber});
 
@@ -144,15 +148,44 @@ class VerifyPhoneController extends GetxController {
 
   Future<void> _handleSuccessfulVerification(ResponseModel response) async {
     try {
-      // Check if this is a forgot password flow
-      if (fromForgotPassword) {
-        // Extract the reset token from the verification response
+      // Check if we have the fromForgotPassword flag
+      bool isFromForgotPassword = false;
+      if (Get.arguments != null && Get.arguments is Map) {
+        final args = Get.arguments as Map;
+        isFromForgotPassword = args['fromForgotPassword'] as bool? ?? false;
+      }
+
+      print('🔐 Verification successful');
+      print('   From forgot password: $isFromForgotPassword');
+
+      // ===== FORGOT PASSWORD FLOW (FROM PROFILE OR LOGIN) =====
+      if (isFromForgotPassword) {
+        print('🔐 Handling forgot password verification...');
+
         if (response.data is Map<String, dynamic>) {
           final responseData = response.data as Map<String, dynamic>;
-          resetPasswordToken = responseData['token']; // or whatever the token field is called
 
-          if (resetPasswordToken != null) {
-            await _handleForgotPasswordVerificationSuccess();
+          // CRITICAL: Extract the RESET token (NOT auth token!)
+          String? resetToken = responseData['token'] ?? responseData['reset_token'];
+
+          if (resetToken != null && resetToken.isNotEmpty) {
+            print('✅ Reset token received');
+
+            // IMPORTANT: Do NOT set this as auth token!
+            // String resetPasswordToken = resetToken;  // Store separately
+
+            PopUpToast.show(tr(LocaleKeys.verification_verification_sent));
+            await Future.delayed(Duration(milliseconds: 500));
+
+            // Navigate to YOUR reset password page
+            Get.offNamed(
+              Pages.reset_password.value, // Or whatever your route is
+              arguments: {
+                'resetToken': resetToken, // Pass reset token
+                'phone': cleanPhone,
+                'dialCode': dialCode,
+              },
+            );
             return;
           } else {
             throw Exception('No reset token received from verification');
@@ -162,47 +195,54 @@ class VerifyPhoneController extends GetxController {
         }
       }
 
-      // Original registration/login verification logic (unchanged)
+      // ===== NORMAL REGISTRATION/LOGIN FLOW =====
+      print('👤 Handling normal verification (registration/login)...');
+
       if (response.data is Map<String, dynamic>) {
         final responseData = response.data as Map<String, dynamic>;
 
-        // Extract key values from API response
-        String? phoneVerifiedAt = responseData['phone_verified_at'];
-        int isCompleted = responseData['is_completed'] ?? 0;
+        // Extract AUTHENTICATION data
+        String? authToken = responseData['token'];
+        bool? isVerified = responseData['phone_verified_at'] != null;
+        int? isCompleted = responseData['is_completed'];
 
-        // Update app state with API response values
-        final appBuilder = Get.find<AppBuilder>();
-        appBuilder.updateFromAPIResponse(responseData);
+        // NOW we can update app state (because it's normal login)
+        if (authToken != null && authToken.isNotEmpty) {
+          appBuilder.setToken(authToken);
+          APIService.instance.setToken(authToken);
+        }
 
-        // Navigate based on API response values
-        if (phoneVerifiedAt != null && isCompleted == 1) {
-          PopUpToast.show(tr(LocaleKeys.messages_phone_verified_complete));
-          await Future.delayed(Duration(milliseconds: 500));
-          Get.offAllNamed(Pages.home.value);
-        } else if (phoneVerifiedAt != null && isCompleted != 1) {
-          // User is verified but profile incomplete
-          PopUpToast.show(tr(LocaleKeys.messages_please_complete_profile_info));
+        appBuilder.setVerified(isVerified);
+        appBuilder.setRole(Role.user);
+
+        // Check profile completion
+        if (isCompleted == null || isCompleted != 1) {
+          appBuilder.setProfileCompleted(false);
+          PopUpToast.show(tr(LocaleKeys.verification_verification_sent));
+
           await Future.delayed(Duration(milliseconds: 500));
           Get.offAllNamed(Pages.complete_info.value);
         } else {
-          // Something went wrong with verification
-          throw Exception(tr(LocaleKeys.verification_verification_failed));
+          appBuilder.setProfileCompleted(true);
+
+          if (responseData.containsKey('user')) {
+            appBuilder.updateFromAPIResponse(responseData);
+          }
+
+          PopUpToast.show(tr(LocaleKeys.success_verification_success));
+          await Future.delayed(Duration(milliseconds: 500));
+          Get.offAllNamed(Pages.home.value);
         }
-      } else {
-        throw Exception(tr(LocaleKeys.verification_verification_failed));
       }
     } catch (e) {
-      PopUpToast.show(tr(LocaleKeys.verification_verification_failed));
-
-      // Fallback navigation
-      final appBuilder = Get.find<AppBuilder>();
-      appBuilder.refreshNavigation();
+      print('💥 Error handling successful verification: $e');
+      PopUpToast.show(tr(LocaleKeys.errors_something_went_wrong));
     }
   }
 
   Future<void> _handleForgotPasswordVerificationSuccess() async {
     try {
-      PopUpToast.show('Phone verified! Now set your new password.');
+      PopUpToast.show(tr(LocaleKeys.success_phone_verified_set_password));
       await Future.delayed(Duration(milliseconds: 500));
 
       // Navigate to reset password page with the token (not phone data)
@@ -215,7 +255,7 @@ class VerifyPhoneController extends GetxController {
       );
     } catch (e) {
       print(' Error handling forgot password verification: $e');
-      PopUpToast.show('Verification successful but failed to proceed. Please try again.');
+      PopUpToast.show(tr(LocaleKeys.errors_verification_proceed_failed));
     }
   }
 

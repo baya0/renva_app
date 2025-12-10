@@ -130,11 +130,13 @@ class AddOfferController extends GetxController {
 
     final price = double.tryParse(value.trim());
     if (price == null) {
-      return 'Please enter a valid price';
+      return tr(LocaleKeys.validation_enter_valid_price);
     }
 
     if (price < minPrice || price > maxPrice) {
-      return 'Price must be between $minPrice - $maxPrice SEK';
+      return tr(LocaleKeys.validation_price_range_validation)
+          .replaceAll('{min}', minPrice.toString())
+          .replaceAll('{max}', maxPrice.toString());
     }
 
     return null;
@@ -159,7 +161,7 @@ class AddOfferController extends GetxController {
 
     final time = int.tryParse(value.trim());
     if (time == null || time <= 0) {
-      return 'Please enter a valid number';
+      return tr(LocaleKeys.validation_enter_valid_number);
     }
 
     return null;
@@ -178,7 +180,7 @@ class AddOfferController extends GetxController {
     _isPicking = true;
 
     if (galleryImages.length >= 5) {
-      PopUpToast.show('Maximum 5 photos allowed');
+      PopUpToast.show(tr(LocaleKeys.errors_max_photos_allowed));
       _isPicking = false;
       return;
     }

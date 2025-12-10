@@ -43,8 +43,22 @@ abstract class LocaleKeys {
   static const common_user = 'common.user';
   static const common_no_phone = 'common.no_phone';
   static const common_continue = 'common.continue';
+  static const common_submit = 'common.submit';
+  static const common_from = 'common.from';
+  static const common_to = 'common.to';
+  static const common_unknown_service = 'common.unknown_service';
+  static const common_unknown_subcategory = 'common.unknown_subcategory';
+  static const common_unknown_location = 'common.unknown_location';
+  static const common_unknown_user = 'common.unknown_user';
+  static const common_no_description = 'common.no_description';
+  static const common_not_specified = 'common.not_specified';
+  static const common_date_not_specified = 'common.date_not_specified';
+  static const common_time_not_specified = 'common.time_not_specified';
+  static const common_price_not_specified = 'common.price_not_specified';
+  static const common_no_description_available = 'common.no_description_available';
+  static const common_service_request = 'common.service_request';
+  static const common_some_error = 'common.some_error';
   static const common = 'common';
-
   static const auth_login = 'auth.login';
   static const auth_signup = 'auth.signup';
   static const auth_logout = 'auth.logout';
@@ -67,8 +81,16 @@ abstract class LocaleKeys {
   static const auth_no_account = 'auth.no_account';
   static const auth_sign_in_instead = 'auth.sign_in_instead';
   static const auth_sign_up_instead = 'auth.sign_up_instead';
+  static const auth_forgot_password_title = 'auth.forgot_password_title';
+  static const auth_forgot_password_subtitle = 'auth.forgot_password_subtitle';
+  static const auth_reset_password_title = 'auth.reset_password_title';
+  static const auth_reset_password_subtitle = 'auth.reset_password_subtitle';
+  static const auth_new_password = 'auth.new_password';
+  static const auth_new_password_placeholder = 'auth.new_password_placeholder';
+  static const auth_password_changed = 'auth.password_changed';
+  static const auth_verification_code_sent = 'auth.verification_code_sent';
+  static const auth_verification_code_resent = 'auth.verification_code_resent';
   static const auth = 'auth';
-
   static const verification_title = 'verification.title';
   static const verification_subtitle = 'verification.subtitle';
   static const verification_code_label = 'verification.code_label';
@@ -82,7 +104,6 @@ abstract class LocaleKeys {
   static const verification_invalid_code = 'verification.invalid_code';
   static const verification_code_expired = 'verification.code_expired';
   static const verification = 'verification';
-
   static const profile_complete_profile = 'profile.complete_profile';
   static const profile_complete_subtitle = 'profile.complete_subtitle';
   static const profile_full_name = 'profile.full_name';
@@ -95,8 +116,6 @@ abstract class LocaleKeys {
   static const profile_national_number_placeholder = 'profile.national_number_placeholder';
   static const profile_gender = 'profile.gender';
   static const profile_gender_placeholder = 'profile.gender_placeholder';
-  static const profile_male = 'profile.male';
-  static const profile_female = 'profile.female';
   static const profile_profile_picture = 'profile.profile_picture';
   static const profile_add_photo = 'profile.add_photo';
   static const profile_add_profile_photo = 'profile.add_profile_photo';
@@ -168,9 +187,11 @@ abstract class LocaleKeys {
   static const profile_user_mode = 'profile.user_mode';
   static const profile_receiving_service_requests = 'profile.receiving_service_requests';
   static const profile_requesting_services = 'profile.requesting_services';
+  static const profile_male = 'profile.male';
+  static const profile_female = 'profile.female';
   static const profile = 'profile';
-
   static const home_title = 'home.title';
+  static const home_join = 'home.join';
   static const home_your_location = 'home.your_location';
   static const home_location_name = 'home.location_name';
   static const home_services = 'home.services';
@@ -185,7 +206,6 @@ abstract class LocaleKeys {
   static const home_top_providers = 'home.top_providers';
   static const home_service = 'home.service';
   static const home = 'home';
-
   static const navigation_home = 'navigation.home';
   static const navigation_orders = 'navigation.orders';
   static const navigation_services = 'navigation.services';
@@ -193,7 +213,6 @@ abstract class LocaleKeys {
   static const navigation_profile = 'navigation.profile';
   static const navigation_curated_stories = 'navigation.curated_stories';
   static const navigation = 'navigation';
-
   static const orders_my_orders = 'orders.my_orders';
   static const orders_my_order = 'orders.my_order';
   static const orders_search_placeholder = 'orders.search_placeholder';
@@ -277,7 +296,6 @@ abstract class LocaleKeys {
   static const orders_today_at = 'orders.today_at';
   static const orders_yesterday_at = 'orders.yesterday_at';
   static const orders = 'orders';
-
   static const messages_registration_successful = 'messages.registration_successful';
   static const messages_login_successful = 'messages.login_successful';
   static const messages_verification_required = 'messages.verification_required';
@@ -310,14 +328,13 @@ abstract class LocaleKeys {
   static const messages_forgot_password_feature = 'messages.forgot_password_feature';
   static const messages_join_as_guest_clicked = 'messages.join_as_guest_clicked';
   static const messages_welcome_back = 'messages.welcome_back';
+  static const messages_unknown_error = 'messages.unknown_error';
   static const messages = 'messages';
-
   static const language_english = 'language.english';
   static const language_arabic = 'language.arabic';
   static const language_language_changed = 'language.language_changed';
   static const language_language_changed_to = 'language.language_changed_to';
   static const language = 'language';
-
   static const provider_latest_orders = 'provider.latest_orders';
   static const provider_requests_sent_from_newest_to_oldest =
       'provider.requests_sent_from_newest_to_oldest';
@@ -328,7 +345,6 @@ abstract class LocaleKeys {
   static const provider_orders_will_appear_here = 'provider.orders_will_appear_here';
   static const provider_error_loading_orders = 'provider.error_loading_orders';
   static const provider = 'provider';
-
   static const forms_required_field = 'forms.required_field';
   static const forms_confirmation_invalid = 'forms.confirmation_invalid';
   static const forms_invalid_format = 'forms.invalid_format';
@@ -372,8 +388,8 @@ abstract class LocaleKeys {
   static const forms_password_min_length = 'forms.password_min_length';
   static const forms_password_required = 'forms.password_required';
   static const forms_invalid_price_range = 'forms.invalid_price_range';
+  static const forms_confirm_password_required = 'forms.confirm_password_required';
   static const forms = 'forms';
-
   static const dialogs_go_back_title = 'dialogs.go_back_title';
   static const dialogs_unsaved_changes = 'dialogs.unsaved_changes';
   static const dialogs_confirm_delete = 'dialogs.confirm_delete';
@@ -393,8 +409,20 @@ abstract class LocaleKeys {
   static const dialogs_final_confirmation = 'dialogs.final_confirmation';
   static const dialogs_delete_account_final = 'dialogs.delete_account_final';
   static const dialogs_delete_forever = 'dialogs.delete_forever';
+  static const dialogs_reset_password_confirm = 'dialogs.reset_password_confirm';
+  static const dialogs_select_location = 'dialogs.select_location';
+  static const dialogs_location_selection_coming_soon = 'dialogs.location_selection_coming_soon';
+  static const dialogs_about_renva = 'dialogs.about_renva';
+  static const dialogs_about_renva_description = 'dialogs.about_renva_description';
+  static const dialogs_select_gallery_photos = 'dialogs.select_gallery_photos';
+  static const dialogs_add_photo = 'dialogs.add_photo';
+  static const dialogs_delete_order_confirm = 'dialogs.delete_order_confirm';
+  static const dialogs_reason_for_delete = 'dialogs.reason_for_delete';
+  static const dialogs_reason_for_delete_subtitle = 'dialogs.reason_for_delete_subtitle';
+  static const dialogs_another_reason = 'dialogs.another_reason';
+  static const dialogs_select_deletion_reason = 'dialogs.select_deletion_reason';
+  static const dialogs_provide_custom_deletion_reason = 'dialogs.provide_custom_deletion_reason';
   static const dialogs = 'dialogs';
-
   static const errors_network_error = 'errors.network_error';
   static const errors_server_error = 'errors.server_error';
   static const errors_unknown_error = 'errors.unknown_error';
@@ -418,8 +446,37 @@ abstract class LocaleKeys {
   static const errors_failed_complete_profile = 'errors.failed_complete_profile';
   static const errors_api_call_failed = 'errors.api_call_failed';
   static const errors_processing_response_failed = 'errors.processing_response_failed';
+  static const errors_user_data_not_found = 'errors.user_data_not_found';
+  static const errors_phone_not_found = 'errors.phone_not_found';
+  static const errors_user_id_not_found = 'errors.user_id_not_found';
+  static const errors_user_not_provider = 'errors.user_not_provider';
+  static const errors_mode_switch_failed = 'errors.mode_switch_failed';
+  static const errors_loading_points = 'errors.loading_points';
+  static const errors_loading_balance = 'errors.loading_balance';
+  static const errors_delete_account_failed = 'errors.delete_account_failed';
+  static const errors_failed_to_select_gallery_photo = 'errors.failed_to_select_gallery_photo';
+  static const errors_failed_to_remove_image = 'errors.failed_to_remove_image';
+  static const errors_gallery_photo_required = 'errors.gallery_photo_required';
+  static const errors_service_area_required = 'errors.service_area_required';
+  static const errors_service_category_required = 'errors.service_category_required';
+  static const errors_deleting_order = 'errors.deleting_order';
+  static const errors_network_error_check_connection = 'errors.network_error_check_connection';
+  static const errors_all_profile_updates_failed = 'errors.all_profile_updates_failed';
+  static const errors_verification_proceed_failed = 'errors.verification_proceed_failed';
+  static const errors_failed_to_load_stories = 'errors.failed_to_load_stories';
+  static const errors_missing_reset_token = 'errors.missing_reset_token';
+  static const errors_password_reset_processing_failed = 'errors.password_reset_processing_failed';
+  static const errors_password_reset_failed = 'errors.password_reset_failed';
+  static const errors_error_loading_order_details = 'errors.error_loading_order_details';
+  static const errors_error_extracting_user_avatar = 'errors.error_extracting_user_avatar';
+  static const errors_cannot_add_offer_view_mode = 'errors.cannot_add_offer_view_mode';
+  static const errors_unable_to_add_offer = 'errors.unable_to_add_offer';
+  static const errors_error_loading_offer_data = 'errors.error_loading_offer_data';
+  static const errors_cannot_edit_offer = 'errors.cannot_edit_offer';
+  static const errors_offer_submit_failed = 'errors.offer_submit_failed';
+  static const errors_navigation_error = 'errors.navigation_error';
+  static const errors_max_photos_allowed = 'errors.max_photos_allowed';
   static const errors = 'errors';
-
   static const success_login_successful = 'success.login_successful';
   static const success_registration_successful = 'success.registration_successful';
   static const success_verification_successful = 'success.verification_successful';
@@ -441,8 +498,23 @@ abstract class LocaleKeys {
   static const success_account_deleted = 'success.account_deleted';
   static const success_profile_completed_welcome = 'success.profile_completed_welcome';
   static const success_id_photo_selected = 'success.id_photo_selected';
+  static const success_switched_to_provider_mode = 'success.switched_to_provider_mode';
+  static const success_switched_to_user_mode = 'success.switched_to_user_mode';
+  static const success_logout_offline = 'success.logout_offline';
+  static const success_gallery_photo_added = 'success.gallery_photo_added';
+  static const success_order_deleted_successfully = 'success.order_deleted_successfully';
+  static const success_provider_profile_updated = 'success.provider_profile_updated';
+  static const success_profile_basic_updated = 'success.profile_basic_updated';
+  static const success_profile_updated_categories_pending =
+      'success.profile_updated_categories_pending';
+  static const success_phone_verified_set_password = 'success.phone_verified_set_password';
+  static const success_otp_sent_password_reset = 'success.otp_sent_password_reset';
+  static const success_password_reset_successful = 'success.password_reset_successful';
+  static const success_login_with_new_password = 'success.login_with_new_password';
+  static const success_provider_registration_successful =
+      'success.provider_registration_successful';
+  static const success_offer_submitted_successfully = 'success.offer_submitted_successfully';
   static const success = 'success';
-
   static const profile_menu_account = 'profile_menu.account';
   static const profile_menu_loyalty_points = 'profile_menu.loyalty_points';
   static const profile_menu_payment = 'profile_menu.payment';
@@ -469,18 +541,19 @@ abstract class LocaleKeys {
   static const profile_menu_privacy_policy_content = 'profile_menu.privacy_policy_content';
   static const profile_menu_contact_info = 'profile_menu.contact_info';
   static const profile_menu_faq_content = 'profile_menu.faq_content';
+  static const profile_menu_provider_mode_label = 'profile_menu.provider_mode_label';
+  static const profile_menu_user_mode_label = 'profile_menu.user_mode_label';
+  static const profile_menu_deleting_account = 'profile_menu.deleting_account';
+  static const profile_menu_not_a_provider = 'profile_menu.not_a_provider';
   static const profile_menu = 'profile_menu';
-
   static const stats_orders = 'stats.orders';
   static const stats_points = 'stats.points';
   static const stats_rating = 'stats.rating';
   static const stats = 'stats';
-
   static const buttons_join = 'buttons.join';
   static const buttons_saving = 'buttons.saving';
   static const buttons_retry = 'buttons.retry';
   static const buttons = 'buttons';
-
   static const join_provider_select_services_type = 'join_provider.select_services_type';
   static const join_provider_welcome_message = 'join_provider.welcome_message';
   static const join_provider_loading_services = 'join_provider.loading_services';
@@ -505,8 +578,23 @@ abstract class LocaleKeys {
   static const join_provider_providers = 'join_provider.providers';
   static const join_provider_up_to = 'join_provider.up_to';
   static const join_provider_error_prefix = 'join_provider.error_prefix';
+  static const join_provider_service_area = 'join_provider.service_area';
+  static const join_provider_service_area_specific = 'join_provider.service_area_specific';
+  static const join_provider_service_area_all_regions = 'join_provider.service_area_all_regions';
+  static const join_provider_working_time = 'join_provider.working_time';
+  static const join_provider_working_time_from = 'join_provider.working_time_from';
+  static const join_provider_working_time_to = 'join_provider.working_time_to';
+  static const join_provider_working_time_any_time = 'join_provider.working_time_any_time';
+  static const join_provider_description = 'join_provider.description';
+  static const join_provider_description_placeholder = 'join_provider.description_placeholder';
+  static const join_provider_description_required = 'join_provider.description_required';
+  static const join_provider_description_min_length = 'join_provider.description_min_length';
+  static const join_provider_upload_photos = 'join_provider.upload_photos';
+  static const join_provider_upload_photo = 'join_provider.upload_photo';
+  static const join_provider_working_hours_required = 'join_provider.working_hours_required';
+  static const join_provider_form_title = 'join_provider.form_title';
+  static const join_provider_complete_registration = 'join_provider.complete_registration';
   static const join_provider = 'join_provider';
-
   static const order_card_id_prefix = 'order_card.id_prefix';
   static const order_card_view_offer = 'order_card.view_offer';
   static const order_card_view_details = 'order_card.view_details';
@@ -521,7 +609,6 @@ abstract class LocaleKeys {
   static const order_card_great_service = 'order_card.great_service';
   static const order_card_tap_to_rating = 'order_card.tap_to_rating';
   static const order_card = 'order_card';
-
   static const offer_details_view_offer = 'offer_details.view_offer';
   static const offer_details_pictures = 'offer_details.pictures';
   static const offer_details_description = 'offer_details.description';
@@ -551,10 +638,8 @@ abstract class LocaleKeys {
   static const offer_details_reviews = 'offer_details.reviews';
   static const offer_details_currency_sek = 'offer_details.currency_sek';
   static const offer_details_created_at = 'offer_details.created_at';
-
   static const offer_details_close_image = 'offer_details.close_image';
   static const offer_details = 'offer_details';
-
   static const add_orders_add_order = 'add_orders.add_order';
   static const add_orders_select_services_type = 'add_orders.select_services_type';
   static const add_orders_providers_available = 'add_orders.providers_available';
@@ -717,4 +802,31 @@ abstract class LocaleKeys {
   static const provider_order_card_provide_custom_reason =
       'provider_order_card.provide_custom_reason';
   static const provider_order_card = 'provider_order_card';
+  static const hints_from = 'hints.from';
+  static const hints_to = 'hints.to';
+  static const hints_add_description = 'hints.add_description';
+  static const hints_add_deletion_reason = 'hints.add_deletion_reason';
+  static const hints_write_review_here = 'hints.write_review_here';
+  static const hints_time = 'hints.time';
+  static const hints_offer_details_description = 'hints.offer_details_description';
+  static const hints_enter_new_password = 'hints.enter_new_password';
+  static const hints_confirm_new_password = 'hints.confirm_new_password';
+  static const hints = 'hints';
+  static const validation_confirm_password_required = 'validation.confirm_password_required';
+  static const validation_passwords_do_not_match = 'validation.passwords_do_not_match';
+  static const validation_enter_valid_price = 'validation.enter_valid_price';
+  static const validation_price_range_validation = 'validation.price_range_validation';
+  static const validation_enter_valid_number = 'validation.enter_valid_number';
+  static const validation = 'validation';
+  static const deletion_reasons_change_mind = 'deletion_reasons.change_mind';
+  static const deletion_reasons_no_longer_need = 'deletion_reasons.no_longer_need';
+  static const deletion_reasons_provider_no_response = 'deletion_reasons.provider_no_response';
+  static const deletion_reasons_high_prices = 'deletion_reasons.high_prices';
+  static const deletion_reasons = 'deletion_reasons';
+  static const provider_status_not_a_provider = 'provider_status.not_a_provider';
+  static const provider_status_approved_provider = 'provider_status.approved_provider';
+  static const provider_status_pending_approval = 'provider_status.pending_approval';
+  static const provider_status_application_rejected = 'provider_status.application_rejected';
+  static const provider_status_provider_status_prefix = 'provider_status.provider_status_prefix';
+  static const provider_status = 'provider_status';
 }

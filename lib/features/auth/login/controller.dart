@@ -193,7 +193,7 @@ class LoginPageController extends GetxController {
       }
 
       // Show success message
-      PopUpToast.show('OTP Sent for Password Reset');
+      PopUpToast.show(tr(LocaleKeys.success_otp_sent_password_reset));
 
       Get.toNamed(
         Pages.verify.value,

@@ -329,7 +329,7 @@ class AddOrderDetailsPage extends StatelessWidget {
                       controller.selectedServiceType.value.isNotEmpty
                           ? StyleRepo.softWhite
                           : StyleRepo.grey,
-                  fontSize: isTablet ? 18 : (isSmallScreen ? 14 : 16),
+                  fontSize: isTablet ? 16 : (isSmallScreen ? 12 : 14),
                   fontWeight: FontWeight.w600,
                 ),
               ),

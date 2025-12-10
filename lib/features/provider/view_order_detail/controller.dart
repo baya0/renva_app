@@ -1,6 +1,8 @@
 // features/provider/view_order_detail/controller.dart
+import 'package:easy_localization/easy_localization.dart';
 import 'package:get/get.dart';
 
+import '../../../core/localization/strings.dart';
 import '../../../core/routes/routes.dart';
 import '../../../core/widgets/modern_toast.dart';
 
@@ -58,7 +60,7 @@ class ViewOrderDetailController extends GetxController {
         isProviderView = false;
       }
     } catch (e) {
-      PopUpToast.show('Error loading order details');
+      PopUpToast.show(tr(LocaleKeys.errors_error_loading_order_details));
     }
   }
 
@@ -95,7 +97,7 @@ class ViewOrderDetailController extends GetxController {
       }
       return null;
     } catch (e) {
-      PopUpToast.show('Error extracting user avatar');
+      PopUpToast.show(tr(LocaleKeys.errors_error_extracting_user_avatar));
       return null;
     }
   }
@@ -232,7 +234,7 @@ class ViewOrderDetailController extends GetxController {
   void addOffer() {
     try {
       if (!showAddOfferButton) {
-        PopUpToast.show('Cannot add offer in view mode');
+        PopUpToast.show(tr(LocaleKeys.errors_cannot_add_offer_view_mode));
         return;
       }
 
@@ -248,7 +250,7 @@ class ViewOrderDetailController extends GetxController {
         },
       );
     } catch (e) {
-      PopUpToast.show('Unable to add offer at this time');
+      PopUpToast.show(tr(LocaleKeys.errors_unable_to_add_offer));
     }
   }
 

@@ -1,8 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:renva0/core/style/repo.dart';
+import 'package:renva0/core/utils/responsive.dart';
 import 'package:renva0/gen/assets.gen.dart';
 
+import '../../../../core/localization/strings.dart';
 import '../../../../core/services/rest_api/rest_api.dart';
 import '../../../../core/widgets/modern_toast.dart';
 import '../../add_orders/models/order.dart';
@@ -87,12 +90,14 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
   }
 
   void _showDeleteConfirmationDialog() {
+    final r = Responsive(Get.context!);
+
     Get.dialog(
       AlertDialog(
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-        contentPadding: const EdgeInsets.all(20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(r.radius20)),
+        insetPadding: EdgeInsets.symmetric(horizontal: r.space20),
+        contentPadding: EdgeInsets.all(r.space20),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -101,22 +106,25 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
               alignment: Alignment.topRight,
               child: GestureDetector(
                 onTap: () => Get.back(),
-                child: const Icon(Icons.close, size: 20, color: Colors.grey),
+                child: Icon(Icons.close, size: r.iconSize20, color: Colors.grey),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: r.space8),
 
             // Icon in center
-            Assets.icons.essentials.trashGroup.svg(width: 100, height: 100),
-            const SizedBox(height: 16),
+            Assets.icons.essentials.trashGroup.svg(
+              width: r.value(mobile: 100, tablet: 110, desktop: 120),
+              height: r.value(mobile: 100, tablet: 110, desktop: 120),
+            ),
+            SizedBox(height: r.space16),
 
             // Text
             Text(
-              'Are You Sure you want to delete the Request ?',
+              tr(LocaleKeys.dialogs_delete_order_confirm),
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: StyleRepo.black),
+              style: TextStyle(fontSize: r.fontSize18, fontWeight: FontWeight.w600, color: StyleRepo.black),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: r.space24),
 
             // Buttons
             Row(
@@ -126,21 +134,21 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                     onPressed: () => Get.back(),
                     style: OutlinedButton.styleFrom(
                       side: BorderSide.none,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(r.radius24)),
                       backgroundColor: StyleRepo.paleLavender,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: EdgeInsets.symmetric(vertical: r.space12),
                     ),
                     child: Text(
-                      'Cancel',
+                      tr(LocaleKeys.common_cancel),
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: r.fontSize14,
                         fontWeight: FontWeight.w500,
                         color: StyleRepo.lavender,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: r.space12),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
@@ -150,14 +158,14 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                     style: ElevatedButton.styleFrom(
                       backgroundColor: StyleRepo.softRed,
                       side: BorderSide(color: StyleRepo.red),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(r.radius24)),
                       elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: EdgeInsets.symmetric(vertical: r.space12),
                     ),
                     child: Text(
-                      'Delete',
+                      tr(LocaleKeys.common_delete),
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: r.fontSize14,
                         fontWeight: FontWeight.w600,
                         color: StyleRepo.red,
                       ),
@@ -179,21 +187,23 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
     final TextEditingController customReasonController = TextEditingController();
 
     final Map<String, int> predefinedReasons = {
-      'Change my mind': 1,
-      'I no longer need the service': 2,
-      'The service provider did not respond to messages': 3,
-      'Service provider prices are high': 4,
+      tr(LocaleKeys.deletion_reasons_change_mind): 1,
+      tr(LocaleKeys.deletion_reasons_no_longer_need): 2,
+      tr(LocaleKeys.deletion_reasons_provider_no_response): 3,
+      tr(LocaleKeys.deletion_reasons_high_prices): 4,
     };
 
     Get.bottomSheet(
       StatefulBuilder(
         builder: (context, setState) {
+          final r = context.responsive;
+
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(r.radius20)),
             ),
-            padding: EdgeInsets.all(24),
+            padding: EdgeInsets.all(r.space24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,9 +212,9 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Reason for Delete',
+                      tr(LocaleKeys.dialogs_reason_for_delete),
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: r.fontSize18,
                         fontWeight: FontWeight.w600,
                         color: StyleRepo.black,
                       ),
@@ -212,26 +222,26 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                     GestureDetector(
                       onTap: () => Get.back(),
                       child: Container(
-                        width: 30,
-                        height: 30,
+                        width: r.iconSize32,
+                        height: r.iconSize32,
                         decoration: BoxDecoration(color: Colors.grey[200], shape: BoxShape.circle),
-                        child: Icon(Icons.close, size: 20, color: Colors.grey[600]),
+                        child: Icon(Icons.close, size: r.iconSize20, color: Colors.grey[600]),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: r.space16),
                 Text(
-                  'Please specify the reason for deleting the order',
-                  style: TextStyle(fontSize: 14, color: StyleRepo.grey),
+                  tr(LocaleKeys.dialogs_reason_for_delete_subtitle),
+                  style: TextStyle(fontSize: r.fontSize14, color: StyleRepo.grey),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: r.space24),
 
                 ...predefinedReasons.entries.map((entry) {
                   String reasonText = entry.key;
                   int reasonId = entry.value;
                   return Container(
-                    margin: const EdgeInsets.only(bottom: 16),
+                    margin: EdgeInsets.only(bottom: r.space16),
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -243,8 +253,8 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                       child: Row(
                         children: [
                           Container(
-                            width: 20,
-                            height: 20,
+                            width: r.iconSize20,
+                            height: r.iconSize20,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
@@ -261,15 +271,15 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                             ),
                             child:
                                 selectedReasonId == reasonId
-                                    ? Icon(Icons.check, size: 14, color: Colors.white)
+                                    ? Icon(Icons.check, size: r.fontSize14, color: Colors.white)
                                     : null,
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: r.space12),
                           Expanded(
                             child: Text(
                               reasonText,
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: r.fontSize14,
                                 color: StyleRepo.black,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -282,7 +292,7 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                 }),
 
                 Container(
-                  margin: const EdgeInsets.only(bottom: 16),
+                  margin: EdgeInsets.only(bottom: r.space16),
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -292,8 +302,8 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                     child: Row(
                       children: [
                         Container(
-                          width: 20,
-                          height: 20,
+                          width: r.iconSize20,
+                          height: r.iconSize20,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
@@ -304,15 +314,15 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                           ),
                           child:
                               selectedReasonId == 5
-                                  ? Icon(Icons.check, size: 14, color: Colors.white)
+                                  ? Icon(Icons.check, size: r.fontSize14, color: Colors.white)
                                   : null,
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: r.space12),
                         Expanded(
                           child: Text(
-                            'Another reason',
+                            tr(LocaleKeys.dialogs_another_reason),
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: r.fontSize14,
                               color: StyleRepo.black,
                               fontWeight: FontWeight.w400,
                             ),
@@ -324,25 +334,25 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                 ),
 
                 if (selectedReasonId == 5) ...[
-                  const SizedBox(height: 8),
+                  SizedBox(height: r.space8),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: r.space16, vertical: r.space12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey[300]!),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(r.radius8),
                     ),
                     child: TextField(
                       controller: customReasonController,
                       decoration: InputDecoration(
-                        hintText: 'Add Another Reason For Deletion',
-                        hintStyle: TextStyle(color: Colors.grey[500], fontSize: 14),
+                        hintText: tr(LocaleKeys.hints_add_deletion_reason),
+                        hintStyle: TextStyle(color: Colors.grey[500], fontSize: r.fontSize14),
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         errorBorder: InputBorder.none,
                         disabledBorder: InputBorder.none,
                         isDense: true,
-                        contentPadding: EdgeInsets.all(12),
+                        contentPadding: EdgeInsets.all(r.space12),
                       ),
                       onChanged: (value) {
                         customReason = value;
@@ -353,19 +363,19 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                   ),
                 ],
 
-                const SizedBox(height: 32),
+                SizedBox(height: r.space32),
 
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
+                  height: r.buttonHeightMedium,
                   child: ElevatedButton(
                     onPressed: () {
                       if (selectedReasonId == 0) {
-                        PopUpToast.show('Please select a deletion reason');
+                        PopUpToast.show(tr(LocaleKeys.dialogs_select_deletion_reason));
                         return;
                       }
                       if (selectedReasonId == 5 && customReason.trim().isEmpty) {
-                        PopUpToast.show('Please provide a custom reason');
+                        PopUpToast.show(tr(LocaleKeys.dialogs_provide_custom_deletion_reason));
                         return;
                       }
                       Get.back();
@@ -373,14 +383,14 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: StyleRepo.deepBlue,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(r.radius12)),
                       elevation: 0,
                     ),
                     child: Text(
-                      'Send',
+                      tr(LocaleKeys.common_send),
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: r.fontSize16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -399,7 +409,7 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
 
   Future<void> _performDeleteOrderWithReason(int reasonId, String customReason) async {
     try {
-      PopUpToast.show('Deleting order...');
+      PopUpToast.show(tr(LocaleKeys.errors_deleting_order));
 
       Map<String, dynamic> requestBody = {
         'order_id': widget.order.id,
@@ -420,7 +430,7 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
       );
 
       if (response.success) {
-        PopUpToast.show('Order deleted successfully');
+        PopUpToast.show(tr(LocaleKeys.success_order_deleted_successfully));
         _hideOverlay();
         widget.onDeleted?.call();
       } else {
@@ -440,12 +450,14 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
         PopUpToast.show(errorMsg);
       }
     } catch (e) {
-      PopUpToast.show('Network error. Please check your connection.');
+      PopUpToast.show(tr(LocaleKeys.errors_network_error_check_connection));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final r = context.responsive;
+
     return GestureDetector(
       onPanStart: _handlePanStart,
       onPanEnd: _handlePanEnd,
@@ -463,22 +475,25 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                     child: Container(
                       decoration: BoxDecoration(
                         color: StyleRepo.red.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(r.radius24),
                       ),
                       child: Center(
                         child: GestureDetector(
                           onTap: _handleDeleteTap,
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 4),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: r.space24,
+                              vertical: r.space4,
+                            ),
                             decoration: BoxDecoration(
                               color: StyleRepo.softRed,
-                              borderRadius: BorderRadius.circular(38),
+                              borderRadius: BorderRadius.circular(r.value(mobile: 38, tablet: 42, desktop: 46)),
                               border: Border.all(color: StyleRepo.red),
                               boxShadow: [
                                 BoxShadow(
                                   color: StyleRepo.black.withValues(alpha: 0.1),
                                   blurRadius: 8,
-                                  offset: Offset(0, 2),
+                                  offset: const Offset(0, 2),
                                 ),
                               ],
                             ),
@@ -487,15 +502,15 @@ class _SwipeToDeleteOrderCardState extends State<SwipeToDeleteOrderCard>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Assets.icons.essentials.trashGroupCircular.svg(
-                                  width: 38,
-                                  height: 38,
+                                  width: r.iconSize32,
+                                  height: r.iconSize32,
                                 ),
-                                SizedBox(width: 12),
+                                SizedBox(width: r.space12),
                                 Text(
-                                  'Delete Order',
+                                  tr(LocaleKeys.orders_cancel_order),
                                   style: TextStyle(
                                     color: StyleRepo.red,
-                                    fontSize: 14,
+                                    fontSize: r.fontSize14,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),

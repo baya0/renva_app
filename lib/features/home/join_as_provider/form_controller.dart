@@ -133,7 +133,7 @@ class JoinAsProviderFormController extends GetxController {
     try {
       final ImageSource? source = await Get.dialog<ImageSource>(
         AlertDialog(
-          title: Text('Select Gallery Photos'),
+          title: Text(tr(LocaleKeys.dialogs_select_gallery_photos)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -166,11 +166,11 @@ class JoinAsProviderFormController extends GetxController {
 
         if (pickedImage != null) {
           galleryImages.add(pickedImage.path);
-          PopUpToast.show('Gallery photo added');
+          PopUpToast.show(tr(LocaleKeys.success_gallery_photo_added));
         }
       }
     } catch (e) {
-      PopUpToast.show('Failed to select gallery photo');
+      PopUpToast.show(tr(LocaleKeys.errors_failed_to_select_gallery_photo));
     }
   }
 
@@ -180,7 +180,7 @@ class JoinAsProviderFormController extends GetxController {
         galleryImages.removeAt(index);
       }
     } catch (e) {
-      PopUpToast.show('Failed to remove image');
+      PopUpToast.show(tr(LocaleKeys.errors_failed_to_remove_image));
     }
   }
 
@@ -193,19 +193,19 @@ class JoinAsProviderFormController extends GetxController {
           children: [
             ListTile(
               leading: Icon(Icons.male, color: Colors.blue),
-              title: Text('Male'),
+              title: Text(tr('profile.male')),
               onTap: () {
                 selectedGenderId.value = 1;
-                genderController.text = 'Male';
+                genderController.text = tr('profile.male');
                 Get.back();
               },
             ),
             ListTile(
               leading: Icon(Icons.female, color: Colors.pink),
-              title: Text('Female'),
+              title: Text(tr('profile.female')),
               onTap: () {
                 selectedGenderId.value = 2;
-                genderController.text = 'Female';
+                genderController.text = tr('profile.female');
                 Get.back();
               },
             ),
@@ -254,10 +254,10 @@ class JoinAsProviderFormController extends GetxController {
 
   String? validateDescription(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Description is required';
+      return tr(LocaleKeys.join_provider_description_required);
     }
     if (value.trim().length < 10) {
-      return 'Description must be at least 10 characters';
+      return tr(LocaleKeys.join_provider_description_min_length);
     }
     return null;
   }
@@ -266,7 +266,7 @@ class JoinAsProviderFormController extends GetxController {
     if (isAnyTime.value == true) return null;
 
     if (workingFromController.text.isEmpty || workingToController.text.isEmpty) {
-      return 'Please set working hours or select "Any Time"';
+      return tr(LocaleKeys.join_provider_working_hours_required);
     }
     return null;
   }
@@ -307,17 +307,17 @@ class JoinAsProviderFormController extends GetxController {
     }
 
     if (galleryImages.isEmpty) {
-      PopUpToast.show('At least one gallery photo is required');
+      PopUpToast.show(tr(LocaleKeys.errors_gallery_photo_required));
       return false;
     }
 
     if (serviceArea.value.isEmpty) {
-      PopUpToast.show('Please select a service area');
+      PopUpToast.show(tr(LocaleKeys.errors_service_area_required));
       return false;
     }
 
     if (selectedServices.isEmpty) {
-      PopUpToast.show('Please select at least one service category');
+      PopUpToast.show(tr(LocaleKeys.errors_service_category_required));
       return false;
     }
 
@@ -396,7 +396,7 @@ class JoinAsProviderFormController extends GetxController {
 
   Future<void> _handleSuccessfulRegistration(ResponseModel response) async {
     try {
-      PopUpToast.show('Provider registration successful!');
+      PopUpToast.show(tr(LocaleKeys.success_provider_registration_successful));
 
       if (response.data != null && response.data is Map<String, dynamic>) {
         appBuilder.handleProviderRegistrationSuccess(response.data as Map<String, dynamic>);

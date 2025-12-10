@@ -10,6 +10,7 @@ import 'package:renva0/core/style/repo.dart';
 
 import '../../../core/config/app_builder.dart';
 import '../../../core/localization/strings.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../gen/assets.gen.dart';
 import '../../../gen/fonts.gen.dart';
 import 'controller.dart';
@@ -406,26 +407,33 @@ class ProviderOrdersPage extends StatelessWidget {
 
   Widget _buildOrdersList(ProviderOrdersController controller) {
     return Expanded(
-      child: Obx(() {
-        final tabIndex = controller.selectedTabIndex.value;
-        final tag = controller.tabTags[tabIndex]!;
+      child: Builder(
+        builder: (context) {
+          final r = Responsive(context);
+          return Obx(() {
+            final tabIndex = controller.selectedTabIndex.value;
+            final tag = controller.tabTags[tabIndex]!;
 
-        return ListViewPagination<ProviderOrderModel>.builder(
-          tag: tag,
-          fetchApi: controller.fetchApi,
-          fromJson: controller.fromJson,
-          itemBuilder: (context, index, order) {
-            return ProviderOrderCard(
-              order: order,
-              controller: controller,
-              showCompleteButton: tabIndex == 1, // Underway tab
+            return ListViewPagination<ProviderOrderModel>.builder(
+              tag: tag,
+              fetchApi: controller.fetchApi,
+              fromJson: controller.fromJson,
+              itemBuilder: (context, index, order) {
+                return ProviderOrderCard(
+                  order: order,
+                  controller: controller,
+                  showCompleteButton: tabIndex == 1, // Underway tab
+                );
+              },
+              padding:
+                  EdgeInsets.symmetric(horizontal: 16) +
+                  EdgeInsets.only(bottom: r.value(mobile: 98, tablet: 108, desktop: 118)),
+              hasRefresh: true,
+              initialLoading: _buildInitialLoading(),
             );
-          },
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          hasRefresh: true,
-          initialLoading: _buildInitialLoading(),
-        );
-      }),
+          });
+        },
+      ),
     );
   }
 

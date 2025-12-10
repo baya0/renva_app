@@ -6,6 +6,7 @@ import 'package:renva0/features/add_orders/models/order.dart';
 
 import '../../../core/localization/strings.dart';
 import '../../../core/style/repo.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../gen/assets.gen.dart';
 import '../controller.dart';
 import '../models/order_model.dart';
@@ -19,16 +20,18 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final r = context.responsive;
+
     return Container(
       constraints: BoxConstraints(
-        minHeight: 200,
-        maxHeight: 400,
-        maxWidth: MediaQuery.of(context).size.width - 32,
+        minHeight: r.value(mobile: 200, tablet: 220, desktop: 240),
+        maxHeight: r.value(mobile: 400, tablet: 440, desktop: 480),
+        maxWidth: MediaQuery.of(context).size.width - r.space32,
       ),
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: EdgeInsets.only(bottom: r.space16),
       decoration: BoxDecoration(
         color: StyleRepo.softGrey.withValues(alpha: 0.62),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(r.radius24),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -53,9 +56,10 @@ class OrderCard extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     final isRTL = context.locale.languageCode == 'ar';
+    final r = context.responsive;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(21, 0, 21, 0),
+      padding: EdgeInsets.fromLTRB(r.space20, 0, r.space20, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         textDirection: Directionality.of(context),
@@ -65,14 +69,16 @@ class OrderCard extends StatelessWidget {
             children: [
               Text(
                 tr(LocaleKeys.order_card_id_prefix),
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                style: TextStyle(
+                  fontSize: r.fontSize14,
                   fontWeight: FontWeight.w700,
                   color: StyleRepo.grey,
                 ),
               ),
               Text(
                 order.id,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                style: TextStyle(
+                  fontSize: r.fontSize14,
                   fontWeight: FontWeight.w700,
                   color: StyleRepo.black,
                 ),
@@ -82,9 +88,9 @@ class OrderCard extends StatelessWidget {
           Flexible(
             child: Text(
               controller.formatDateTime(order),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              style: TextStyle(
                 fontWeight: FontWeight.w300,
-                fontSize: 10,
+                fontSize: r.fontSize10,
                 color: StyleRepo.grey,
               ),
               textAlign: isRTL ? TextAlign.left : TextAlign.right,
@@ -97,14 +103,16 @@ class OrderCard extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context) {
+    final r = context.responsive;
+
     return Flexible(
       child: Container(
         width: double.infinity,
-        margin: const EdgeInsets.fromLTRB(6, 0, 6, 7),
-        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.fromLTRB(r.space4 + 2, 0, r.space4 + 2, r.space4 + 3),
+        padding: EdgeInsets.all(r.space16),
         decoration: BoxDecoration(
           color: StyleRepo.softWhite,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(r.radius24),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,16 +121,16 @@ class OrderCard extends StatelessWidget {
             // Service Info Row
             _buildServiceInfo(context),
 
-            const SizedBox(height: 10),
-            _buildDivider(),
-            const SizedBox(height: 10),
+            SizedBox(height: r.space8 + 2),
+            _buildDivider(context),
+            SizedBox(height: r.space8 + 2),
 
             // Description
             _buildDescription(context),
 
-            const SizedBox(height: 13),
-            _buildDivider(),
-            const SizedBox(height: 12),
+            SizedBox(height: r.space12 + 1),
+            _buildDivider(context),
+            SizedBox(height: r.space12),
 
             // Location Row
             _buildLocation(context),
@@ -130,7 +138,7 @@ class OrderCard extends StatelessWidget {
             // Status-specific content
             _buildStatusSpecificContent(context),
 
-            const SizedBox(height: 16),
+            SizedBox(height: r.space16),
 
             // Action buttons row
             _buildActionButton(context),
@@ -141,10 +149,16 @@ class OrderCard extends StatelessWidget {
   }
 
   Widget _buildServiceInfo(BuildContext context) {
+    final r = context.responsive;
+
     return Row(
       children: [
-        CircleAvatar(radius: 20, backgroundColor: StyleRepo.deepBlue, child: _buildServiceIcon()),
-        const SizedBox(width: 12),
+        CircleAvatar(
+          radius: r.iconSize20,
+          backgroundColor: StyleRepo.deepBlue,
+          child: _buildServiceIcon(context),
+        ),
+        SizedBox(width: r.space12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,9 +166,9 @@ class OrderCard extends StatelessWidget {
             children: [
               Text(
                 order.serviceCategory,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                style: TextStyle(
                   fontWeight: FontWeight.w700,
-                  fontSize: 14,
+                  fontSize: r.fontSize14,
                   color: StyleRepo.black,
                 ),
                 maxLines: 2,
@@ -162,9 +176,9 @@ class OrderCard extends StatelessWidget {
               ),
               Text(
                 order.serviceSubcategory,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                style: TextStyle(
                   fontWeight: FontWeight.w300,
-                  fontSize: 14,
+                  fontSize: r.fontSize14,
                   color: StyleRepo.grey,
                 ),
                 maxLines: 1,
@@ -177,37 +191,46 @@ class OrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceIcon() {
+  Widget _buildServiceIcon(BuildContext context) {
+    final r = context.responsive;
+
     if (order.serviceIcon != null && order.serviceIcon!.isNotEmpty) {
       if (order.serviceIcon!.toLowerCase().endsWith('.svg')) {
         return SvgPicture.network(
           order.serviceIcon!,
-          width: 20,
-          height: 20,
+          width: r.iconSize20,
+          height: r.iconSize20,
           colorFilter: const ColorFilter.mode(StyleRepo.softWhite, BlendMode.srcIn),
-          placeholderBuilder: (_) => Assets.icons.services.house.svg(width: 20, height: 20),
+          placeholderBuilder: (_) => Assets.icons.services.house.svg(
+            width: r.iconSize20,
+            height: r.iconSize20,
+          ),
         );
       } else {
         return ClipOval(
           child: Image.network(
             order.serviceIcon!,
-            width: 40,
-            height: 40,
+            width: r.iconSize32 + 8,
+            height: r.iconSize32 + 8,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Assets.icons.services.house.svg(width: 20, height: 20),
+            errorBuilder: (_, __, ___) => Assets.icons.services.house.svg(
+              width: r.iconSize20,
+              height: r.iconSize20,
+            ),
           ),
         );
       }
     }
-    return Assets.icons.services.house.svg(width: 20, height: 20);
+    return Assets.icons.services.house.svg(width: r.iconSize20, height: r.iconSize20);
   }
 
-  Widget _buildDivider() {
+  Widget _buildDivider(BuildContext context) {
+    final r = context.responsive;
     return Container(
       height: 1,
       width: double.infinity,
       color: StyleRepo.softGrey,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
+      margin: EdgeInsets.symmetric(horizontal: r.space8),
     );
   }
 
@@ -221,20 +244,22 @@ class OrderCard extends StatelessWidget {
   }
 
   Widget _buildLocation(BuildContext context) {
+    final r = context.responsive;
+
     return Row(
       children: [
         Assets.icons.essentials.locationPin.svg(
           colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
-          height: 18,
-          width: 18,
+          height: r.iconSize16 + 2,
+          width: r.iconSize16 + 2,
         ),
-        const SizedBox(width: 4),
+        SizedBox(width: r.space4),
         Expanded(
           child: Text(
             order.location,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            style: TextStyle(
               color: StyleRepo.grey,
-              fontSize: 14,
+              fontSize: r.fontSize14,
               fontWeight: FontWeight.w700,
             ),
             maxLines: 1,
@@ -246,20 +271,22 @@ class OrderCard extends StatelessWidget {
   }
 
   Widget _buildActionButton(BuildContext context) {
+    final r = context.responsive;
+
     return Row(
       children: [
         Expanded(
           child: GestureDetector(
-            onTap: () => controller.viewOrderDetails(order),
+            onTap: () => controller.viewOfferFromCard(order),
             child: Text(
               (order.offerCount ?? 0) > 0
                   ? LocaleKeys.order_card_view_offer.tr()
                   : LocaleKeys.order_card_view_details.tr(),
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              style: TextStyle(
                 color: StyleRepo.deepBlue,
                 fontWeight: FontWeight.w500,
-                fontSize: 14,
+                fontSize: r.fontSize14,
               ),
             ),
           ),
@@ -269,13 +296,15 @@ class OrderCard extends StatelessWidget {
   }
 
   Widget _buildOptionsMenu(BuildContext context) {
+    final r = context.responsive;
+
     return PopupMenuButton<String>(
       icon: Assets.icons.essentials.kebabMenu.svg(
-        width: 16,
-        height: 16,
+        width: r.iconSize16,
+        height: r.iconSize16,
         colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
       ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(r.radius16)),
       onSelected: (value) {
         switch (value) {
           case 'view_details':
@@ -294,20 +323,20 @@ class OrderCard extends StatelessWidget {
                 textDirection: Directionality.of(context),
                 children: [
                   SizedBox(
-                    width: 20,
-                    height: 20,
+                    width: r.iconSize20,
+                    height: r.iconSize20,
                     child: Assets.icons.essentials.eyeOn.svg(
-                      width: 16,
-                      height: 16,
+                      width: r.iconSize16,
+                      height: r.iconSize16,
                       colorFilter: ColorFilter.mode(StyleRepo.grey, BlendMode.srcIn),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: r.space12),
                   Text(
                     LocaleKeys.order_card_view_details.tr(),
                     style: TextStyle(
                       color: StyleRepo.black,
-                      fontSize: 14,
+                      fontSize: r.fontSize14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -321,26 +350,26 @@ class OrderCard extends StatelessWidget {
                   textDirection: Directionality.of(context),
                   children: [
                     Container(
-                      width: 20,
-                      height: 20,
+                      width: r.iconSize20,
+                      height: r.iconSize20,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(r.radius12),
                         border: Border.all(color: StyleRepo.grey.withValues(alpha: 0.5)),
                       ),
                       child: Center(
                         child: Assets.icons.essentials.close.svg(
-                          width: 12,
-                          height: 12,
+                          width: r.space12,
+                          height: r.space12,
                           colorFilter: ColorFilter.mode(StyleRepo.red, BlendMode.srcIn),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: r.space12),
                     Text(
                       LocaleKeys.order_card_cancel_service.tr(),
                       style: TextStyle(
                         color: StyleRepo.red,
-                        fontSize: 14,
+                        fontSize: r.fontSize14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -366,8 +395,10 @@ class OrderCard extends StatelessWidget {
   }
 
   Widget _buildPendingContent(BuildContext context) {
+    final r = context.responsive;
+
     if ((order.offerCount ?? 0) == 0) {
-      return const SizedBox(height: 8);
+      return SizedBox(height: r.space8);
     }
 
     final offerCount = order.offerCount ?? 0;
@@ -378,19 +409,19 @@ class OrderCard extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: 16),
+        SizedBox(height: r.space16),
         Container(height: 1, width: double.infinity, color: StyleRepo.softGrey),
-        const SizedBox(height: 12),
+        SizedBox(height: r.space12),
         Row(
           textDirection: Directionality.of(context),
           children: [
-            Icon(Icons.local_offer, color: StyleRepo.deepBlue, size: 18),
-            const SizedBox(width: 8),
+            Icon(Icons.local_offer, color: StyleRepo.deepBlue, size: r.iconSize16 + 2),
+            SizedBox(width: r.space8),
             Text(
               "$offerCount $offerText",
               style: TextStyle(
                 color: StyleRepo.deepBlue,
-                fontSize: 12,
+                fontSize: r.fontSize12,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -402,36 +433,37 @@ class OrderCard extends StatelessWidget {
 
   Widget _buildCancelledContent(BuildContext context) {
     final isRTL = context.locale.languageCode == 'ar';
+    final r = context.responsive;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 16),
+        SizedBox(height: r.space16),
         Container(height: 1, width: double.infinity, color: StyleRepo.softGrey),
-        const SizedBox(height: 12),
+        SizedBox(height: r.space12),
         Row(
           textDirection: Directionality.of(context),
           children: [
-            Icon(Icons.cancel, color: StyleRepo.red, size: 16),
-            const SizedBox(width: 8),
+            Icon(Icons.cancel, color: StyleRepo.red, size: r.iconSize16),
+            SizedBox(width: r.space8),
             Text(
               LocaleKeys.order_card_reason_of_cancellation.tr(),
-              style: TextStyle(color: StyleRepo.red, fontSize: 12, fontWeight: FontWeight.w600),
+              style: TextStyle(color: StyleRepo.red, fontSize: r.fontSize12, fontWeight: FontWeight.w600),
             ),
             const Spacer(),
-            _buildProviderAvatar(),
-            const SizedBox(width: 4),
+            _buildProviderAvatar(context),
+            SizedBox(width: r.space4),
             Text(
               order.provider?.name ?? LocaleKeys.order_card_unknown_provider.tr(),
-              style: TextStyle(color: StyleRepo.grey, fontSize: 12),
+              style: TextStyle(color: StyleRepo.grey, fontSize: r.fontSize12),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: r.space8),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          padding: EdgeInsets.symmetric(horizontal: r.space8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             textDirection: Directionality.of(context),
@@ -439,14 +471,14 @@ class OrderCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   order.cancelReason ?? LocaleKeys.order_card_service_provider_cancelled.tr(),
-                  style: TextStyle(color: StyleRepo.black, fontSize: 12),
+                  style: TextStyle(color: StyleRepo.black, fontSize: r.fontSize12),
                   textAlign: isRTL ? TextAlign.right : TextAlign.left,
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: r.space8),
               Text(
                 controller.formatDateTime(order).toUpperCase(),
-                style: TextStyle(color: StyleRepo.red, fontSize: 10, fontWeight: FontWeight.w600),
+                style: TextStyle(color: StyleRepo.red, fontSize: r.fontSize10, fontWeight: FontWeight.w600),
               ),
             ],
           ),
@@ -456,21 +488,23 @@ class OrderCard extends StatelessWidget {
   }
 
   Widget _buildUnderwayContent(BuildContext context) {
+    final r = context.responsive;
+
     return Column(
       children: [
-        const SizedBox(height: 16),
+        SizedBox(height: r.space16),
         Container(height: 1, width: double.infinity, color: StyleRepo.softGrey),
-        const SizedBox(height: 12),
+        SizedBox(height: r.space12),
         Row(
           textDirection: Directionality.of(context),
           children: [
             CircleAvatar(
-              radius: 16,
+              radius: r.iconSize16,
               backgroundColor: StyleRepo.deepBlue,
               backgroundImage: _getProviderAvatarImage(),
               child: _getProviderAvatarChild(),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: r.space12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -479,7 +513,7 @@ class OrderCard extends StatelessWidget {
                     LocaleKeys.order_card_service_provider.tr(),
                     style: TextStyle(
                       color: StyleRepo.grey,
-                      fontSize: 10,
+                      fontSize: r.fontSize10,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -487,7 +521,7 @@ class OrderCard extends StatelessWidget {
                     order.provider?.name ?? LocaleKeys.order_card_unknown_provider.tr(),
                     style: TextStyle(
                       color: StyleRepo.black,
-                      fontSize: 14,
+                      fontSize: r.fontSize14,
                       fontWeight: FontWeight.w600,
                     ),
                     maxLines: 1,
@@ -517,44 +551,48 @@ class OrderCard extends StatelessWidget {
   }
 
   Widget _buildCompleteContent(BuildContext context) {
+    final r = context.responsive;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 16),
+        SizedBox(height: r.space16),
         Container(height: 1, width: double.infinity, color: StyleRepo.softGrey),
-        const SizedBox(height: 12),
+        SizedBox(height: r.space12),
         Row(
           textDirection: Directionality.of(context),
           children: [
             Text(
               LocaleKeys.order_card_rating_and_review.tr(),
-              style: TextStyle(color: StyleRepo.black, fontSize: 12, fontWeight: FontWeight.w600),
+              style: TextStyle(color: StyleRepo.black, fontSize: r.fontSize12, fontWeight: FontWeight.w600),
             ),
             const Spacer(),
-            _buildProviderAvatar(),
-            const SizedBox(width: 4),
+            _buildProviderAvatar(context),
+            SizedBox(width: r.space4),
             Text(
               order.provider?.name ?? LocaleKeys.order_card_unknown_provider.tr(),
-              style: TextStyle(color: StyleRepo.grey, fontSize: 12),
+              style: TextStyle(color: StyleRepo.grey, fontSize: r.fontSize12),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: r.space8),
         _buildRatingContent(context),
       ],
     );
   }
 
   Widget _buildRatingButton(BuildContext context) {
+    final r = context.responsive;
+
     return GestureDetector(
       onTap: () => _showRatingDialog(context),
       child: Text(
         LocaleKeys.order_card_tap_to_rating.tr(),
         style: TextStyle(
           color: StyleRepo.forestGreen,
-          fontSize: 12,
+          fontSize: r.fontSize12,
           fontWeight: FontWeight.w500,
           decoration: TextDecoration.underline,
           decorationColor: StyleRepo.forestGreen,
@@ -578,34 +616,43 @@ class OrderCard extends StatelessWidget {
     final rating = _getCustomerRating();
     final reviewText = _getCustomerReviewText();
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(reviewText, style: TextStyle(color: StyleRepo.black, fontSize: 12)),
-        Spacer(flex: 2),
-        Row(
-          children: List.generate(5, (index) {
-            return Assets.icons.essentials.star.svg(
-              width: 16,
-              height: 16,
-              color: index < rating ? Colors.amber : StyleRepo.grey.withOpacity(0.3),
-            );
-          }),
-        ),
-      ],
+    return Builder(
+      builder: (context) {
+        final r = context.responsive;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(reviewText, style: TextStyle(color: StyleRepo.black, fontSize: r.fontSize12)),
+            const Spacer(flex: 2),
+            Row(
+              children: List.generate(5, (index) {
+                return Assets.icons.essentials.star.svg(
+                  width: r.iconSize16,
+                  height: r.iconSize16,
+                  colorFilter: ColorFilter.mode(
+                    index < rating ? Colors.amber : StyleRepo.grey.withValues(alpha: 0.3),
+                    BlendMode.srcIn,
+                  ),
+                );
+              }),
+            ),
+          ],
+        );
+      }
     );
   }
 
   //Checks if the provider has a valid avatar >>prevents showing a broken image T_T
-  Widget _buildProviderAvatar() {
+  Widget _buildProviderAvatar(BuildContext context) {
+    final r = context.responsive;
     final hasValidAvatar =
         order.provider?.avatar.mediumUrl != null && order.provider!.avatar.mediumUrl.isNotEmpty;
 
     return CircleAvatar(
-      radius: 12,
+      radius: r.space12,
       backgroundColor: StyleRepo.deepBlue,
       backgroundImage: hasValidAvatar ? NetworkImage(order.provider!.avatar.mediumUrl) : null,
-      child: !hasValidAvatar ? Icon(Icons.person, color: Colors.white, size: 12) : null,
+      child: !hasValidAvatar ? Icon(Icons.person, color: Colors.white, size: r.space12) : null,
     );
   }
 

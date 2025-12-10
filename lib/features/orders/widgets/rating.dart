@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/localization/strings.dart';
 import '../../../core/style/repo.dart';
 import '../../../gen/assets.gen.dart';
 import '../models/order_model.dart';
@@ -115,7 +117,7 @@ class _RatingDialogState extends State<RatingDialog> {
               controller: reviewController,
               maxLines: 3,
               decoration: InputDecoration(
-                hintText: "Write your review here...",
+                hintText: tr(LocaleKeys.hints_write_review_here),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: StyleRepo.grey.withValues(alpha: 0.3)),
@@ -145,7 +147,7 @@ class _RatingDialogState extends State<RatingDialog> {
                         side: BorderSide(color: StyleRepo.grey.withOpacity(0.3)),
                       ),
                     ),
-                    child: Text("Cancel", style: TextStyle(color: StyleRepo.grey)),
+                    child: Text(tr(LocaleKeys.common_cancel), style: TextStyle(color: StyleRepo.grey)),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -157,7 +159,7 @@ class _RatingDialogState extends State<RatingDialog> {
                       padding: EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: Text("Submit", style: TextStyle(color: Colors.white)),
+                    child: Text(tr(LocaleKeys.common_submit), style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],

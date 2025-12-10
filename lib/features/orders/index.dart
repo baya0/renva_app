@@ -7,6 +7,7 @@ import 'package:renva0/features/orders/controller.dart';
 import 'package:renva0/features/orders/widgets/order_card.dart';
 
 import '../../core/style/repo.dart';
+import '../../core/utils/responsive.dart';
 import '../../gen/assets.gen.dart';
 import 'models/order_model.dart';
 import 'widgets/swipe_to_delete_order_card.dart';
@@ -150,28 +151,35 @@ class OrdersPage extends StatelessWidget {
 
   Widget _buildOrdersList(OrdersController controller) {
     return Expanded(
-      child: Obx(
-        () => ListViewPagination<OrderModel>.builder(
-          tag: 'orders_${controller.selectedTabIndex.value}',
-          fetchApi: controller.fetchApi,
-          fromJson: controller.fromJson,
-          onControllerInit: (paginationController) {
-            _updatePaginationController(controller, paginationController);
-          },
-          itemBuilder: (context, index, order) {
-            return SwipeToDeleteOrderCard(
-              order: order,
-              onDeleted: () {
-                controller.currentPaginationController?.refresh();
+      child: Builder(
+        builder: (context) {
+          final r = Responsive(context);
+          return Obx(
+            () => ListViewPagination<OrderModel>.builder(
+              tag: 'orders_${controller.selectedTabIndex.value}',
+              fetchApi: controller.fetchApi,
+              fromJson: controller.fromJson,
+              onControllerInit: (paginationController) {
+                _updatePaginationController(controller, paginationController);
               },
-              child: OrderCard(order: order, controller: controller),
-            );
-          },
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          hasRefresh: true,
-          initialLoading: _buildInitialLoading(),
-          errorWidget: _buildErrorWidget(),
-        ),
+              itemBuilder: (context, index, order) {
+                return SwipeToDeleteOrderCard(
+                  order: order,
+                  onDeleted: () {
+                    controller.currentPaginationController?.refresh();
+                  },
+                  child: OrderCard(order: order, controller: controller),
+                );
+              },
+              padding:
+                  EdgeInsets.symmetric(horizontal: 16) +
+                  EdgeInsets.only(bottom: r.value(mobile: 98, tablet: 108, desktop: 118)),
+              hasRefresh: true,
+              initialLoading: _buildInitialLoading(),
+              errorWidget: _buildErrorWidget(),
+            ),
+          );
+        },
       ),
     );
   }

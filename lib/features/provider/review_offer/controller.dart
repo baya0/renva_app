@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:get/get.dart';
 
+import '../../../core/localization/strings.dart';
 import '../../../core/widgets/modern_toast.dart';
 import '../add_offer/controller.dart';
 
@@ -83,13 +85,13 @@ class ReviewOfferController extends GetxController {
           priceRange = args['priceRange'] ?? '';
         }
       } else {
-        PopUpToast.show('Error loading offer data');
+        PopUpToast.show(tr(LocaleKeys.errors_error_loading_offer_data));
         Get.back();
       }
     } catch (e, stackTrace) {
       print(' Error in _loadOfferData: $e');
       print('Stack trace: $stackTrace');
-      PopUpToast.show('Error loading offer data: $e');
+      PopUpToast.show(tr(LocaleKeys.errors_error_loading_offer_data));
       Get.back();
     }
   }
@@ -184,7 +186,7 @@ class ReviewOfferController extends GetxController {
   void editOffer() {
     if (isViewMode) {
       // In view mode, editing is not allowed
-      PopUpToast.show('This offer cannot be edited');
+      PopUpToast.show(tr(LocaleKeys.errors_cannot_edit_offer));
       return;
     }
     Get.back(); // Go back to add offer page to edit
@@ -226,12 +228,12 @@ class ReviewOfferController extends GetxController {
         );
       } else {
         // If AddOfferController is not available, just go back
-        PopUpToast.show('Offer submitted successfully');
+        PopUpToast.show(tr(LocaleKeys.success_offer_submitted_successfully));
         Get.back();
       }
     } catch (e) {
       print('Error submitting offer: $e');
-      PopUpToast.show('Failed to submit offer. Please try again.');
+      PopUpToast.show(tr(LocaleKeys.errors_offer_submit_failed));
     } finally {
       isSubmitting.value = false;
     }

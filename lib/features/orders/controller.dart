@@ -16,6 +16,7 @@ import '../add_orders/models/order.dart';
 import 'models/offer_model.dart';
 import 'models/order_model.dart';
 import 'offer_details/index.dart';
+import 'order_details/index.dart';
 
 class OrdersController extends GetxController {
   final RxInt selectedTabIndex = 0.obs;
@@ -288,11 +289,17 @@ class OrdersController extends GetxController {
     }
   }
 
-  // View order details with  offer handling
+  // View order details - opens the full order details page (called from menu)
   void viewOrderDetails(OrderModel order) {
+    // Navigate to the Order Details Page for all orders
+    Get.to(() => OrderDetailsPage(order: order));
+  }
+
+  // View offers or details from center button (called from order card button)
+  void viewOfferFromCard(OrderModel order) {
     if (order.status == OrderStatus.pending) {
       if ((order.offerCount ?? 0) > 0) {
-        _showOffersDialog(order);
+        showOffersDialog(order);
       } else {
         _showOrderDetailsDialog(order);
       }
@@ -302,7 +309,7 @@ class OrdersController extends GetxController {
     }
   }
 
-  void _showOffersDialog(OrderModel order) {
+  void showOffersDialog(OrderModel order) {
     Get.bottomSheet(
       Container(
         height: Get.height * 0.75, // 75% of screen height
@@ -1076,7 +1083,7 @@ class OrdersController extends GetxController {
   }
 
   void _editOrder(OrderModel order) {
-    PopUpToast.show('Edit functionality will be added here soon hehe maybe later :D');
+    PopUpToast.show(tr(LocaleKeys.orders_edit_functionality_coming_soon));
   }
 
   Future<void> submitOrderRating(OrderModel order, int rating, String reviewText) async {

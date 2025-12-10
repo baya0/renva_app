@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../core/localization/strings.dart';
 import '../../../core/services/state_management/widgets/obs_widget.dart';
 import '../../../core/style/repo.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/image.dart';
 import '../../../core/widgets/svg_icon.dart';
 import '../../../gen/assets.gen.dart';
@@ -18,6 +19,7 @@ class JoinAsProviderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(JoinAsProviderController());
     final isRTL = Directionality.of(context) == TextDirection.rtl;
+    final r = context.responsive;
 
     return Scaffold(
       body: Container(
@@ -39,7 +41,7 @@ class JoinAsProviderPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Assets.images.logo.renva.svg(
-                      height: 92.75,
+                      height: r.value(mobile: 92.75, tablet: 100.0, desktop: 110.0),
                       colorFilter: const ColorFilter.mode(StyleRepo.softWhite, BlendMode.srcIn),
                     ),
                   ],
@@ -47,33 +49,33 @@ class JoinAsProviderPage extends StatelessWidget {
               ),
 
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: EdgeInsets.symmetric(horizontal: r.space24),
                 child: Column(
                   children: [
-                    const SizedBox(height: 20),
+                    SizedBox(height: r.space20),
 
                     // Back button - RTL aware
-                    _buildBackButton(context, isRTL),
+                    _buildBackButton(context, isRTL, r),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: r.space20),
 
                     // Central icon
-                    _buildCentralIcon(),
+                    _buildCentralIcon(r),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: r.space20),
 
                     // Title and subtitle
-                    _buildTitleSection(context),
+                    _buildTitleSection(context, r),
 
-                    const SizedBox(height: 31),
+                    SizedBox(height: r.space32),
 
-                    Expanded(child: _buildServicesContent(context, controller)),
+                    Expanded(child: _buildServicesContent(context, controller, r)),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: r.space20),
 
-                    _buildNextButton(controller),
+                    _buildNextButton(controller, r),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: r.space20),
                   ],
                 ),
               ),
@@ -85,7 +87,7 @@ class JoinAsProviderPage extends StatelessWidget {
   }
 
   // RTL-aware back button
-  Widget _buildBackButton(BuildContext context, bool isRTL) {
+  Widget _buildBackButton(BuildContext context, bool isRTL, Responsive r) {
     return Row(
       textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
       children: [
@@ -94,44 +96,48 @@ class JoinAsProviderPage extends StatelessWidget {
           child: Transform.flip(
             flipX: isRTL,
             child: Assets.icons.arrows.leftCircle.svg(
-              width: 24,
-              height: 24,
+              width: r.iconSize24,
+              height: r.iconSize24,
               colorFilter: const ColorFilter.mode(StyleRepo.softWhite, BlendMode.srcIn),
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: r.space8),
         Text(
           tr(LocaleKeys.common_back),
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(color: StyleRepo.softWhite),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            color: StyleRepo.softWhite,
+            fontSize: r.fontSize14,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildCentralIcon() {
-    return Center(child: Assets.images.background.addOrder.svg(height: 120, width: 120));
+  Widget _buildCentralIcon(Responsive r) {
+    final iconSize = r.value(mobile: 120.0, tablet: 140.0, desktop: 160.0);
+    return Center(child: Assets.images.background.addOrder.svg(height: iconSize, width: iconSize));
   }
 
-  Widget _buildTitleSection(BuildContext context) {
+  Widget _buildTitleSection(BuildContext context, Responsive r) {
     return Column(
       children: [
         Text(
           tr(LocaleKeys.join_provider_select_services_type),
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             color: StyleRepo.softWhite,
-            fontSize: 24,
+            fontSize: r.fontSize24,
             fontWeight: FontWeight.w700,
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: r.space16),
         Text(
           tr(LocaleKeys.join_provider_welcome_message),
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
             color: StyleRepo.softGrey,
             fontWeight: FontWeight.w400,
-            fontSize: 14,
+            fontSize: r.fontSize14,
           ),
           textAlign: TextAlign.center,
         ),
@@ -139,74 +145,75 @@ class JoinAsProviderPage extends StatelessWidget {
     );
   }
 
-  Widget _buildServicesContent(BuildContext context, JoinAsProviderController controller) {
+  Widget _buildServicesContent(BuildContext context, JoinAsProviderController controller, Responsive r) {
     return ObsListBuilder<ServiceCategoryModel>(
       obs: controller.availableServices,
       onRefresh: controller.refreshData,
       builder: (context, services) {
         // Services loaded successfully
-        return _buildServicesList(context, controller, services);
+        return _buildServicesList(context, controller, services, r);
       },
 
-      loader: (context) => _buildLoadingState(controller),
+      loader: (context) => _buildLoadingState(controller, r),
 
-      errorBuilder: (context, error) => _buildErrorState(controller, error),
+      errorBuilder: (context, error) => _buildErrorState(controller, error, r),
     );
   }
 
-  Widget _buildLoadingState(JoinAsProviderController controller) {
+  Widget _buildLoadingState(JoinAsProviderController controller, Responsive r) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(StyleRepo.softWhite)),
-        const SizedBox(height: 16),
+        SizedBox(height: r.space16),
         Text(
           tr(LocaleKeys.join_provider_loading_services),
-          style: TextStyle(color: StyleRepo.softWhite.withOpacity(0.8), fontSize: 16),
+          style: TextStyle(color: StyleRepo.softWhite.withValues(alpha: 0.8), fontSize: r.fontSize16),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: r.space8),
         Text(
           tr(LocaleKeys.join_provider_please_wait_loading),
-          style: TextStyle(color: StyleRepo.softWhite.withOpacity(0.6), fontSize: 12),
+          style: TextStyle(color: StyleRepo.softWhite.withValues(alpha: 0.6), fontSize: r.fontSize12),
           textAlign: TextAlign.center,
         ),
       ],
     );
   }
 
-  Widget _buildErrorState(JoinAsProviderController controller, String error) {
+  Widget _buildErrorState(JoinAsProviderController controller, String error, Responsive r) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(r.space24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: StyleRepo.softWhite.withOpacity(0.7)),
-            const SizedBox(height: 16),
+            Icon(Icons.error_outline, size: r.value(mobile: 64.0, tablet: 72.0, desktop: 80.0), color: StyleRepo.softWhite.withValues(alpha: 0.7)),
+            SizedBox(height: r.space16),
             Text(
               tr(LocaleKeys.join_provider_failed_to_load_services),
               style: TextStyle(
                 color: StyleRepo.softWhite,
-                fontSize: 18,
+                fontSize: r.fontSize18,
                 fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: r.space8),
             Text(
               error,
               textAlign: TextAlign.center,
-              style: TextStyle(color: StyleRepo.softWhite.withOpacity(0.8), fontSize: 14),
+              style: TextStyle(color: StyleRepo.softWhite.withValues(alpha: 0.8), fontSize: r.fontSize14),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: r.space20),
             ElevatedButton(
               onPressed: controller.retryFetch,
               style: ElevatedButton.styleFrom(
                 backgroundColor: StyleRepo.softWhite,
                 foregroundColor: StyleRepo.deepBlue,
+                padding: EdgeInsets.symmetric(horizontal: r.space24, vertical: r.space12),
               ),
-              child: Text(tr(LocaleKeys.join_provider_retry)),
+              child: Text(tr(LocaleKeys.join_provider_retry), style: TextStyle(fontSize: r.fontSize14)),
             ),
           ],
         ),
@@ -218,15 +225,16 @@ class JoinAsProviderPage extends StatelessWidget {
     BuildContext context,
     JoinAsProviderController controller,
     List<ServiceCategoryModel> services,
+    Responsive r,
   ) {
     return Column(
       children: [
         // Status text
         Padding(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: EdgeInsets.only(bottom: r.space16),
           child: Text(
             _getStatusText(controller),
-            style: TextStyle(color: StyleRepo.softWhite.withOpacity(0.8), fontSize: 12),
+            style: TextStyle(color: StyleRepo.softWhite.withValues(alpha: 0.8), fontSize: r.fontSize12),
             textAlign: TextAlign.center,
           ),
         ),
@@ -237,7 +245,7 @@ class JoinAsProviderPage extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             itemCount: services.length,
             itemBuilder: (context, index) {
-              return _buildServiceItem(context, services[index], controller);
+              return _buildServiceItem(context, services[index], controller, r);
             },
           ),
         ),
@@ -266,11 +274,15 @@ class JoinAsProviderPage extends StatelessWidget {
     BuildContext context,
     ServiceCategoryModel service,
     JoinAsProviderController controller,
+    Responsive r,
   ) {
     final isRTL = Directionality.of(context) == TextDirection.rtl;
+    final cardHeight = r.value(mobile: 105.0, tablet: 115.0, desktop: 125.0);
+    final iconSize = r.value(mobile: 42.0, tablet: 46.0, desktop: 50.0);
+    final radioSize = r.value(mobile: 24.0, tablet: 26.0, desktop: 28.0);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: r.space12),
       child: Obx(() {
         final isSelected = controller.selectedServiceIds.contains(service.id.toString());
 
@@ -278,10 +290,10 @@ class JoinAsProviderPage extends StatelessWidget {
           onTap: () => controller.selectService(service.id.toString()),
           child: Container(
             width: double.infinity,
-            height: 105,
+            height: cardHeight,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(17),
+              color: Colors.white.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(r.radius16),
               border: isSelected ? Border.all(color: StyleRepo.softWhite, width: 2) : null,
             ),
             child: Row(
@@ -289,29 +301,29 @@ class JoinAsProviderPage extends StatelessWidget {
               children: [
                 // Left edge color indicator
                 Container(
-                  width: 9.5,
-                  height: 105,
+                  width: r.value(mobile: 9.5, tablet: 10.0, desktop: 11.0),
+                  height: cardHeight,
                   decoration: BoxDecoration(
                     color: service.leftEdgeColor,
                     borderRadius: BorderRadius.only(
-                      topLeft: isRTL ? const Radius.circular(0) : const Radius.circular(17),
-                      bottomLeft: isRTL ? const Radius.circular(0) : const Radius.circular(17),
-                      topRight: isRTL ? const Radius.circular(17) : const Radius.circular(0),
-                      bottomRight: isRTL ? const Radius.circular(17) : const Radius.circular(0),
+                      topLeft: isRTL ? const Radius.circular(0) : Radius.circular(r.radius16),
+                      bottomLeft: isRTL ? const Radius.circular(0) : Radius.circular(r.radius16),
+                      topRight: isRTL ? Radius.circular(r.radius16) : const Radius.circular(0),
+                      bottomRight: isRTL ? Radius.circular(r.radius16) : const Radius.circular(0),
                     ),
                   ),
                 ),
 
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: EdgeInsets.symmetric(horizontal: r.space16, vertical: r.space16),
                     child: Row(
                       textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
                       children: [
                         // Service icon
-                        SizedBox(width: 42, height: 42, child: _buildServiceIcon(service)),
+                        SizedBox(width: iconSize, height: iconSize, child: _buildServiceIcon(service, iconSize)),
 
-                        const SizedBox(width: 26),
+                        SizedBox(width: r.space24),
 
                         // Service details
                         Expanded(
@@ -324,19 +336,19 @@ class JoinAsProviderPage extends StatelessWidget {
                                 service.title,
                                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                   color: StyleRepo.softWhite,
-                                  fontSize: 16,
+                                  fontSize: r.fontSize16,
                                   fontWeight: FontWeight.w700,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: isRTL ? TextAlign.right : TextAlign.left,
                               ),
-                              const SizedBox(height: 4),
+                              SizedBox(height: r.space4),
                               Text(
                                 _buildServiceSubtitle(service),
                                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                   color: StyleRepo.softGrey,
-                                  fontSize: 10,
+                                  fontSize: r.fontSize10,
                                   fontWeight: FontWeight.w400,
                                 ),
                                 maxLines: 2,
@@ -347,12 +359,12 @@ class JoinAsProviderPage extends StatelessWidget {
                           ),
                         ),
 
-                        const SizedBox(width: 16),
+                        SizedBox(width: r.space16),
 
                         // Radio button
                         Container(
-                          width: 24,
-                          height: 24,
+                          width: radioSize,
+                          height: radioSize,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(color: StyleRepo.softWhite, width: 2),
@@ -362,8 +374,8 @@ class JoinAsProviderPage extends StatelessWidget {
                               isSelected
                                   ? Center(
                                     child: Container(
-                                      width: 8,
-                                      height: 8,
+                                      width: radioSize * 0.33,
+                                      height: radioSize * 0.33,
                                       decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: StyleRepo.deepBlue,
@@ -403,7 +415,7 @@ class JoinAsProviderPage extends StatelessWidget {
   }
 
   //  Handles different icon types
-  Widget _buildServiceIcon(ServiceCategoryModel service) {
+  Widget _buildServiceIcon(ServiceCategoryModel service, double size) {
     // Try to use banner image from API first
     if (service.imageUrl.isNotEmpty) {
       return ClipRRect(
@@ -411,56 +423,56 @@ class JoinAsProviderPage extends StatelessWidget {
         child: AppImage(
           path: service.imageUrl,
           type: ImageType.CachedNetwork,
-          width: 42,
-          height: 42,
+          width: size,
+          height: size,
           fit: BoxFit.cover,
-          errorWidget: _buildFallbackIcon(service),
-          loadingWidget: _buildLoadingIcon(),
+          errorWidget: _buildFallbackIcon(service, size),
+          loadingWidget: _buildLoadingIcon(size),
         ),
       );
     }
 
-    return _buildFallbackIcon(service);
+    return _buildFallbackIcon(service, size);
   }
 
-  Widget _buildFallbackIcon(ServiceCategoryModel service) {
+  Widget _buildFallbackIcon(ServiceCategoryModel service, double size) {
     final titleLower = service.title.toLowerCase();
 
     if (titleLower.contains('household') ||
         titleLower.contains('home') ||
         titleLower.contains('clean')) {
-      return SvgIcon(icon: Assets.icons.services.house, color: StyleRepo.softWhite, size: 42);
+      return SvgIcon(icon: Assets.icons.services.house, color: StyleRepo.softWhite, size: size);
     } else if (titleLower.contains('professional') ||
         titleLower.contains('medical') ||
         titleLower.contains('health')) {
-      return SvgIcon(icon: Assets.icons.services.wrench, color: StyleRepo.softWhite, size: 42);
+      return SvgIcon(icon: Assets.icons.services.wrench, color: StyleRepo.softWhite, size: size);
     } else if (titleLower.contains('personal') ||
         titleLower.contains('training') ||
         titleLower.contains('education')) {
-      return SvgIcon(icon: Assets.icons.services.certificate, color: StyleRepo.softWhite, size: 42);
+      return SvgIcon(icon: Assets.icons.services.certificate, color: StyleRepo.softWhite, size: size);
     } else if (titleLower.contains('logistical') ||
         titleLower.contains('transport') ||
         titleLower.contains('delivery')) {
-      return SvgIcon(icon: Assets.icons.services.truck, color: StyleRepo.softWhite, size: 42);
+      return SvgIcon(icon: Assets.icons.services.truck, color: StyleRepo.softWhite, size: size);
     } else {
       return Container(
-        width: 42,
-        height: 42,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           color: service.leftEdgeColor,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Icon(Icons.category_outlined, color: StyleRepo.softWhite, size: 24),
+        child: Icon(Icons.category_outlined, color: StyleRepo.softWhite, size: size * 0.57),
       );
     }
   }
 
-  Widget _buildLoadingIcon() {
+  Widget _buildLoadingIcon(double size) {
     return Container(
-      width: 42,
-      height: 42,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.3),
+        color: Colors.grey.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Center(
@@ -472,7 +484,9 @@ class JoinAsProviderPage extends StatelessWidget {
     );
   }
 
-  Widget _buildNextButton(JoinAsProviderController controller) {
+  Widget _buildNextButton(JoinAsProviderController controller, Responsive r) {
+    final buttonHeight = r.buttonHeightMedium;
+
     return Obx(() {
       final hasSelection = controller.selectedServiceIds.isNotEmpty;
       final canProceed = controller.canProceed;
@@ -484,12 +498,12 @@ class JoinAsProviderPage extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: StyleRepo.softWhite,
             foregroundColor: StyleRepo.deepBlue,
-            disabledBackgroundColor: StyleRepo.softWhite.withOpacity(0.5),
-            disabledForegroundColor: StyleRepo.deepBlue.withOpacity(0.5),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            disabledBackgroundColor: StyleRepo.softWhite.withValues(alpha: 0.5),
+            disabledForegroundColor: StyleRepo.deepBlue.withValues(alpha: 0.5),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(r.radius24)),
+            padding: EdgeInsets.symmetric(vertical: r.space16),
             elevation: 0,
-            minimumSize: const Size(double.infinity, 50),
+            minimumSize: Size(double.infinity, buttonHeight),
           ),
           child:
               controller.isLoading.value
@@ -497,22 +511,22 @@ class JoinAsProviderPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        width: 20,
-                        height: 20,
+                        width: r.iconSize20,
+                        height: r.iconSize20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            StyleRepo.deepBlue.withOpacity(0.7),
+                            StyleRepo.deepBlue.withValues(alpha: 0.7),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: r.space12),
                       Text(
                         tr(LocaleKeys.join_provider_loading),
                         style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(
-                          fontSize: 16,
+                          fontSize: r.fontSize16,
                           fontWeight: FontWeight.bold,
-                          color: StyleRepo.deepBlue.withOpacity(0.7),
+                          color: StyleRepo.deepBlue.withValues(alpha: 0.7),
                         ),
                       ),
                     ],
@@ -524,9 +538,9 @@ class JoinAsProviderPage extends StatelessWidget {
                         ).replaceAll('{count}', controller.selectedServiceIds.length.toString())
                         : tr(LocaleKeys.join_provider_next),
                     style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(
-                      fontSize: 16,
+                      fontSize: r.fontSize16,
                       fontWeight: FontWeight.bold,
-                      color: canProceed ? StyleRepo.deepBlue : StyleRepo.deepBlue.withOpacity(0.5),
+                      color: canProceed ? StyleRepo.deepBlue : StyleRepo.deepBlue.withValues(alpha: 0.5),
                     ),
                   ),
         ),

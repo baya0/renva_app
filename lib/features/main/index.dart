@@ -39,13 +39,13 @@ class MainPage extends StatelessWidget {
                 isProviderMode && isProvider
                     ? [
                       const ProviderHomePage(), // 0
-                      _withNavBarPadding(_getOrdersPage(isProvider, isProviderMode)), // 1
+                      _getOrdersPage(isProvider, isProviderMode), // 1
                       const ChatPage(), // 2
                       const ProfilePage(), // 3
                     ]
                     : [
                       const HomePage(), // 0
-                      _withNavBarPadding(_getOrdersPage(isProvider, isProviderMode)), // 1
+                      _getOrdersPage(isProvider, isProviderMode), // 1
                       const AddOrdersPage(), // 2
                       const ChatPage(), // 3
                       const ProfilePage(), // 4
@@ -71,24 +71,5 @@ class MainPage extends StatelessWidget {
     } else {
       return const OrdersPage(); //  customer orders page
     }
-  }
-
-  Widget _withNavBarPadding(Widget child) {
-    final appBuilder = Get.find<AppBuilder>();
-
-    return Obx(() {
-      final bottom = MediaQuery.of(Get.context!).padding.bottom;
-
-      final isProviderMode = appBuilder.isProviderMode.value;
-      final providerStatus = appBuilder.providerStatus.value;
-
-      // Padding should be applied unless: provider mode & not approved
-      final shouldAddPadding = !(isProviderMode && providerStatus != "Approved");
-
-      return Padding(
-        padding: EdgeInsets.only(bottom: shouldAddPadding ? (70 + 28 + bottom) : 0),
-        child: child,
-      );
-    });
   }
 }

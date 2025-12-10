@@ -380,7 +380,7 @@ class EditProfileController extends GetxController {
       );
 
       if (response.success) {
-        PopUpToast.show('Provider profile updated successfully!');
+        PopUpToast.show(tr(LocaleKeys.success_provider_profile_updated));
         await refreshData();
         Get.back(result: true);
         return true;
@@ -395,7 +395,7 @@ class EditProfileController extends GetxController {
 
         if (isApprovalError) {
           print(' Provider not approved by admin, falling back to user update');
-          PopUpToast.show('Provider profile locked. Updating basic profile only...');
+          PopUpToast.show(tr(LocaleKeys.success_profile_basic_updated));
           return false; // Will trigger fallback
         } else {
           PopUpToast.show(
@@ -441,7 +441,7 @@ class EditProfileController extends GetxController {
 
       if (response.success) {
         if (isFallback) {
-          PopUpToast.show('Profile updated! (Categories not saved - provider pending approval)');
+          PopUpToast.show(tr(LocaleKeys.success_profile_updated_categories_pending));
         } else {
           PopUpToast.show(tr(LocaleKeys.success_profile_updated));
         }
@@ -457,7 +457,7 @@ class EditProfileController extends GetxController {
       }
     } catch (e) {
       if (isFallback) {
-        PopUpToast.show('All profile updates failed. Please contact support.');
+        PopUpToast.show(tr(LocaleKeys.errors_all_profile_updates_failed));
       } else {
         rethrow;
       }

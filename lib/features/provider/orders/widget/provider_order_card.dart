@@ -776,7 +776,7 @@ class ProviderOrderCard extends StatelessWidget {
     } catch (e, stackTrace) {
       print('❌ Error in navigation: $e');
       print('Stack trace: $stackTrace');
-      PopUpToast.show('Navigation error: $e');
+      PopUpToast.show(tr(LocaleKeys.errors_navigation_error));
     }
   }
 

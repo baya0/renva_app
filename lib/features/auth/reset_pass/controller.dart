@@ -54,10 +54,10 @@ class ResetPasswordController extends GetxController {
   // Validate confirm password
   String? validateConfirmPassword(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please confirm your password';
+      return tr(LocaleKeys.validation_confirm_password_required);
     }
     if (value != newPasswordController.text) {
-      return 'Passwords do not match';
+      return tr(LocaleKeys.validation_passwords_do_not_match);
     }
     return null;
   }
@@ -88,7 +88,7 @@ class ResetPasswordController extends GetxController {
     try {
       await _makeResetPasswordAPICall();
     } catch (e) {
-      PopUpToast.show('Network error. Please check your connection and try again.');
+      PopUpToast.show(tr(LocaleKeys.messages_network_error_check_connection));
     } finally {
       isLoading.value = false;
     }
@@ -97,7 +97,7 @@ class ResetPasswordController extends GetxController {
   Future<void> _makeResetPasswordAPICall() async {
     /// Validate i have the required token
     if (resetPasswordToken == null || resetPasswordToken!.isEmpty) {
-      PopUpToast.show('Missing reset token. Please try again.');
+      PopUpToast.show(tr(LocaleKeys.errors_missing_reset_token));
       Get.offAllNamed(Pages.login.value);
       return;
     }
@@ -127,7 +127,7 @@ class ResetPasswordController extends GetxController {
   Future<void> _handleResetPasswordSuccess(ResponseModel response) async {
     try {
       // Extract success message
-      String message = 'Password reset successfully';
+      String message = tr(LocaleKeys.success_password_reset_successful);
       try {
         if (response.data is Map<String, dynamic>) {
           final responseData = response.data as Map<String, dynamic>;
@@ -152,10 +152,10 @@ class ResetPasswordController extends GetxController {
 
       // Show another toast after navigation
       await Future.delayed(Duration(milliseconds: 500));
-      PopUpToast.show('You can now login with your new password');
+      PopUpToast.show(tr(LocaleKeys.success_login_with_new_password));
     } catch (e) {
       print(' Error processing reset password success: $e');
-      PopUpToast.show('Password reset succeeded but failed to process response.');
+      PopUpToast.show(tr(LocaleKeys.errors_password_reset_processing_failed));
 
       // Still navigate to login as backup
       Get.offAllNamed(Pages.login.value);
@@ -164,7 +164,7 @@ class ResetPasswordController extends GetxController {
 
   // Handle reset password error response
   void _handleResetPasswordError(ResponseModel response) {
-    String errorMsg = 'Failed to reset password. Please try again.';
+    String errorMsg = tr(LocaleKeys.errors_password_reset_failed);
 
     try {
       if (response.data is Map<String, dynamic>) {

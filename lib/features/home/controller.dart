@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:renva0/core/localization/strings.dart';
 import 'package:renva0/core/services/rest_api/constants/end_points.dart';
 import 'package:renva0/core/widgets/modern_toast.dart';
 
@@ -195,9 +197,9 @@ class HomePageController extends GetxController {
     // TODO: Implement location selection
     Get.dialog(
       AlertDialog(
-        title: const Text('Select Location'),
-        content: const Text('Location selection will be implemented here'),
-        actions: [TextButton(onPressed: () => Get.back(), child: const Text('Close'))],
+        title: Text(tr(LocaleKeys.dialogs_select_location)),
+        content: Text(tr(LocaleKeys.dialogs_location_selection_coming_soon)),
+        actions: [TextButton(onPressed: () => Get.back(), child: Text(tr(LocaleKeys.common_close)))],
       ),
     );
   }
@@ -211,12 +213,9 @@ class HomePageController extends GetxController {
   void _showRenvaInfo() {
     Get.dialog(
       AlertDialog(
-        title: const Text('About Renva'),
-        content: const Text(
-          'Renva is your trusted platform for connecting with service providers. '
-          'Find qualified professionals for all your service needs.',
-        ),
-        actions: [TextButton(onPressed: () => Get.back(), child: const Text('Close'))],
+        title: Text(tr(LocaleKeys.dialogs_about_renva)),
+        content: Text(tr(LocaleKeys.dialogs_about_renva_description)),
+        actions: [TextButton(onPressed: () => Get.back(), child: Text(tr(LocaleKeys.common_close)))],
       ),
     );
   }
