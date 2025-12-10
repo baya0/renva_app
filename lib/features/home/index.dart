@@ -167,17 +167,17 @@ class HomePage extends StatelessWidget {
                       return [
                         SliverPadding(
                           padding: EdgeInsets.fromLTRB(
-                            r.value(mobile: 36.0, tablet: 47.0, desktop: 56.0),
+                            r.value(mobile: 40.0, tablet: 57.0, desktop: 66.0),
                             r.space8,
-                            r.value(mobile: 36.0, tablet: 47.0, desktop: 56.0),
-                            r.space20,
+                            r.value(mobile: 35.0, tablet: 57.0, desktop: 66.0),
+                            r.space16,
                           ),
                           sliver: SliverToBoxAdapter(
                             child: SizedBox(
                               height: r.value(
-                                mobile: size.height * 0.28,
-                                tablet: size.height * 0.32,
-                                desktop: size.height * 0.35,
+                                mobile: size.height * 0.30,
+                                tablet: size.height * 0.35,
+                                desktop: size.height * 0.40,
                               ),
 
                               child: ObsListBuilder<ServiceCategoryModel>(
@@ -261,7 +261,7 @@ class HomePage extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: r.space16,
         mainAxisSpacing: r.space16,
-        childAspectRatio: r.value(mobile: 1.15, tablet: 1.23, desktop: 1.3),
+        childAspectRatio: r.value(mobile: 1.3, tablet: 1.4, desktop: 1.5),
       ),
       itemCount: categories.length,
       itemBuilder: (context, index) {
@@ -279,7 +279,7 @@ class HomePage extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: r.space16,
         mainAxisSpacing: r.space16,
-        childAspectRatio: r.value(mobile: 1.15, tablet: 1.23, desktop: 1.3),
+        childAspectRatio: r.value(mobile: 1.3, tablet: 1.4, desktop: 1.5),
       ),
       itemCount: 4,
       itemBuilder: (context, index) {
@@ -385,7 +385,7 @@ class HomePage extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: r.space16,
         mainAxisSpacing: r.space16,
-        childAspectRatio: r.value(mobile: 1.15, tablet: 1.25, desktop: 1.3),
+        childAspectRatio: r.value(mobile: 1.3, tablet: 1.4, desktop: 1.5),
       ),
       itemCount: 4,
       itemBuilder: (context, index) {

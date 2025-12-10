@@ -17,8 +17,8 @@ class ServiceCard extends StatelessWidget {
   const ServiceCard({
     super.key,
     required this.service,
-    this.width = 159,
-    this.height = 129,
+    this.width = 140,
+    this.height = 110,
     this.margin,
   });
 
@@ -71,7 +71,7 @@ class ServiceCard extends StatelessWidget {
                         child: Text(
                           service.title,
                           style: TextStyle(
-                            fontSize: r.fontSize14,
+                            fontSize: r.fontSize12,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
@@ -122,23 +122,25 @@ class ServiceCard extends StatelessWidget {
     final r = context.responsive;
 
     try {
-      return SizedBox(
-        width: r.iconSize48,
-        height: r.iconSize48,
-        child: ShaderMask(
-          shaderCallback:
-              (bounds) => LinearGradient(
-                colors: [
-                  AppStyle.theme.colorScheme.surface,
-                  AppStyle.theme.colorScheme.surface.withValues(alpha: 0.1),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ).createShader(bounds),
-          blendMode: BlendMode.srcIn,
-          child: SvgPicture.string(
-            service.svg,
-            placeholderBuilder: (ctx) => _buildFallbackIcon(context),
+      return Center(
+        child: SizedBox(
+          width: r.iconSize32,
+          height: r.iconSize32,
+          child: ShaderMask(
+            shaderCallback:
+                (bounds) => LinearGradient(
+                  colors: [
+                    AppStyle.theme.colorScheme.surface,
+                    AppStyle.theme.colorScheme.surface.withValues(alpha: 0.1),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ).createShader(bounds),
+            blendMode: BlendMode.srcIn,
+            child: SvgPicture.string(
+              service.svg,
+              placeholderBuilder: (ctx) => _buildFallbackIcon(context),
+            ),
           ),
         ),
       );
@@ -157,38 +159,38 @@ class ServiceCard extends StatelessWidget {
 
       if (titleLower.contains('clean')) {
         return Assets.icons.services.house.svg(
-          width: r.iconSize48,
-          height: r.iconSize48,
+          width: r.iconSize32,
+          height: r.iconSize32,
           colorFilter: ColorFilter.mode(AppStyle.theme.colorScheme.surface, BlendMode.srcIn),
         );
       } else if (titleLower.contains('car')) {
         return Assets.icons.services.truck.svg(
-          width: r.iconSize48,
-          height: r.iconSize48,
+          width: r.iconSize32,
+          height: r.iconSize32,
           colorFilter: ColorFilter.mode(AppStyle.theme.colorScheme.surface, BlendMode.srcIn),
         );
       } else if (titleLower.contains('house')) {
         return Assets.icons.services.house.svg(
-          width: r.iconSize48,
-          height: r.iconSize48,
+          width: r.iconSize32,
+          height: r.iconSize32,
           colorFilter: ColorFilter.mode(AppStyle.theme.colorScheme.surface, BlendMode.srcIn),
         );
       } else if (titleLower.contains('professional')) {
         return Assets.icons.services.wrench.svg(
-          width: r.iconSize48,
-          height: r.iconSize48,
+          width: r.iconSize32,
+          height: r.iconSize32,
           colorFilter: ColorFilter.mode(AppStyle.theme.colorScheme.surface, BlendMode.srcIn),
         );
       } else if (titleLower.contains('personal')) {
         return Assets.icons.services.certificate.svg(
-          width: r.iconSize48,
-          height: r.iconSize48,
+          width: r.iconSize32,
+          height: r.iconSize32,
           colorFilter: ColorFilter.mode(AppStyle.theme.colorScheme.surface, BlendMode.srcIn),
         );
       } else if (titleLower.contains('logistical')) {
         return Assets.icons.services.truck.svg(
-          width: r.iconSize48,
-          height: r.iconSize48,
+          width: r.iconSize32,
+          height: r.iconSize32,
           colorFilter: ColorFilter.mode(AppStyle.theme.colorScheme.surface, BlendMode.srcIn),
         );
       }
@@ -216,21 +218,23 @@ class ServiceCard extends StatelessWidget {
       iconData = Icons.business;
     }
 
-    return SizedBox(
-      width: r.iconSize48,
-      height: r.iconSize48,
-      child: ShaderMask(
-        shaderCallback:
-            (bounds) => LinearGradient(
-              colors: [
-                AppStyle.theme.colorScheme.surface,
-                AppStyle.theme.colorScheme.surface.withValues(alpha: 0.1),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ).createShader(bounds),
-        blendMode: BlendMode.srcIn,
-        child: Icon(iconData, color: AppStyle.theme.colorScheme.surface, size: r.iconSize48),
+    return Center(
+      child: SizedBox(
+        width: r.iconSize32,
+        height: r.iconSize32,
+        child: ShaderMask(
+          shaderCallback:
+              (bounds) => LinearGradient(
+                colors: [
+                  AppStyle.theme.colorScheme.surface,
+                  AppStyle.theme.colorScheme.surface.withValues(alpha: 0.1),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ).createShader(bounds),
+          blendMode: BlendMode.srcIn,
+          child: Icon(iconData, color: AppStyle.theme.colorScheme.surface, size: r.iconSize32),
+        ),
       ),
     );
   }
