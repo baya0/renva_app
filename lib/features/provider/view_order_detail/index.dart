@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/style/repo.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../gen/assets.gen.dart';
 import 'controller.dart';
 
@@ -11,6 +13,8 @@ class ViewOrderDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ViewOrderDetailController());
+    final r = Responsive(context);
+    final isRTL = context.locale.languageCode == 'ar';
 
     return Scaffold(
       backgroundColor: StyleRepo.softWhite,
@@ -19,7 +23,7 @@ class ViewOrderDetail extends StatelessWidget {
         elevation: 0,
         leadingWidth: 40,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 0),
+          padding: EdgeInsets.only(left: isRTL ? 16 : 0, right: isRTL ? 0 : 16),
           child: IconButton(
             onPressed: () => Get.back(),
             icon: Assets.icons.arrows.rightCircle.svg(
@@ -31,14 +35,14 @@ class ViewOrderDetail extends StatelessWidget {
           ),
         ),
         title: Text(
-          'Order Detail',
+          tr('view_order_detail.order_detail'),
           style: Theme.of(
             context,
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: StyleRepo.black),
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: r.space20, horizontal: r.space20),
         child: Column(
           children: [
             // Order Detail Card
@@ -78,20 +82,24 @@ class ViewOrderDetail extends StatelessWidget {
             // NEW: Conditionally show Add Offer Button
             if (controller.showAddOfferButton)
               Padding(
-                padding: const EdgeInsets.only(top: 20),
+                padding: EdgeInsets.only(top: r.space20),
                 child: SizedBox(
-                  width: 160,
-                  height: 48,
+                  width: r.value(mobile: 160, tablet: 180, desktop: 200),
+                  height: r.value(mobile: 48, tablet: 52, desktop: 56),
                   child: ElevatedButton(
                     onPressed: controller.addOffer,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: StyleRepo.deepBlue,
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
                       elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          r.value(mobile: 26, tablet: 28, desktop: 30),
+                        ),
+                      ),
                     ),
                     child: Text(
-                      'add offer',
+                      tr('view_order_detail.add_offer'),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: StyleRepo.softWhite,

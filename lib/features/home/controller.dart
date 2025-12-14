@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:renva0/core/localization/strings.dart';
 import 'package:renva0/core/services/rest_api/constants/end_points.dart';
@@ -194,14 +196,65 @@ class HomePageController extends GetxController {
   }
 
   void onLocationTap() {
-    // TODO: Implement location selection
-    Get.dialog(
-      AlertDialog(
-        title: Text(tr(LocaleKeys.dialogs_select_location)),
-        content: Text(tr(LocaleKeys.dialogs_location_selection_coming_soon)),
-        actions: [TextButton(onPressed: () => Get.back(), child: Text(tr(LocaleKeys.common_close)))],
-      ),
-    );
+    _fetchUserLocation();
+  }
+
+  Future<void> _fetchUserLocation() async {
+    try {
+      currentLocation.reset();
+
+      // Check location service enabled
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        PopUpToast.show('Location service is disabled');
+        currentLocation.error = 'Location service disabled';
+        return;
+      }
+
+      // Request permission
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          PopUpToast.show('Location permission denied');
+          currentLocation.error = 'Permission denied';
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        PopUpToast.show('Location permission denied forever. Enable in settings.');
+        currentLocation.error = 'Permission denied forever';
+        Geolocator.openLocationSettings();
+        return;
+      }
+
+      // Get current position
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // Get address from coordinates
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+        String locationName =
+            '${place.locality ?? place.administrativeArea ?? 'Unknown'}, ${place.country ?? ''}';
+        currentLocation.value = locationName;
+        PopUpToast.show('Location updated: $locationName');
+      } else {
+        currentLocation.value =
+            '${position.latitude.toStringAsFixed(2)}, ${position.longitude.toStringAsFixed(2)}';
+      }
+    } catch (e) {
+      print('Error fetching location: $e');
+      currentLocation.error = e.toString();
+      PopUpToast.show('Error getting location: $e');
+    }
   }
 
   void onNotificationTap() {
@@ -215,7 +268,9 @@ class HomePageController extends GetxController {
       AlertDialog(
         title: Text(tr(LocaleKeys.dialogs_about_renva)),
         content: Text(tr(LocaleKeys.dialogs_about_renva_description)),
-        actions: [TextButton(onPressed: () => Get.back(), child: Text(tr(LocaleKeys.common_close)))],
+        actions: [
+          TextButton(onPressed: () => Get.back(), child: Text(tr(LocaleKeys.common_close))),
+        ],
       ),
     );
   }
