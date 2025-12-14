@@ -198,5 +198,3 @@ lib/
 ### ⚠️ Known Issues
 - Some API endpoints still in development
 - Image upload may have size limitations
-- UI responsiveness needs improvement on tablets
-- Localization incomplete for some screens
