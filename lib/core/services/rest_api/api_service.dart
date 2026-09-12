@@ -15,6 +15,10 @@ import 'models/response_model.dart';
 class APIService extends GetxService {
   static APIService get instance => Get.find<APIService>();
 
+  /// Called once whenever the server rejects the current credentials (HTTP
+  /// 401). Wired up by [AppBuilder] to log the user out and return to login.
+  static void Function()? onUnauthorized;
+
   late bool withLog;
   late Map<String, dynamic> _headers;
   late Dio _dio;
@@ -48,7 +52,10 @@ class APIService extends GetxService {
   }
 
   setLanguage(String language) {
-    _headers["locale"] = language;
+    // Must match the header key used everywhere else ("Accept-Language").
+    // Previously this set "locale", so runtime language switches never actually
+    // reached the backend.
+    _headers["Accept-Language"] = language;
     _dio.options = _dio.options.copyWith(headers: _headers);
     headerLogger(_headers);
   }
@@ -88,6 +95,12 @@ class APIService extends GetxService {
     }
 
     resultLogger(request, responseModel);
+
+    // Session expired / invalid token — let the app react in one place.
+    if (responseModel.statusCode == 401) {
+      onUnauthorized?.call();
+    }
+
     return responseModel;
   }
 

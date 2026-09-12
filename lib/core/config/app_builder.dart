@@ -50,7 +50,26 @@ class AppBuilder extends GetxService {
     await loadData();
 
     Get.put(APIService(token: token));
+
+    // Centralized session-expiry handling: any request that comes back 401
+    // (expired/invalid token) drops the user cleanly back to login instead of
+    // leaving them stuck in a broken "logged-in" state where every call fails.
+    APIService.onUnauthorized = _handleUnauthorized;
+
     await _navigateToInitialScreen();
+  }
+
+  bool _handlingUnauthorized = false;
+
+  void _handleUnauthorized() {
+    // Only react if there is actually a session to invalidate, and never
+    // re-enter (a burst of 401s must trigger exactly one logout).
+    if (_handlingUnauthorized) return;
+    if (token == null || token!.isEmpty) return;
+
+    _handlingUnauthorized = true;
+    print(' Session expired (401) → logging out');
+    logout().whenComplete(() => _handlingUnauthorized = false);
   }
 
   // Navigation logic
@@ -74,28 +93,12 @@ class AppBuilder extends GetxService {
   }
 
   String _determineRoute() {
-    // Determining route based on authentication state
-
-    if (role == Role.guest) {
-      print('Guest user → Home');
-      return Pages.home.value;
-    }
-
-    if (token != null && token!.isNotEmpty) {
-      print(' User has token → Check provider mode');
-
-      //  Check if user is in provider mode
-      if (isProvider.value && isProviderMode.value) {
-        print('Provider mode active → ProviderHomePage');
-        return Pages.home.value;
-      }
-
-      print(' User mode → HomePage');
-      return Pages.home.value;
-    } else {
-      print(' No token → Login required');
-      return Pages.login.value;
-    }
+    // Guests and authenticated users both land on Home; the Home/Main layer
+    // decides user-vs-provider presentation from isProviderMode. Only a missing
+    // token forces login.
+    if (role == Role.guest) return Pages.home.value;
+    if (token != null && token!.isNotEmpty) return Pages.home.value;
+    return Pages.login.value;
   }
 
   // Safe refresh navigation
@@ -186,15 +189,20 @@ class AppBuilder extends GetxService {
   }
 
   void setToken(String? newToken) {
-    if (token != newToken) {
-      token = newToken;
-      if (newToken != null) {
-        box.write("token", newToken);
-        print(' Token set: ');
-      } else {
-        box.remove("token");
-        print(' Token cleared: ');
-      }
+    token = newToken;
+    if (newToken != null) {
+      box.write("token", newToken);
+      print(' Token set: ');
+    } else {
+      box.remove("token");
+      print(' Token cleared: ');
+    }
+
+    // Single source of truth: keep the API layer's Authorization header in
+    // sync automatically so callers can never forget to update both places
+    // (which is how the stored token and the request header used to drift).
+    if (Get.isRegistered<APIService>()) {
+      APIService.instance.setToken(newToken);
     }
   }
 
@@ -248,33 +256,25 @@ class AppBuilder extends GetxService {
     }
   }
 
-  // Logout method - preserve profile completion
+  // Logout method - fully reset per-user state.
+  //
+  // IMPORTANT: all of these flags are stored globally on the device, not per
+  // account. If we preserve them (as the old code did) and a DIFFERENT user
+  // signs in on the same device, they inherit the previous user's
+  // provider/verification/profile-completion state until an API reload happens
+  // to overwrite it — a real data-leak between the two kinds of users this app
+  // handles. They are always repopulated from the API on the next login /
+  // profile load, so clearing them here is both safe and correct.
   Future<void> logout() async {
-    // Preserve profile completion status
-    bool profileWasCompleted = isProfileCompleted ?? false;
-    bool wasProvider = isProvider.value;
-    String lastProviderStatus = providerStatus.value;
-
-    // Reset auth-related fields
     setRole(Role.unregistered);
-    setToken(null);
-
-    // Reset provider mode but preserve provider status
+    setToken(null); // also clears the APIService Authorization header
+    setVerified(false);
+    setProfileCompleted(false);
     setProviderMode(false);
-    // Keep provider status for when they log back in
-
-    // Preserve profile completion status
-    setProfileCompleted(profileWasCompleted);
-
-    // Clear API service token
-    try {
-      Get.find<APIService>().setToken(null);
-    } catch (e) {
-      print(' APIService not found during logout: $e');
-    }
+    setIsProvider(false);
+    setProviderStatus('');
 
     print(' User logged out successfully');
-    print(' Preserved provider status: $wasProvider ($lastProviderStatus)');
 
     await Future.delayed(Duration(milliseconds: 100));
     Get.offAllNamed(Pages.login.value);
