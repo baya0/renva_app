@@ -239,6 +239,11 @@ class ProfileController extends GetxController with GetSingleTickerProviderState
       //  Update GetX
       Get.updateLocale(newLocale);
 
+      //  Tell the API layer so the backend returns localized responses too
+      if (Get.isRegistered<APIService>()) {
+        APIService.instance.setLanguage(newLanguage);
+      }
+
       //  Force the app to rebuild everything (this is the key!)
       Get.forceAppUpdate();
 

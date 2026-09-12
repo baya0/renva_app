@@ -107,12 +107,21 @@ class ResetPasswordController extends GetxController {
       'password_confirmation': confirmPasswordController.text.trim(),
     };
 
+    // CRITICAL: the reset request must be authorized with the short-lived RESET
+    // token issued by OTP verification — NOT the shared app auth token. Passing
+    // it explicitly here also stops the previously-logged-in user's stale
+    // Authorization header (merged in from the shared APIService) from leaking
+    // into this request when reset is triggered from the profile screen.
     ResponseModel response = await APIService.instance.request(
       Request(
         endPoint: EndPoints.resetPassword,
         method: RequestMethod.Post,
         body: jsonData,
-        copyHeader: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        copyHeader: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $resetPasswordToken',
+        },
       ),
     );
 
