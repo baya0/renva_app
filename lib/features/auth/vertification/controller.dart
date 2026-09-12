@@ -22,7 +22,6 @@ class VerifyPhoneController extends GetxController {
   String? fullPhoneNumber;
   bool fromRegistration = false;
   bool fromForgotPassword = false;
-  String? resetPasswordToken;
 
   final RxBool isLoading = false.obs;
   final RxInt resendCooldown = 0.obs;
@@ -240,48 +239,12 @@ class VerifyPhoneController extends GetxController {
     }
   }
 
-  Future<void> _handleForgotPasswordVerificationSuccess() async {
-    try {
-      PopUpToast.show(tr(LocaleKeys.success_phone_verified_set_password));
-      await Future.delayed(Duration(milliseconds: 500));
-
-      // Navigate to reset password page with the token (not phone data)
-      Get.offNamed(
-        Pages.reset_password.value,
-        arguments: {
-          'resetToken':
-              resetPasswordToken, // Pass the token instead of phone data ??? asking about this
-        },
-      );
-    } catch (e) {
-      print(' Error handling forgot password verification: $e');
-      PopUpToast.show(tr(LocaleKeys.errors_verification_proceed_failed));
-    }
-  }
-
   // Handle verification error
   void _handleVerificationError(ResponseModel response) {
-    String errorMsg = tr(LocaleKeys.verification_invalid_code);
-
-    try {
-      if (response.data is Map<String, dynamic>) {
-        final errorData = response.data as Map<String, dynamic>;
-        if (errorData['message'] != null) {
-          errorMsg = errorData['message'].toString();
-        } else if (errorData['error'] != null) {
-          errorMsg = errorData['error'].toString();
-        }
-      } else if (response.data is List && (response.data as List).isNotEmpty) {
-        List errors = response.data as List;
-        errorMsg = errors.join('\n');
-      } else if (response.message.isNotEmpty) {
-        errorMsg = response.message;
-      }
-    } catch (e) {
-      print(' Error parsing error response: $e');
-    }
-
-    errorMessage.value = errorMsg;
+    errorMessage.value = extractResponseMessage(
+      response,
+      tr(LocaleKeys.verification_invalid_code),
+    );
     PopUpToast.show(tr(LocaleKeys.verification_verification_failed));
   }
 

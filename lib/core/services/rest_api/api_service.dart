@@ -37,7 +37,16 @@ class APIService extends GetxService {
       _headers["Accept-Language"] = language;
     }
     _dio = Dio();
-    _dio.options = BaseOptions(headers: _headers, responseType: ResponseType.json);
+    _dio.options = BaseOptions(
+      headers: _headers,
+      responseType: ResponseType.json,
+      // Without these a stalled network hangs the request forever. Dio maps
+      // these to connect/receive/send timeout DioExceptions, which the error
+      // handler already turns into a "no internet" ResponseModel.
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+      sendTimeout: const Duration(seconds: 30),
+    );
     if (withLog) headerLogger(_headers);
   }
 

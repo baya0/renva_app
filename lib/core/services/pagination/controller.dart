@@ -67,38 +67,42 @@ class PaginationController<T> extends GetxController {
     ResponseModel response = await fetchApi(currentPage, cancel!);
     completer!.complete(response);
     if (response.success) {
-      if (response.data.isEmpty) {
+      // The API's "data" is not guaranteed to be a List (it can be null, a Map,
+      // or an unexpected error shape). Anything that isn't a non-empty List is
+      // treated as "no more items" instead of throwing.
+      final List<dynamic> items = response.data is List ? response.data as List : const [];
+
+      if (items.isEmpty) {
         isFinished = true;
         loading = false;
         if (currentPage == 1) {
           data.value = [];
-          return response;
         }
-      } else {
-        data.valueAppend =
-            (response.data as List)
-                .map((element) => fromJson(element))
-                .toList();
-        currentPage++;
-        while (!scrollController.hasClients) {
-          await 100.milliseconds.delay();
-        }
-        if (scrollController.position.maxScrollExtent > 1) {
-          scrollController.jumpTo(scrollController.offset + 0.1);
-        }
-        log(
-          'scrollController.offset: ${scrollController.offset}',
-          name: "Pager",
-        );
-        log(
-          'scrollController.position.maxScrollExtent: ${scrollController.position.maxScrollExtent}',
-          name: "Pager",
-        );
-        if (scrollController.offset >
-                scrollController.position.maxScrollExtent - closeToListEnd &&
-            !isFinished) {
-          await loadData();
-        }
+        return response;
+      }
+
+      data.valueAppend = items.map((element) => fromJson(element)).toList();
+      currentPage++;
+
+      // Wait briefly for the list to attach, but never loop forever: if the
+      // user has already navigated away the ScrollController never gets clients.
+      int waited = 0;
+      while (!scrollController.hasClients && waited < 30) {
+        await 100.milliseconds.delay();
+        waited++;
+      }
+      if (!scrollController.hasClients) {
+        loading = false;
+        return response;
+      }
+
+      if (scrollController.position.maxScrollExtent > 1) {
+        scrollController.jumpTo(scrollController.offset + 0.1);
+      }
+      if (scrollController.offset >
+              scrollController.position.maxScrollExtent - closeToListEnd &&
+          !isFinished) {
+        await loadData();
       }
     } else if (response.errorType is CANCELED) {
       return response;

@@ -19,9 +19,14 @@ abstract class Obs<T> {
 
   Obs();
 
-  /// Initialize the observable variable with Error state
+  /// Initialize the observable variable with Error state.
+  ///
+  /// Sets the backing fields directly: the previous version did `error = error`,
+  /// which just assigned the constructor parameter to itself (the name shadowed
+  /// the setter), so the error and status were never actually stored.
   Obs.fromError(String error) {
-    error = error;
+    _error = error;
+    _status = (VariableStatus.Error).obs;
   }
 
   bool get hasData => status == VariableStatus.HasData;
@@ -107,7 +112,12 @@ class ObsList<T> extends Obs<T> {
     }
   }
 
-  ObsList.fromError(super.error) : super.fromError();
+  ObsList.fromError(super.error) : super.fromError() {
+    // Initialize the late length field so the valueLength getter is safe to
+    // read while the list is in an error state.
+    _value = [];
+    _valueLength = 0.obs;
+  }
 
   T operator [](int index) => value![index];
 

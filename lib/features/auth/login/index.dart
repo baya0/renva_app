@@ -15,7 +15,10 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(LoginPageController(), tag: 'login_controller', permanent: true);
+    // Not permanent: the controller (and its TextEditingControllers) must be
+    // disposed when leaving the screen so a second user does not reuse the
+    // first user's login controller instance.
+    final controller = Get.put(LoginPageController(), tag: 'login_controller');
 
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;

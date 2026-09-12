@@ -173,38 +173,10 @@ class ResetPasswordController extends GetxController {
 
   // Handle reset password error response
   void _handleResetPasswordError(ResponseModel response) {
-    String errorMsg = tr(LocaleKeys.errors_password_reset_failed);
-
-    try {
-      if (response.data is Map<String, dynamic>) {
-        final errorData = response.data as Map<String, dynamic>;
-        if (errorData['message'] != null) {
-          errorMsg = errorData['message'].toString();
-        } else if (errorData['error'] != null) {
-          errorMsg = errorData['error'].toString();
-        } else if (errorData['errors'] != null && errorData['errors'] is Map) {
-          // Handle Laravel validation errors
-          Map<String, dynamic> errors = errorData['errors'];
-          List<String> errorMessages = [];
-          errors.forEach((field, messages) {
-            if (messages is List) {
-              errorMessages.addAll(messages.map((e) => e.toString()));
-            }
-          });
-          if (errorMessages.isNotEmpty) {
-            errorMsg = errorMessages.join('\n');
-          }
-        }
-      } else if (response.data is List && (response.data as List).isNotEmpty) {
-        List errors = response.data as List;
-        errorMsg = errors.join('\n');
-      } else if (response.message.isNotEmpty) {
-        errorMsg = response.message;
-      }
-    } catch (e) {
-      print(' Error parsing reset password error response: $e');
-    }
-
+    final errorMsg = extractResponseMessage(
+      response,
+      tr(LocaleKeys.errors_password_reset_failed),
+    );
     errorMessage.value = errorMsg;
     PopUpToast.show(errorMsg);
   }
