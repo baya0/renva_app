@@ -115,12 +115,19 @@ lib/
    flutter pub get
    ```
 
-3. **Generate assets**
+3. **Configure environment**
+   ```bash
+   cp assets/.env.example assets/.env
+   ```
+   Then open `assets/.env` and set `API_BASE_URL` to your backend URL.
+   (`assets/.env` is gitignored, so it must be created on each machine.)
+
+4. **Generate assets**
    ```bash
    flutter packages pub run build_runner build
    ```
 
-4. **Run the application**
+5. **Run the application**
    ```bash
    flutter run
    ```

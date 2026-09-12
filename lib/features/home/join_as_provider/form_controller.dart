@@ -410,42 +410,9 @@ class JoinAsProviderFormController extends GetxController {
   }
 
   void _handleRegistrationError(ResponseModel response) {
-    String errorMsg = tr(LocaleKeys.errors_failed_complete_profile);
-
-    try {
-      if (response.data is List) {
-        // Handle array of error messages
-        final errors = response.data as List;
-        errorMsg = errors.join('\n');
-      } else if (response.data is Map<String, dynamic>) {
-        final errorData = response.data as Map<String, dynamic>;
-        if (errorData['message'] != null) {
-          errorMsg = errorData['message'].toString();
-        } else if (errorData['error'] != null) {
-          errorMsg = errorData['error'].toString();
-        } else if (errorData['errors'] != null) {
-          // Handle validation errors
-          if (errorData['errors'] is Map) {
-            Map<String, dynamic> errors = errorData['errors'];
-            List<String> errorMessages = [];
-            errors.forEach((key, value) {
-              if (value is List) {
-                errorMessages.addAll(value.cast<String>());
-              } else {
-                errorMessages.add(value.toString());
-              }
-            });
-            errorMsg = errorMessages.join('\n');
-          }
-        }
-      } else if (response.message.isNotEmpty) {
-        errorMsg = response.message;
-      }
-    } catch (e) {
-      print(' Error parsing registration error response: $e');
-    }
-
-    PopUpToast.show(errorMsg);
+    PopUpToast.show(
+      extractResponseMessage(response, tr(LocaleKeys.errors_failed_complete_profile)),
+    );
   }
 
   // Form field change handlers

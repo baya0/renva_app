@@ -241,27 +241,10 @@ class VerifyPhoneController extends GetxController {
 
   // Handle verification error
   void _handleVerificationError(ResponseModel response) {
-    String errorMsg = tr(LocaleKeys.verification_invalid_code);
-
-    try {
-      if (response.data is Map<String, dynamic>) {
-        final errorData = response.data as Map<String, dynamic>;
-        if (errorData['message'] != null) {
-          errorMsg = errorData['message'].toString();
-        } else if (errorData['error'] != null) {
-          errorMsg = errorData['error'].toString();
-        }
-      } else if (response.data is List && (response.data as List).isNotEmpty) {
-        List errors = response.data as List;
-        errorMsg = errors.join('\n');
-      } else if (response.message.isNotEmpty) {
-        errorMsg = response.message;
-      }
-    } catch (e) {
-      print(' Error parsing error response: $e');
-    }
-
-    errorMessage.value = errorMsg;
+    errorMessage.value = extractResponseMessage(
+      response,
+      tr(LocaleKeys.verification_invalid_code),
+    );
     PopUpToast.show(tr(LocaleKeys.verification_verification_failed));
   }
 

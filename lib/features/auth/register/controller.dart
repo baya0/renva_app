@@ -44,13 +44,9 @@ class RegisterPageController extends GetxController {
   }
 
   void _initializeDefaultPhone() {
-    selectedPhoneNumber = PhoneNumber(phoneNumber: '+963121212', isoCode: 'SY', dialCode: '+963');
-    phoneController.text = '121212';
-    password.text = '12345678';
-    confirmPassword.text = '12345678';
-
-    selectedPhoneDisplay.value = '+963121212';
-    isPhoneValid.value = true;
+    // Default the country to Syria (+963) for convenience, but never pre-fill a
+    // real phone number or password.
+    selectedPhoneNumber = PhoneNumber(isoCode: 'SY', dialCode: '+963');
   }
 
   String? validatePhone(PhoneNumber? phoneNumber) {

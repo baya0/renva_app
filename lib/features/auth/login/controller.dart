@@ -39,13 +39,9 @@ class LoginPageController extends GetxController {
   }
 
   void _initializeDefaultPhone() {
-    selectedPhoneNumber = PhoneNumber(
-      phoneNumber: '+963111111111', //  Valid 9-digit mobile number starting with 9
-      isoCode: 'SY',
-      dialCode: '+963', //  Include the + sign
-    );
-    phoneController.text = '111111111';
-    password.text = '12345678';
+    // Default the country to Syria (+963) for convenience, but never pre-fill a
+    // real phone number or password.
+    selectedPhoneNumber = PhoneNumber(isoCode: 'SY', dialCode: '+963');
   }
 
   String? validatePhone(PhoneNumber? phoneNumber) {
