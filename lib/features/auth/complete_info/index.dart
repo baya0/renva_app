@@ -18,10 +18,11 @@ class CompleteInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Not permanent: dispose with the route so state/text fields don't leak
+    // across users or survive after profile completion.
     final controller = Get.put(
       CompleteInfoController(),
       tag: ControllersTags.completeInfoController,
-      permanent: true,
     );
 
     final theme = Theme.of(context);

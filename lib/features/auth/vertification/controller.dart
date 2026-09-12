@@ -22,7 +22,6 @@ class VerifyPhoneController extends GetxController {
   String? fullPhoneNumber;
   bool fromRegistration = false;
   bool fromForgotPassword = false;
-  String? resetPasswordToken;
 
   final RxBool isLoading = false.obs;
   final RxInt resendCooldown = 0.obs;
@@ -237,25 +236,6 @@ class VerifyPhoneController extends GetxController {
     } catch (e) {
       print('💥 Error handling successful verification: $e');
       PopUpToast.show(tr(LocaleKeys.errors_something_went_wrong));
-    }
-  }
-
-  Future<void> _handleForgotPasswordVerificationSuccess() async {
-    try {
-      PopUpToast.show(tr(LocaleKeys.success_phone_verified_set_password));
-      await Future.delayed(Duration(milliseconds: 500));
-
-      // Navigate to reset password page with the token (not phone data)
-      Get.offNamed(
-        Pages.reset_password.value,
-        arguments: {
-          'resetToken':
-              resetPasswordToken, // Pass the token instead of phone data ??? asking about this
-        },
-      );
-    } catch (e) {
-      print(' Error handling forgot password verification: $e');
-      PopUpToast.show(tr(LocaleKeys.errors_verification_proceed_failed));
     }
   }
 
